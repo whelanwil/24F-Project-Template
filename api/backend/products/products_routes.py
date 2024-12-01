@@ -206,3 +206,31 @@ def update_product():
     current_app.logger.info(product_info)
 
     return "Success"
+
+@products.route('/top-ordered', methods=['GET'])
+def get_top_ordered_products():
+    query = '''
+        SELECT 
+            p.product_name, 
+            CONCAT(s.first_name, ' ', s.last_name) AS supplier_name, 
+            COUNT(od.order_id) AS order_count
+        FROM 
+            products p
+        JOIN 
+            suppliers s ON p.supplier_id = s.id
+        JOIN 
+            order_details od ON p.id = od.product_id
+        GROUP BY 
+            p.product_name, supplier_name
+        ORDER BY 
+            order_count DESC, p.product_name ASC
+        LIMIT 8
+    '''
+
+    cursor = db.get_db().cursor()
+    cursor.execute(query)
+    theData = cursor.fetchall()
+    
+    response = make_response(jsonify(theData))
+    response.status_code = 200
+    return response
