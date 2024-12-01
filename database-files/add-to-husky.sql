@@ -354,7 +354,7 @@ INSERT INTO `Performance` (`metricID`, `metricName`, `value`, `adminID`) VALUES
 (50, 'Co-op Hours', 76, 7);
 
 
-INSERT INTO `Update` (`updateID`, `updateName`, `updateDescription`, `adminID`) VALUES
+INSERT INTO `Updates` (`updateID`, `updateName`, `updateDescription`, `adminID`) VALUES
 (1, 'Speech art.', 'Life girl station. Voice place exist term.', 8),
 (2, 'Power.', 'Environmental newspaper phone among someone industry.', 13),
 (3, 'Prevent some order.', 'Next various close school sense.', 20),
