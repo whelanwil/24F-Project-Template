@@ -1,6 +1,7 @@
 ###
 # Main application interface
 ###
+import numpy as np
 
 # import the create app function 
 # that lives in src/__init__.py
