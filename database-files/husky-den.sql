@@ -5,7 +5,7 @@ USE huskyDenDB;
 
 DROP TABLE IF EXISTS `SystemAdministrator`;
 CREATE TABLE `SystemAdministrator` (
-    `adminID` INTEGER PRIMARY KEY,
+    `adminID` INTEGER PRIMARY KEY ,
     `firstName` VARCHAR(50),
     `lastName` VARCHAR(50),
     `email` VARCHAR(75)
@@ -94,7 +94,7 @@ CREATE TABLE `Performance` (
         ON DELETE CASCADE
 );
 
-DROP TABLE IF EXISTS `Update`;
+DROP TABLE IF EXISTS `Updates`;
 CREATE TABLE `Update` (
     `updateID` INTEGER PRIMARY KEY,
     `updateName` VARCHAR(50),
@@ -174,9 +174,9 @@ CREATE TABLE `Recommendation` (
 );
 
 -- Insert into SystemAdministrator
-INSERT INTO `SystemAdministrator` (`firstName`, `lastName`, `email`) VALUES
-('Jordan', 'Lee', 'jordan.lee@huskyden.com'),
-('Bob', 'Johnson', 'bob.johnson@huskyden.com');
+INSERT INTO `SystemAdministrator` (`adminID`, `firstName`, `lastName`, `email`) VALUES
+(1, 'Jordan', 'Lee', 'jordan.lee@huskyden.com'),
+(2,'Bob', 'Johnson', 'bob.johnson@huskyden.com');
 
 -- Insert into Alumni
 INSERT INTO `Alumni` (`firstName`, `lastName`, `email`, `company`, `city`, `adminID`) VALUES
@@ -209,7 +209,7 @@ INSERT INTO `Performance` (`metricName`, `value`, `adminID`) VALUES
 ('System Uptime', 99, 2);
 
 -- Insert into Update
-INSERT INTO `Update` (`updateName`, `updateDescription`, `adminID`) VALUES
+INSERT INTO `Updates` (`updateName`, `updateDescription`, `adminID`) VALUES
 ('System Upgrade', 'Upgraded to version 2.0', 1),
 ('Database Optimization', 'Indexes added to critical tables', 2);
 
