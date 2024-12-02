@@ -67,3 +67,20 @@ def update_housing():
     r = cursor.execute(query, data)
     db.get_db().commit()
     return 'Housing updated'
+
+@alumni.route('/alumni', methods=['DELETE'])
+def delete_housing():
+    current_app.logger.info('DELETE /alumni route')
+
+    query = '''
+        DELETE FROM Apartment 
+        WHERE housingID = %s
+        '''
+    
+    cursor = db.get_db().cursor()
+    cursor.execute(query)
+    db.get_db().commit()
+
+    response = make_response(f'Housing deleted.')
+    response.status_code = 200
+    return response
