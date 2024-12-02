@@ -41,3 +41,23 @@ def update_student_info():
     r = cursor.execute(query, data)
     db.get_db().commit()
     return 'Student information updated'
+
+@student.route('/student', methods=['DELETE'])
+def remove_parent():
+    current_app.logger.info('DELETE /student route')
+
+    query = '''
+        DELETE FROM Parent 
+        WHERE parentID IN (
+            SELECT parentID
+            FROM StudentParent
+            WHERE studentID = %s)
+        '''
+    
+    cursor = db.get_db().cursor()
+    cursor.execute(query)
+    db.get_db().commit()
+
+    response = make_response(f'Parent removed.')
+    response.status_code = 200
+    return response
