@@ -204,6 +204,7 @@ def get_students(student_id):
     except Exception as e:
         return make_response(jsonify({"error": str(e)}), 500)
     
+
 # POST: Add a new student to the database
 @app.route('/systemAdministrator/student', methods=['POST'])
 def add_student():
@@ -231,3 +232,35 @@ def add_student():
         return make_response(jsonify({"message": "Student added successfully"}), 201)
     except Exception as e:
         return make_response(jsonify({"error": str(e)}), 500)
+    
+# PUT: Update a student's information
+@app.route('/systemAdministrator/student/<int:student_id>', methods=['PUT'])
+def update_student(student_id):
+    """
+    Update a student's information in the database.
+    """
+    data = request.json
+    first_name = data.get('first_name')
+    last_name = data.get('last_name')
+    email = data.get('email')
+
+    if not first_name or not last_name or not email:
+        return make_response(jsonify({"error": "First name, last name, and email are required"}), 400)
+
+    query = '''
+        UPDATE students
+        SET first_name = %s, last_name = %s, email = %s
+        WHERE student_id = %s AND is_active = 1
+    '''
+    try:
+        cursor = db.get_db().cursor()
+        cursor.execute(query, (first_name, last_name, email, student_id))
+        db.get_db().commit()
+
+        if cursor.rowcount == 0:
+            return make_response(jsonify({"error": "Student not found or is inactive"}), 404)
+
+        return make_response(jsonify({"message": "Student information updated successfully"}), 200)
+    except Exception as e:
+        return make_response(jsonify({"error": str(e)}), 500)
+
