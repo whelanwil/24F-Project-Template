@@ -467,6 +467,38 @@ def add_coop_advisor():
         return make_response(jsonify({"message": "Co-op advisor added successfully"}), 201)
     except Exception as e:
         return make_response(jsonify({"error": str(e)}), 500)
+    
+@app.route('/systemAdministrator/coopAdvisor/<int:advisor_id>', methods=['PUT'])
+def update_coop_advisor(advisor_id):
+    """
+    Update a co-op advisor's information in the database.
+    """
+    data = request.json
+    first_name = data.get('first_name')
+    last_name = data.get('last_name')
+    email = data.get('email')
+    department = data.get('department')
+
+    if not first_name or not last_name or not email or not department:
+        return make_response(jsonify({"error": "First name, last name, email, and department are required"}), 400)
+
+    query = '''
+        UPDATE coop_advisors
+        SET first_name = %s, last_name = %s, email = %s, department = %s
+        WHERE advisor_id = %s
+    '''
+    try:
+        cursor = db.get_db().cursor()
+        cursor.execute(query, (first_name, last_name, email, department, advisor_id))
+        db.get_db().commit()
+
+        if cursor.rowcount == 0:
+            return make_response(jsonify({"error": "Co-op advisor not found"}), 404)
+
+        return make_response(jsonify({"message": "Co-op advisor information updated successfully"}), 200)
+    except Exception as e:
+        return make_response(jsonify({"error": str(e)}), 500)
+
 
 
 
