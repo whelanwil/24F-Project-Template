@@ -3,6 +3,7 @@ from datetime import datetime
 
 app = Flask(__name__)
 
+# 2.1
 # GET: Retrieve all system updates
 @app.route('/systemAdministrator/update', methods=['GET'])
 def get_all_updates():
@@ -103,6 +104,7 @@ def delete_system_update(update_id):
 if __name__ == '__main__':
     app.run(debug=True)
 
+# 2.2
 @app.route('/systemAdministrator/performance/<int:metric_id>', methods=['GET'])
 def get_performance_metrics(metric_id):
     """
@@ -137,6 +139,66 @@ def get_performance_metrics(metric_id):
 
         if not results:
             return make_response(jsonify({"error": "No metrics found for the given metric ID"}), 404)
+
+        return make_response(jsonify(results), 200)
+    except Exception as e:
+        return make_response(jsonify({"error": str(e)}), 500)
+    
+# 2.3
+# GET: Retrieve a list of all active students or specific student by ID
+@app.route('/systemAdministrator/student/<int:student_id>', methods=['GET'])
+def get_students(student_id):
+    """
+    Retrieve a list of all active students or specific student information by ID.
+    """
+    try:
+        cursor = db.get_db().cursor()
+        
+        if student_id == 0:  # Retrieve all active students
+            query = '''
+                SELECT 
+                    student_id, 
+                    first_name, 
+                    last_name, 
+                    email, 
+                    enrolled_at 
+                FROM 
+                    students 
+                WHERE 
+                    is_active = 1
+            '''
+            cursor.execute(query)
+        else:  # Retrieve a specific student by ID
+            query = '''
+                SELECT 
+                    student_id, 
+                    first_name, 
+                    last_name, 
+                    email, 
+                    enrolled_at 
+                FROM 
+                    students 
+                WHERE 
+                    student_id = %s AND is_active = 1
+            '''
+            cursor.execute(query, (student_id,))
+
+        students = cursor.fetchall()
+        
+        # Format the results into a JSON-friendly structure
+        results = [
+            {
+                "student_id": row[0],
+                "first_name": row[1],
+                "last_name": row[2],
+                "email": row[3],
+                "enrolled_at": row[4]
+            }
+            for row in students
+        ]
+
+        if not results:
+            return make_response(jsonify({"error": "No active students found"}), 404)
 
         return make_response(jsonify(results), 200)
     except Exception as e:
