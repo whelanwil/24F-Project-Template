@@ -39,3 +39,31 @@ def add_new_housing():
     response = make_response("Successfully added housing")
     response.status_code = 200
     return response
+
+@alumni.route('/alumni', methods=['PUT'])
+def update_housing():
+    current_app.logger.info('PUT /alumni route')
+
+    the_data = request.json
+    beds = the_data['bed']
+    baths = the_data['baths']
+    rent = the_data['rent']
+    description = the_data['description']
+    dateAvailableFrom = the_data['dateAvailableFrom']
+    dateAvailableTo = the_data['dateAvailableTo']
+    street = the_data['street']
+    city = the_data['city']
+    state = the_data['state']
+    country = the_data['country']
+
+    query = '''
+        UPDATE Apartment SET beds = %s, baths = %s, rent = %s, description = %s, 
+        dateAvailableFrom = %s, dateAvailableTo = %s,
+        street = %s, city = %s, state = %s, country = %s
+        WHERE housingID = %s
+    '''
+    data = (beds, baths, rent, description, dateAvailableFrom, dateAvailableTo, street, city, state, country)
+    cursor = db.get_db().cursor()
+    r = cursor.execute(query, data)
+    db.get_db().commit()
+    return 'Housing updated'
