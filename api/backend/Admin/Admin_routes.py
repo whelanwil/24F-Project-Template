@@ -562,6 +562,28 @@ def add_relevant_city():
         return make_response(jsonify({"message": f"City '{city_name}' added successfully"}), 201)
     except Exception as e:
         return make_response(jsonify({"error": str(e)}), 500)
+    
+@app.route('/systemAdministrator/student/<string:city>', methods=['DELETE'])
+def delete_relevant_city(city):
+    """
+    Remove a city from the database.
+    """
+    query = '''
+        DELETE FROM student_relevant_cities
+        WHERE city_name = %s
+    '''
+    try:
+        cursor = db.get_db().cursor()
+        cursor.execute(query, (city,))
+        db.get_db().commit()
+
+        if cursor.rowcount == 0:
+            return make_response(jsonify({"error": f"City '{city}' not found"}), 404)
+
+        return make_response(jsonify({"message": f"City '{city}' removed successfully"}), 200)
+    except Exception as e:
+        return make_response(jsonify({"error": str(e)}), 500)
+
 
 
 
