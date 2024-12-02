@@ -79,3 +79,25 @@ def update_system_update(update_id):
         return make_response(jsonify({"message": "System update modified successfully"}), 200)
     except Exception as e:
         return make_response(jsonify({"error": str(e)}), 500)
+
+# DELETE: Remove a specific system update record
+@app.route('/systemAdministrator/update/<int:update_id>', methods=['DELETE'])
+def delete_system_update(update_id):
+    query = '''
+        DELETE FROM system_updates
+        WHERE update_id = %s
+    '''
+    try:
+        cursor = db.get_db().cursor()
+        cursor.execute(query, (update_id,))
+        db.get_db().commit()
+
+        if cursor.rowcount == 0:
+            return make_response(jsonify({"error": "Update ID not found"}), 404)
+
+        return make_response(jsonify({"message": "System update deleted successfully"}), 200)
+    except Exception as e:
+        return make_response(jsonify({"error": str(e)}), 500)
+
+if __name__ == '__main__':
+    app.run(debug=True)
