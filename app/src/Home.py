@@ -34,11 +34,7 @@ SideBarLinks(show_home=True)
 
 # set the title of the page and provide a simple prompt. 
 logger.info("Loading the Home page of the app")
-<<<<<<< HEAD
 st.title('Project Name')
-=======
-st.title('Husky Den')
->>>>>>> 539b0f086491f9c1dc2caa19c4336e6ef8cc1ee8
 st.write('\n\n')
 st.write('### HI! As which user would you like to log in?')
 
