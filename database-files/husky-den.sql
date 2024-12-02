@@ -151,7 +151,7 @@ CREATE TABLE `Apartment` (
     `city` VARCHAR(50) NOT NULL,
     `state` VARCHAR(50),
     `country` VARCHAR(50) NOT NULL,
-    PRIMARY KEY (`alumID`, `housingID`),
+    PRIMARY KEY (`housingID`,`alumID`),
     FOREIGN KEY (`alumID`)
         REFERENCES `Alumni` (`alumID`)
         ON UPDATE CASCADE
