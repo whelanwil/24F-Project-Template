@@ -173,62 +173,62 @@ CREATE TABLE `Recommendation` (
         ON DELETE CASCADE
 );
 
--- Insert into SystemAdministrator
-INSERT INTO `SystemAdministrator` (`adminID`, `firstName`, `lastName`, `email`) VALUES
-(1, 'Jordan', 'Lee', 'jordan.lee@huskyden.com'),
-(2,'Bob', 'Johnson', 'bob.johnson@huskyden.com');
+-- -- Insert into SystemAdministrator
+-- INSERT INTO `SystemAdministrator` (`adminID`, `firstName`, `lastName`, `email`) VALUES
+-- (1, 'Jordan', 'Lee', 'jordan.lee@huskyden.com'),
+-- (2,'Bob', 'Johnson', 'bob.johnson@huskyden.com');
 
--- Insert into Alumni
-INSERT INTO `Alumni` (`firstName`, `lastName`, `email`, `company`, `city`, `adminID`) VALUES
-('Bridget', 'McCarthy', 'bridget.mccarthy@example.com', 'Apple', 'Los Angeles', 1),
-('Dave', 'Wilson', 'dave.wilson@example.com', 'Google', 'New York', 2);
+-- -- Insert into Alumni
+-- INSERT INTO `Alumni` (`firstName`, `lastName`, `email`, `company`, `city`, `adminID`) VALUES
+-- ('Bridget', 'McCarthy', 'bridget.mccarthy@example.com', 'Apple', 'Los Angeles', 1),
+-- ('Dave', 'Wilson', 'dave.wilson@example.com', 'Google', 'New York', 2);
 
--- Insert into CoopAdvisor
-INSERT INTO `CoopAdvisor` (`firstName`, `lastName`, `email`, `adminID`) VALUES
-('Sarah', 'James', 'sarah.james@northeastern.edu', 1),
-('Bruce', 'Taylor', 'bruce.taylor@northeastern.edu', 2);
+-- -- Insert into CoopAdvisor
+-- INSERT INTO `CoopAdvisor` (`firstName`, `lastName`, `email`, `adminID`) VALUES
+-- ('Sarah', 'James', 'sarah.james@northeastern.edu', 1),
+-- ('Bruce', 'Taylor', 'bruce.taylor@northeastern.edu', 2);
 
--- Insert into Student
-INSERT INTO `Student` (`firstName`, `lastName`, `email`, `company`, `city`, `adminID`, `advisorID`) VALUES
-('Tommy', 'Nelson', 'tommy.nelson@northeastern.edu', 'Draft Kings', 'New York', 1, 1),
-('Natasha', 'Smith', 'natasha.smith@northeastern.edu', 'Figma', 'Los Angeles', 2, 2);
+-- -- Insert into Student
+-- INSERT INTO `Student` (`firstName`, `lastName`, `email`, `company`, `city`, `adminID`, `advisorID`) VALUES
+-- ('Tommy', 'Nelson', 'tommy.nelson@northeastern.edu', 'Draft Kings', 'New York', 1, 1),
+-- ('Natasha', 'Smith', 'natasha.smith@northeastern.edu', 'Figma', 'Los Angeles', 2, 2);
 
--- Insert into Parent
-INSERT INTO `Parent` (`relationshipToStudent`) VALUES
-('Father'),
-('Mother');
+-- -- Insert into Parent
+-- INSERT INTO `Parent` (`relationshipToStudent`) VALUES
+-- ('Father'),
+-- ('Mother');
 
--- Insert into StudentParent
-INSERT INTO `StudentParent` (`studentID`, `parentID`) VALUES
-(1, 1),
-(2, 2);
+-- -- Insert into StudentParent
+-- INSERT INTO `StudentParent` (`studentID`, `parentID`) VALUES
+-- (1, 1),
+-- (2, 2);
 
--- Insert into Performance
-INSERT INTO `Performance` (`metricName`, `value`, `adminID`) VALUES
-('User Engagement', 85, 1),
-('System Uptime', 99, 2);
+-- -- Insert into Performance
+-- INSERT INTO `Performance` (`metricName`, `value`, `adminID`) VALUES
+-- ('User Engagement', 85, 1),
+-- ('System Uptime', 99, 2);
 
--- Insert into Update
-INSERT INTO `Updates` (`updateName`, `updateDescription`, `adminID`) VALUES
-('System Upgrade', 'Upgraded to version 2.0', 1),
-('Database Optimization', 'Indexes added to critical tables', 2);
+-- -- Insert into Update
+-- INSERT INTO `Updates` (`updateName`, `updateDescription`, `adminID`) VALUES
+-- ('System Upgrade', 'Upgraded to version 2.0', 1),
+-- ('Database Optimization', 'Indexes added to critical tables', 2);
 
--- Insert into AlumAdvisor
-INSERT INTO `AlumAdvisor` (`alumID`, `advisorID`) VALUES
-(1, 1),
-(2, 2);
+-- -- Insert into AlumAdvisor
+-- INSERT INTO `AlumAdvisor` (`alumID`, `advisorID`) VALUES
+-- (1, 1),
+-- (2, 2);
 
--- Insert into AlumStudent
-INSERT INTO `AlumStudent` (`nuID`, `alumID`) VALUES
-(1, 1),
-(2, 2);
+-- -- Insert into AlumStudent
+-- INSERT INTO `AlumStudent` (`nuID`, `alumID`) VALUES
+-- (1, 1),
+-- (2, 2);
 
--- Insert into Apartment
-INSERT INTO `Apartment` (`alumID`, `beds`, `baths`, `rent`, `description`, `dateAvailableFrom`, `dateAvailableTo`, `street`, `city`, `state`, `country`) VALUES
-(1, 2, 1, 2000, 'Cozy 2-bedroom apartment in a quiet neighborhood.', '2024-01-01', '2024-12-31', 123, 'Boston', 'MA', 'USA'),
-(2, 3, 2, 3000, 'Spacious 3-bedroom apartment near downtown.', '2024-02-01', '2024-11-30', 456, 'New York', 'NY', 'USA');
+-- -- Insert into Apartment
+-- INSERT INTO `Apartment` (`alumID`, `beds`, `baths`, `rent`, `description`, `dateAvailableFrom`, `dateAvailableTo`, `street`, `city`, `state`, `country`) VALUES
+-- (1, 2, 1, 2000, 'Cozy 2-bedroom apartment in a quiet neighborhood.', '2024-01-01', '2024-12-31', 123, 'Boston', 'MA', 'USA'),
+-- (2, 3, 2, 3000, 'Spacious 3-bedroom apartment near downtown.', '2024-02-01', '2024-11-30', 456, 'New York', 'NY', 'USA');
 
--- Insert into Recommendation
-INSERT INTO `Recommendation` (`alumID`, `establishment`, `category`, `location`, `priceRating`) VALUES
-(1, 'The Coffee Bean', 'Cafe', 'Boston', 3),
-(2, 'Joes Pizza', 'Restaurant', 'New York', 4);
+-- -- Insert into Recommendation
+-- INSERT INTO `Recommendation` (`alumID`, `establishment`, `category`, `location`, `priceRating`) VALUES
+-- (1, 'The Coffee Bean', 'Cafe', 'Boston', 3),
+-- (2, 'Joes Pizza', 'Restaurant', 'New York', 4);
