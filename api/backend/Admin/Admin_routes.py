@@ -29,6 +29,7 @@ def get_all_updates():
         return make_response(jsonify(results), 200)
     except Exception as e:
         return make_response(jsonify({"error": str(e)}), 500)
+    
 # POST: Create a new system update record
 @app.route('/systemAdministrator/update', methods=['POST'])
 def create_update():
@@ -101,3 +102,42 @@ def delete_system_update(update_id):
 
 if __name__ == '__main__':
     app.run(debug=True)
+
+@app.route('/systemAdministrator/performance/<int:metric_id>', methods=['GET'])
+def get_performance_metrics(metric_id):
+    """
+    Retrieve a list of performance metrics for a specific metric ID.
+    """
+    query = '''
+        SELECT 
+            metric_id,
+            metric_name,
+            metric_value,
+            recorded_at
+        FROM 
+            performance_metrics
+        WHERE 
+            metric_id = %s
+    '''
+    try:
+        cursor = db.get_db().cursor()
+        cursor.execute(query, (metric_id,))
+        metrics = cursor.fetchall()
+
+        # Format the results into a JSON-friendly structure
+        results = [
+            {
+                "metric_id": row[0],
+                "metric_name": row[1],
+                "metric_value": row[2],
+                "recorded_at": row[3]
+            }
+            for row in metrics
+        ]
+
+        if not results:
+            return make_response(jsonify({"error": "No metrics found for the given metric ID"}), 404)
+
+        return make_response(jsonify(results), 200)
+    except Exception as e:
+        return make_response(jsonify({"error": str(e)}), 500)
