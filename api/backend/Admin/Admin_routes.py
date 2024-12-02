@@ -383,5 +383,62 @@ def update_alumni(alum_id):
         return make_response(jsonify({"message": "Alumni information updated successfully"}), 200)
     except Exception as e:
         return make_response(jsonify({"error": str(e)}), 500)
+    
+#2.5
+@app.route('/systemAdministrator/coopAdvisor/<int:advisor_id>', methods=['GET'])
+def get_coop_advisors(advisor_id):
+    """
+    Retrieve a list of all co-op advisors or specific advisor information by ID.
+    """
+    try:
+        cursor = db.get_db().cursor()
+
+        if advisor_id == 0:  # Retrieve all co-op advisors
+            query = '''
+                SELECT 
+                    advisor_id, 
+                    first_name, 
+                    last_name, 
+                    email, 
+                    department 
+                FROM 
+                    coop_advisors
+            '''
+            cursor.execute(query)
+        else:  # Retrieve a specific advisor by ID
+            query = '''
+                SELECT 
+                    advisor_id, 
+                    first_name, 
+                    last_name, 
+                    email, 
+                    department 
+                FROM 
+                    coop_advisors 
+                WHERE 
+                    advisor_id = %s
+            '''
+            cursor.execute(query, (advisor_id,))
+
+        advisors = cursor.fetchall()
+
+        # Format the results into a JSON-friendly structure
+        results = [
+            {
+                "advisor_id": row[0],
+                "first_name": row[1],
+                "last_name": row[2],
+                "email": row[3],
+                "department": row[4]
+            }
+            for row in advisors
+        ]
+
+        if not results:
+            return make_response(jsonify({"error": "No co-op advisors found"}), 404)
+
+        return make_response(jsonify(results), 200)
+    except Exception as e:
+        return make_response(jsonify({"error": str(e)}), 500)
 
 
