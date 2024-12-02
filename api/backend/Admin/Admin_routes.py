@@ -539,6 +539,29 @@ def get_relevant_cities(city):
     except Exception as e:
         return make_response(jsonify({"error": str(e)}), 500)
 
+@app.route('/systemAdministrator/student/city', methods=['POST'])
+def add_relevant_city():
+    """
+    Add a new city to the database.
+    """
+    data = request.json
+    city_name = data.get('city_name')
+
+    if not city_name:
+        return make_response(jsonify({"error": "City name is required"}), 400)
+
+    query = '''
+        INSERT INTO student_relevant_cities (city_name)
+        VALUES (%s)
+    '''
+    try:
+        cursor = db.get_db().cursor()
+        cursor.execute(query, (city_name,))
+        db.get_db().commit()
+
+        return make_response(jsonify({"message": f"City '{city_name}' added successfully"}), 201)
+    except Exception as e:
+        return make_response(jsonify({"error": str(e)}), 500)
 
 
 
