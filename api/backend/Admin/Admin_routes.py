@@ -51,3 +51,31 @@ def create_update():
         return make_response(jsonify({"message": "System update created successfully"}), 201)
     except Exception as e:
         return make_response(jsonify({"error": str(e)}), 500)
+
+# PUT: Modify an existing system update
+@app.route('/systemAdministrator/update/<int:update_id>', methods=['PUT'])
+def update_system_update(update_id):
+    data = request.json
+    title = data.get('title')
+    description = data.get('description')
+
+    if not title or not description:
+        return make_response(jsonify({"error": "Title and description are required"}), 400)
+
+    query = '''
+        UPDATE system_updates
+        SET title = %s, description = %s, updated_at = %s
+        WHERE update_id = %s
+    '''
+    try:
+        cursor = db.get_db().cursor()
+        now = datetime.utcnow()
+        cursor.execute(query, (title, description, now, update_id))
+        db.get_db().commit()
+
+        if cursor.rowcount == 0:
+            return make_response(jsonify({"error": "Update ID not found"}), 404)
+
+        return make_response(jsonify({"message": "System update modified successfully"}), 200)
+    except Exception as e:
+        return make_response(jsonify({"error": str(e)}), 500)
