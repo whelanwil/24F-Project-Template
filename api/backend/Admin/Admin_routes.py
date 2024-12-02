@@ -263,4 +263,64 @@ def update_student(student_id):
         return make_response(jsonify({"message": "Student information updated successfully"}), 200)
     except Exception as e:
         return make_response(jsonify({"error": str(e)}), 500)
+    
+#2.4
+# GET: Retrieve a list of all active alumni or specific alumni by ID
+@app.route('/systemAdministrator/alumni/<int:alum_id>', methods=['GET'])
+def get_alumni(alum_id):
+    """
+    Retrieve a list of all active alumni or specific alumni information by ID.
+    """
+    try:
+        cursor = db.get_db().cursor()
+        
+        if alum_id == 0:  # Retrieve all active alumni
+            query = '''
+                SELECT 
+                    alum_id, 
+                    first_name, 
+                    last_name, 
+                    email, 
+                    graduation_year 
+                FROM 
+                    alumni 
+                WHERE 
+                    is_active = 1
+            '''
+            cursor.execute(query)
+        else:  # Retrieve a specific alumni by ID
+            query = '''
+                SELECT 
+                    alum_id, 
+                    first_name, 
+                    last_name, 
+                    email, 
+                    graduation_year 
+                FROM 
+                    alumni 
+                WHERE 
+                    alum_id = %s AND is_active = 1
+            '''
+            cursor.execute(query, (alum_id,))
+
+        alumni = cursor.fetchall()
+        
+        # Format the results into a JSON-friendly structure
+        results = [
+            {
+                "alum_id": row[0],
+                "first_name": row[1],
+                "last_name": row[2],
+                "email": row[3],
+                "graduation_year": row[4]
+            }
+            for row in alumni
+        ]
+
+        if not results:
+            return make_response(jsonify({"error": "No active alumni found"}), 404)
+
+        return make_response(jsonify(results), 200)
+    except Exception as e:
+        return make_response(jsonify({"error": str(e)}), 500)
 
