@@ -207,7 +207,7 @@ def update_product():
 
     return "Success"
 
-<<<<<<< Updated upstream
+# <<<<<<< Updated upstream
 @products.route('/top-ordered', methods=['GET'])
 def get_top_ordered_products():
     query = '''
