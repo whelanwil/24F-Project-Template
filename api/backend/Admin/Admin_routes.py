@@ -119,45 +119,6 @@ def update_alumni(alum_id):
         return make_response(jsonify({"error": str(e)}), 500)
     
 #2.6
-@app.route('/systemAdministrator/student/<string:city>', methods=['GET'])
-def get_relevant_cities(city):
-    """
-    Retrieve a list of cities relevant to students.
-    """
-    try:
-        cursor = db.get_db().cursor()
-
-        if city == 'all':  # Retrieve all relevant cities
-            query = '''
-                SELECT 
-                    city_name 
-                FROM 
-                    student_relevant_cities
-            '''
-            cursor.execute(query)
-        else:  # Retrieve details for a specific city
-            query = '''
-                SELECT 
-                    city_name 
-                FROM 
-                    student_relevant_cities
-                WHERE 
-                    city_name = %s
-            '''
-            cursor.execute(query, (city,))
-
-        cities = cursor.fetchall()
-
-        # Format the results into a JSON-friendly structure
-        results = [{"city_name": row[0]} for row in cities]
-
-        if not results:
-            return make_response(jsonify({"error": "No relevant cities found"}), 404)
-
-        return make_response(jsonify(results), 200)
-    except Exception as e:
-        return make_response(jsonify({"error": str(e)}), 500)
-
 @app.route('/systemAdministrator/student/city', methods=['POST'])
 def add_relevant_city():
     """
@@ -170,8 +131,8 @@ def add_relevant_city():
         return make_response(jsonify({"error": "City name is required"}), 400)
 
     query = '''
-        INSERT INTO student_relevant_cities (city_name)
-        VALUES (%s)
+        INSERT INTO Student (firstName, lastName, email, company, city, adminID, advisorID)
+        VALUES (%s, %s, %s, %s, %s, %s, %s)
     '''
     try:
         cursor = db.get_db().cursor()
@@ -188,8 +149,8 @@ def delete_relevant_city(city):
     Remove a city from the database.
     """
     query = '''
-        DELETE FROM student_relevant_cities
-        WHERE city_name = %s
+        DELETE FROM Student
+        WHERE city = %s
     '''
     try:
         cursor = db.get_db().cursor()
