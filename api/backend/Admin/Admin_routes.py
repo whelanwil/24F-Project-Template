@@ -22,7 +22,7 @@ def get_all_updates():
                 "title": row[1],
                 "description": row[2],
                 "created_at": row[3],
-                "updated_at": row[4],
+                "admin_id": row[4],
             }
             for row in updates
         ]
@@ -65,9 +65,9 @@ def update_system_update(update_id):
         return make_response(jsonify({"error": "Title and description are required"}), 400)
 
     query = '''
-        UPDATE Alumni
-        SET firstName = %s, lastName = %s, email = %s
-        WHERE alumID = %s
+        UPDATE Updates
+        SET updateName = %s, updateDescription = %s, timeStamp = %s
+        WHERE updateID = %s
     '''
     try:
         cursor = db.get_db().cursor()
@@ -81,9 +81,6 @@ def update_system_update(update_id):
         return make_response(jsonify({"message": "System update modified successfully"}), 200)
     except Exception as e:
         return make_response(jsonify({"error": str(e)}), 500)
-
-if __name__ == '__main__':
-    app.run(debug=True)
     
 #2.4 
 # PUT: Update an alumni's information
@@ -163,8 +160,6 @@ def delete_relevant_city(city):
         return make_response(jsonify({"message": f"City '{city}' removed successfully"}), 200)
     except Exception as e:
         return make_response(jsonify({"error": str(e)}), 500)
-
-
-
-
-
+    
+if __name__ == '__main__':
+app.run(debug=True)
