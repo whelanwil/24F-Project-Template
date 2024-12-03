@@ -1,6 +1,8 @@
 from flask import Flask, request, jsonify, make_response
 from datetime import datetime
-
+from flask import Blueprint
+from flask import current_app
+from backend.db_connection import db
 advisor = Flask('advisor', __name__)
 
 #------------------------------------------------------------
@@ -24,7 +26,7 @@ def get_alumni_housing(city):
     return response
 
 # GET: Track which students have found housing by linking the Student and Connect tables to Apartment.
-@app.route('/students/housing', methods=['GET'])
+@advisor.route('/students/housing', methods=['GET'])
 def get_students_with_housing():
 
     query = '''
