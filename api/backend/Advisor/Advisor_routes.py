@@ -3,7 +3,8 @@ from datetime import datetime
 from flask import Blueprint
 from flask import current_app
 from backend.db_connection import db
-advisor = Flask('advisor', __name__)
+
+advisor = Blueprint('advisor', __name__)
 
 #------------------------------------------------------------
 # 4.1 Get all alumni offering housing in a specific city
