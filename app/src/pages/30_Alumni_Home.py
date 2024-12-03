@@ -3,15 +3,26 @@ logger = logging.getLogger(__name__)
 
 import streamlit as st
 from modules.nav import SideBarLinks
-import requests
 
-st.set_page_config(layout = 'wide')
+st.set_page_config(layout='wide')
 
+# Show appropriate sidebar links for the role of the currently logged-in user
 SideBarLinks()
 
-st.title('Alumni Home Page')
+st.title(f"Welcome Alumni, {st.session_state['first_name']}!")
+st.write('')
+st.write('### What would you like to do today?')
 
-if st.button('Update ML Models', 
-             type='primary',
+# Button to edit apartment details (alumni-specific)
+if st.button('Edit Apartment Details', 
+             type='primary', 
              use_container_width=True):
-  st.switch_page('pages/21_ML_Model_Mgmt.py')
+    st.switch_page('pages/31_Alumni_Housing.py')  # Alumni-specific page
+
+# Button to connect with students (shared with advisors)
+if st.button('Connect with Students', 
+             type='primary', 
+             use_container_width=True):
+    st.switch_page('pages/33_Connect_with_Alumni.py')  # Shared page
+
+
