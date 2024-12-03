@@ -7,6 +7,7 @@ app = Flask(__name__)
 # GET: Retrieve all system updates
 @app.route('/systemAdministrator/update', methods=['GET'])
 def get_all_updates():
+
     query = '''
         SELECT updateID, updateName, updateDescription, timeStamp, adminID
         FROM Updates
@@ -31,12 +32,13 @@ def get_all_updates():
     except Exception as e:
         return make_response(jsonify({"error": str(e)}), 500)
     
-# POST: Create a new system update record
+# POST: Create a new system update 
 @app.route('/systemAdministrator/update', methods=['POST'])
 def create_update():
     data = request.json
-    title = data.get('title')
-    description = data.get('description')
+    title = data.get('updateName')
+    description = data.get('updateDescription')
+    admin_id = data.get('adminID')
 
     if not title or not description:
         return make_response(jsonify({"error": "Title and description are required"}), 400)
@@ -48,7 +50,7 @@ def create_update():
     try:
         cursor = db.get_db().cursor()
         now = datetime.utcnow()
-        cursor.execute(query, (title, description, now, now))
+        cursor.execute(query, (title, description, now, admin_id))
         db.get_db().commit()
         return make_response(jsonify({"message": "System update created successfully"}), 201)
     except Exception as e:
@@ -58,8 +60,8 @@ def create_update():
 @app.route('/systemAdministrator/update/<int:update_id>', methods=['PUT'])
 def update_system_update(update_id):
     data = request.json
-    title = data.get('title')
-    description = data.get('description')
+    title = data.get('updateName')
+    description = data.get('updateDescription')
 
     if not title or not description:
         return make_response(jsonify({"error": "Title and description are required"}), 400)
@@ -90,12 +92,11 @@ def update_alumni(alum_id):
     Update an alumni's information in the database.
     """
     data = request.json
-    first_name = data.get('first_name')
-    last_name = data.get('last_name')
+    first_name = data.get('firstName')
+    last_name = data.get('lastName')
     email = data.get('email')
-    graduation_year = data.get('graduation_year')
 
-    if not first_name or not last_name or not email or not graduation_year:
+    if not first_name or not last_name or not email:
         return make_response(jsonify({"error": "First name, last name, email, and graduation year are required"}), 400)
 
     query = '''
@@ -105,7 +106,7 @@ def update_alumni(alum_id):
     '''
     try:
         cursor = db.get_db().cursor()
-        cursor.execute(query, (first_name, last_name, email, graduation_year, alum_id))
+        cursor.execute(query, (first_name, last_name, email, alum_id))
         db.get_db().commit()
 
         if cursor.rowcount == 0:
