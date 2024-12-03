@@ -85,6 +85,49 @@ def update_system_update(update_id):
         return make_response(jsonify({"error": str(e)}), 500)
     
 #2.4 
+# Post: Add alumni to database
+@app.route('/systemAdministrator/alumni', methods=['POST'])
+def add_alumni():
+    """
+    Add a new alumni to the database.
+    """
+    data = request.json
+    first_name = data.get('firstName')
+    last_name = data.get('lastName')
+    email = data.get('email')
+
+    # Validate required fields
+    if not all([first_name, last_name, email]):
+        return make_response(
+            jsonify({"error": "First name, last name, and email"}), 
+            400
+        )
+
+    # SQL query to insert a new alumni record
+    query = '''
+        INSERT INTO Alumni (firstName, lastName, email)
+        VALUES (%s, %s, %s)
+    '''
+    try:
+        # Execute the query
+        cursor = db.get_db().cursor()
+        cursor.execute(query, (first_name, last_name, email))
+        db.get_db().commit()
+
+        # Success response
+        return make_response(
+            jsonify({"message": "Alumni added successfully"}), 
+            201
+        )
+
+    except Exception as e:
+        # Log and handle errors
+        print(f"Error occurred: {e}")
+        return make_response(
+            jsonify({"error": "An internal server error occurred"}), 
+            500
+        )
+
 # PUT: Update an alumni's information
 @app.route('/systemAdministrator/alumni/<int:alum_id>', methods=['PUT'])
 def update_alumni(alum_id):
@@ -117,29 +160,48 @@ def update_alumni(alum_id):
         return make_response(jsonify({"error": str(e)}), 500)
     
 #2.6
-@app.route('/systemAdministrator/student/city', methods=['POST'])
-def add_relevant_city():
+@app.route('/systemAdministrator/student', methods=['POST'])
+def add_student_with_city():
     """
-    Add a new city to the database.
+    Add a new student to the database.
     """
     data = request.json
-    city_name = data.get('city_name')
+    first_name = data.get('firstName')
+    last_name = data.get('lastName')
+    email = data.get('email')
+    company = data.get('company')
+    city = data.get('city')
+    admin_id = data.get('adminID')
+    advisor_id = data.get('advisorID')
 
-    if not city_name:
-        return make_response(jsonify({"error": "City name is required"}), 400)
+    # Validate required fields
+    if not all([first_name, last_name, email, company, city, admin_id, advisor_id]):
+        return make_response(
+            jsonify({"error": "All fields (firstName, lastName, email, company, city, adminID, advisorID) are required"}),
+            400
+        )
 
+    # SQL query to insert a new student record
     query = '''
         INSERT INTO Student (firstName, lastName, email, company, city, adminID, advisorID)
         VALUES (%s, %s, %s, %s, %s, %s, %s)
     '''
     try:
+        # Execute the query
         cursor = db.get_db().cursor()
-        cursor.execute(query, (city_name,))
+        cursor.execute(query, (first_name, last_name, email, company, city, admin_id, advisor_id))
         db.get_db().commit()
 
-        return make_response(jsonify({"message": f"City '{city_name}' added successfully"}), 201)
+        # Success response
+        return make_response(
+            jsonify({"message": f"Student '{first_name} {last_name}' added successfully"}), 
+            201
+        )
+
     except Exception as e:
-        return make_response(jsonify({"error": str(e)}), 500)
+        # Log and handle errors
+        print(f"Error occurred: {e}")
+        return make_response(jsonify({"error": "An internal server error occurred"}), 500)
     
 @app.route('/systemAdministrator/student/<string:city>', methods=['DELETE'])
 def delete_relevant_city(city):
