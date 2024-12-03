@@ -8,8 +8,8 @@ app = Flask(__name__)
 @app.route('/systemAdministrator/update', methods=['GET'])
 def get_all_updates():
     query = '''
-        SELECT update_id, title, description, created_at, updated_at
-        FROM system_updates
+        SELECT updateID, updateName, updateDescription, timeStamp, adminID
+        FROM Updates
     '''
     try:
         cursor = db.get_db().cursor()
@@ -42,7 +42,7 @@ def create_update():
         return make_response(jsonify({"error": "Title and description are required"}), 400)
 
     query = '''
-        INSERT INTO system_updates (title, description, created_at, updated_at)
+        INSERT INTO Updates (updateName, updateDescription, timeStamp, adminID)
         VALUES (%s, %s, %s, %s)
     '''
     try:
@@ -65,9 +65,9 @@ def update_system_update(update_id):
         return make_response(jsonify({"error": "Title and description are required"}), 400)
 
     query = '''
-        UPDATE system_updates
-        SET title = %s, description = %s, updated_at = %s
-        WHERE update_id = %s
+        UPDATE Alumni
+        SET firstName = %s, lastName = %s, email = %s
+        WHERE alumID = %s
     '''
     try:
         cursor = db.get_db().cursor()
@@ -79,25 +79,6 @@ def update_system_update(update_id):
             return make_response(jsonify({"error": "Update ID not found"}), 404)
 
         return make_response(jsonify({"message": "System update modified successfully"}), 200)
-    except Exception as e:
-        return make_response(jsonify({"error": str(e)}), 500)
-
-# DELETE: Remove a specific system update record
-@app.route('/systemAdministrator/update/<int:update_id>', methods=['DELETE'])
-def delete_system_update(update_id):
-    query = '''
-        DELETE FROM system_updates
-        WHERE update_id = %s
-    '''
-    try:
-        cursor = db.get_db().cursor()
-        cursor.execute(query, (update_id,))
-        db.get_db().commit()
-
-        if cursor.rowcount == 0:
-            return make_response(jsonify({"error": "Update ID not found"}), 404)
-
-        return make_response(jsonify({"message": "System update deleted successfully"}), 200)
     except Exception as e:
         return make_response(jsonify({"error": str(e)}), 500)
 
