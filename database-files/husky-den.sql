@@ -155,16 +155,15 @@ CREATE TABLE `Apartment` (
         ON UPDATE CASCADE
         ON DELETE CASCADE
 );
- -- TODO: Update the brackets...
 DROP TABLE IF EXISTS `Recommendation`;
 CREATE TABLE `Recommendation` (
     `alumID` INTEGER NOT NULL,
-    establishmentID INTEGER AUTO_INCREMENT NOT NULL,
+    `establishmentID` INTEGER AUTO_INCREMENT NOT NULL,
     `establishment` VARCHAR(75),
     `category` VARCHAR(75),
     `location` VARCHAR(75),
     `priceRating` INTEGER NOT NULL,
-    PRIMARY KEY (establishmentID, `alumID`),
+    PRIMARY KEY (`establishmentID`, `alumID`),
     FOREIGN KEY (`alumID`)
         REFERENCES `Alumni` (`alumID`)
         ON UPDATE CASCADE
