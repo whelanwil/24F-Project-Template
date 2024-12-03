@@ -1,5 +1,21 @@
 USE huskyDenDB;
 
+SET FOREIGN_KEY_CHECKS = 0;
+TRUNCATE TABLE `SystemAdministrator`;
+TRUNCATE TABLE `Alumni`;
+TRUNCATE TABLE `CoopAdvisor`;
+TRUNCATE TABLE `Student`;
+TRUNCATE TABLE `Parent`;
+TRUNCATE TABLE `StudentParent`;
+TRUNCATE TABLE `Recommendation`;
+TRUNCATE TABLE `Performance`;
+TRUNCATE TABLE `Updates`;
+TRUNCATE TABLE `Recommendation`;
+TRUNCATE TABLE `AlumStudent`;
+TRUNCATE TABLE `Apartment`;
+SET FOREIGN_KEY_CHECKS = 1;
+
+
 INSERT INTO `SystemAdministrator` (`firstName`, `lastName`, `email`) VALUES
 ('Michael', 'Smith', 'michael.smith@huskyden.com'),
 ('Jessica', 'Johnson', 'jessica.johnson@huskyden.com'),
@@ -124,6 +140,7 @@ INSERT INTO `Alumni` (`firstName`, `lastName`, `email`, `company`, `city`, `admi
 ('Eleanor', 'Long', 'eleanor.long@alumni.com', 'HealthWave', 'Raleigh', 29),
 ('Benjamin', 'Campbell', 'benjamin.campbell@alumni.com', 'FutureBio', 'Portland', 30);
 
+
 INSERT INTO `CoopAdvisor` (`firstName`, `lastName`, `email`, `adminID`) VALUES
 ('Aaron', 'Taylor', 'aaron.taylor@coop.com', 1),
 ('Lily', 'Cruz', 'lily.cruz@coop.com', 2),
@@ -165,6 +182,7 @@ INSERT INTO `CoopAdvisor` (`firstName`, `lastName`, `email`, `adminID`) VALUES
 ('Ethan', 'Lopez', 'ethan.lopez@coop.com', 8),
 ('Avery', 'Edwards', 'avery.edwards@coop.com', 9),
 ('Nathan', 'Rogers', 'nathan.rogers@coop.com', 10);
+
 
 INSERT INTO `Student` (`firstName`, `lastName`, `email`, `company`, `city`, `adminID`, `advisorID`) VALUES
 ('Aaron', 'Taylor', 'aaron.taylor@student.com', 'SmartGreen', 'New York', 1, 1),
@@ -252,6 +270,7 @@ INSERT INTO `Student` (`firstName`, `lastName`, `email`, `company`, `city`, `adm
 ('Ella', 'Lewis', 'ella.lewis@student.com', 'AutoTech', 'Des Moines', 9, 39),
 ('William', 'Collins', 'william.collins@student.com', 'SolarEdge', 'Little Rock', 10, 40);
 
+
 INSERT INTO `Parent` (`relationshipToStudent`) VALUES
 ('Father'),
 ('Mother'),
@@ -304,56 +323,13 @@ INSERT INTO `Parent` (`relationshipToStudent`) VALUES
 ('Stepmother'),
 ('Stepfather');
 
+
 INSERT INTO `StudentParent` (`studentID`, `parentID`) VALUES
-(15, 1),
-(3, 11),
-(49, 42),
-(24, 30),
-(8, 47),
-(32, 28),
-(18, 33),
-(25, 8),
-(5, 9),
-(22, 14),
-(46, 3),
-(34, 12),
-(41, 37),
-(30, 15),
-(45, 43),
-(16, 19),
-(11, 26),
-(13, 5),
-(31, 29),
-(40, 20),
-(6, 10),
-(39, 6),
-(21, 40),
-(33, 41),
-(28, 4),
-(48, 2),
-(17, 22),
-(23, 16),
-(10, 7),
-(14, 18),
-(20, 31),
-(38, 21),
-(42, 13),
-(44, 27),
-(9, 17),
-(27, 35),
-(29, 36),
-(26, 24),
-(4, 25),
-(35, 23),
-(2, 39),
-(43, 34),
-(1, 38),
-(7, 32),
-(12, 45),
-(19, 44),
-(47, 46),
-(50, 48),
-(36, 49);
+(1, 1),
+(2, 2),
+(3, 3),
+(4, 4),
+(5, 5);
 
 INSERT INTO `Recommendation` (`alumID`, `establishment`, `category`, `location`, `priceRating`) VALUES
 (1, 'Moore and Sons', 'Park', 'North Jose', 2),
@@ -396,6 +372,7 @@ INSERT INTO `Recommendation` (`alumID`, `establishment`, `category`, `location`,
 (38, 'Morris-Cruz', 'Park', 'East Tammyville', 4),
 (39, 'Mitchell-Watson', 'Shopping Mall', 'West Lauraborough', 5),
 (40, 'Reed LLC', 'Library', 'New Donaldstad', 2);
+
 
 INSERT INTO `Performance` (`metricName`, `value`, `adminID`) VALUES
 ('System Uptime (%)', 99, 1),
@@ -449,6 +426,7 @@ INSERT INTO `Performance` (`metricName`, `value`, `adminID`) VALUES
 ('Total API Calls Processed', 20000, 19),
 ('Successful API Responses (%)', 98, 20);
 
+
 INSERT INTO `Updates` (`updateName`, `updateDescription`, `adminID`) VALUES
 ('Database Optimization', 'Improved database query efficiency by indexing key tables.', 1),
 ('System Uptime Patch', 'Fixed a bug causing unexpected downtime in high traffic hours.', 2),
@@ -481,6 +459,7 @@ INSERT INTO `Updates` (`updateName`, `updateDescription`, `adminID`) VALUES
 ('User Feedback Integration', 'Added feedback loop to improve system features.', 29),
 ('Mobile App Compatibility', 'Enhanced compatibility for mobile app integrations.', 30);
 
+TRUNCATE TABLE `AlumAdvisor`;
 INSERT INTO `AlumAdvisor` (`alumID`, `advisorID`) VALUES
 (1, 1),
 (2, 2),
@@ -532,6 +511,7 @@ INSERT INTO `AlumAdvisor` (`alumID`, `advisorID`) VALUES
 (48, 8),
 (49, 9),
 (50, 10);
+
 
 INSERT INTO `AlumStudent` (`nuID`, `alumID`) VALUES
 (1, 1),
@@ -603,37 +583,7 @@ INSERT INTO `AlumStudent` (`nuID`, `alumID`) VALUES
 (67, 17),
 (68, 18),
 (69, 19),
-(70, 20),
-(71, 21),
-(72, 22),
-(73, 23),
-(74, 24),
-(75, 25),
-(76, 26),
-(77, 27),
-(78, 28),
-(79, 29),
-(80, 30),
-(81, 31),
-(82, 32),
-(83, 33),
-(84, 34),
-(85, 35),
-(86, 36),
-(87, 37),
-(88, 38),
-(89, 39),
-(90, 40),
-(91, 41),
-(92, 42),
-(93, 43),
-(94, 44),
-(95, 45),
-(96, 46),
-(97, 47),
-(98, 48),
-(99, 49),
-(100, 50);
+(70, 20);
 
 INSERT INTO `Recommendation` (`alumID`, `establishment`, `category`, `location`, `priceRating`) VALUES
 (1, 'Moore and Sons', 'Park', 'North Jose', 2),
@@ -676,6 +626,7 @@ INSERT INTO `Recommendation` (`alumID`, `establishment`, `category`, `location`,
 (38, 'Morris-Cruz', 'Park', 'East Tammyville', 4),
 (39, 'Mitchell-Watson', 'Shopping Mall', 'West Lauraborough', 5),
 (40, 'Reed LLC', 'Library', 'New Donaldstad', 2);
+
 
 INSERT INTO `Apartment` (`alumID`, `beds`, `baths`, `rent`, `description`, `dateAvailableFrom`, `dateAvailableTo`, `street`, `city`, `state`, `country`) VALUES
 (1, 2, 1, 1200, 'Cozy apartment ideal for a single professional or a couple.', '2024-12-01 08:00:00', '2025-01-31 18:00:00', 101, 'New York', 'NY', 'USA'),
