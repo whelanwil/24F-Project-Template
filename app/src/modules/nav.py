@@ -1,103 +1,110 @@
-# Idea borrowed from https://github.com/fsmosca/sample-streamlit-authenticator
-
-# This file has function to add certain functionality to the left side bar of the app
-
 import streamlit as st
 
-
-#### ------------------------ General ------------------------
+# ------------------------ General ------------------------
 def HomeNav():
     st.sidebar.page_link("Home.py", label="Home", icon="🏠")
 
 
-def AboutPageNav():
-    st.sidebar.page_link("pages/30_About.py", label="About", icon="🧠")
+# def AboutPageNav():
+#     st.sidebar.page_link("pages/30_About.py", label="About", icon="🧠")
 
 
-#### ------------------------ Examples for Role of pol_strat_advisor ------------------------
-def PolStratAdvHomeNav():
+# ------------------------ Student Role ------------------------
+def StudentNav():
     st.sidebar.page_link(
-        "pages/00_Pol_Strat_Home.py", label="Political Strategist Home", icon="👤"
+        "pages/00_Student_Home.py", label="Student Dashboard", icon="🎓"
+    )
+    st.sidebar.page_link(
+        "pages/31_Alumn_Housing.py", label="Search Alumni Housing", icon="🏘️"
+    )
+    st.sidebar.page_link(
+        "pages/01_Student_housing Preferences.py",
+        label="Update Housing Settings",
+        icon="⚙️",
+    )
+    st.sidebar.page_link(
+        "pages/33_Connect_with_Alumni.py", label="Connect with Alumni", icon="🤝"
+    )
+    st.sidebar.page_link(
+        "pages/40_parent.py", label="Edit Parent Housing Relationship", icon="👪"
     )
 
 
-def WorldBankVizNav():
+# ------------------------ Advisor Role ------------------------
+def AdvisorNav():
     st.sidebar.page_link(
-        "pages/01_World_Bank_Viz.py", label="World Bank Visualization", icon="🏦"
+        "pages/10_Advisor_Home.py", label="Advisor Dashboard", icon="📋"
+    )
+    st.sidebar.page_link(
+        "pages/31_Alumn_Housing.py", label="Search Alumni Housing", icon="🏘️"
+    )
+    st.sidebar.page_link(
+        "pages/33_Connect_with_Alumni.py", label="Connect with Alumni/Students", icon="🤝"
+    )
+    st.sidebar.page_link(
+        "pages/01_Student_housing_preferences.py",
+        label="Track Student Housing Status",
+        icon="📊",
     )
 
 
-def MapDemoNav():
-    st.sidebar.page_link("pages/02_Map_Demo.py", label="Map Demonstration", icon="🗺️")
-
-
-## ------------------------ Examples for Role of usaid_worker ------------------------
-def ApiTestNav():
-    st.sidebar.page_link("pages/12_API_Test.py", label="Test the API", icon="🛜")
-
-
-def PredictionNav():
+# ------------------------ Alumni Role ------------------------
+def AlumniNav():
     st.sidebar.page_link(
-        "pages/11_Prediction.py", label="Regression Prediction", icon="📈"
+        "pages/30_Alumni_Home.py", label="Alumni Dashboard", icon="🏡"
+    )
+    st.sidebar.page_link(
+        "pages/31_Alumni_Housing.py", label="Edit Apartment Details", icon="🛏️"
+    )
+    st.sidebar.page_link(
+        "pages/33_Connect_with_Alumni.py", label="Connect with Students", icon="🤝"
     )
 
 
-def ClassificationNav():
+# ------------------------ System Admin Role ------------------------
+def AdminNav():
+    st.sidebar.page_link("pages/20_Admin_Home.py", label="Admin Dashboard", icon="🖥️")
     st.sidebar.page_link(
-        "pages/13_Classification.py", label="Classification Demo", icon="🌺"
+        "pages/21_ML_Model_Mgmt.py", label="ML Model Management", icon="🤖"
     )
 
 
-#### ------------------------ System Admin Role ------------------------
-def AdminPageNav():
-    st.sidebar.page_link("pages/20_Admin_Home.py", label="System Admin", icon="🖥️")
-    st.sidebar.page_link(
-        "pages/21_ML_Model_Mgmt.py", label="ML Model Management", icon="🏢"
-    )
-
-
-# --------------------------------Links Function -----------------------------------------------
+# ------------------------ SideBarLinks Function ------------------------
 def SideBarLinks(show_home=False):
     """
-    This function handles adding links to the sidebar of the app based upon the logged-in user's role, which was put in the streamlit session_state object when logging in.
+    Dynamically manages sidebar links based on the logged-in user's role.
     """
 
-    # add a logo to the sidebar always
+    # Add a logo to the sidebar
     st.sidebar.image("assets/logo.png", width=150)
 
-    # If there is no logged in user, redirect to the Home (Landing) page
+    # Redirect unauthenticated users to Home
     if "authenticated" not in st.session_state:
         st.session_state.authenticated = False
         st.switch_page("Home.py")
 
+    # Add the Home page link if specified
     if show_home:
-        # Show the Home page link (the landing page)
         HomeNav()
 
-    # Show the other page navigators depending on the users' role.
+    # Display role-specific navigation based on authentication and role
     if st.session_state["authenticated"]:
+        role = st.session_state["role"]
 
-        # Show World Bank Link and Map Demo Link if the user is a political strategy advisor role.
-        if st.session_state["role"] == "pol_strat_advisor":
-            PolStratAdvHomeNav()
-            WorldBankVizNav()
-            MapDemoNav()
+        if role == "Student":
+            StudentNav()
+        elif role == "advisor":
+            AdvisorNav()
+        elif role == "alumni":
+            AlumniNav()
+        elif role == "administrator":
+            AdminNav()
 
-        # If the user role is usaid worker, show the Api Testing page
-        if st.session_state["role"] == "usaid_worker":
-            PredictionNav()
-            ApiTestNav()
-            ClassificationNav()
+    # Add the About page at the bottom of the sidebar
+    # AboutPageNav()
 
-        # If the user is an administrator, give them access to the administrator pages
-        if st.session_state["role"] == "administrator":
-            AdminPageNav()
-
-    # Always show the About page at the bottom of the list of links
-    AboutPageNav()
-
+    # Add a logout button for authenticated users
     if st.session_state["authenticated"]:
-        # Always show a logout button if there is a logged in user
         if st.sidebar.button("Logout"):
             del st.session_state["role"]
             del st.session_state["authenticated"]
