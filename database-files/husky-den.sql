@@ -38,7 +38,6 @@ CREATE TABLE `CoopAdvisor` (
         ON DELETE CASCADE
 );
 
-
 DROP TABLE IF EXISTS `Student`;
 CREATE TABLE `Student` (
     `nuID` INTEGER AUTO_INCREMENT PRIMARY KEY,
@@ -121,7 +120,6 @@ CREATE TABLE `AlumAdvisor` (
         ON DELETE CASCADE
 );
 
-
 DROP TABLE IF EXISTS `AlumStudent`;
 CREATE TABLE `AlumStudent` (
     `nuID` INTEGER NOT NULL,
@@ -157,15 +155,16 @@ CREATE TABLE `Apartment` (
         ON UPDATE CASCADE
         ON DELETE CASCADE
 );
-
+ -- TODO: Update the brackets...
 DROP TABLE IF EXISTS `Recommendation`;
 CREATE TABLE `Recommendation` (
     `alumID` INTEGER NOT NULL,
-    `establishment` VARCHAR(75) NOT NULL,
+    establishmentID INTEGER AUTO_INCREMENT NOT NULL,
+    `establishment` VARCHAR(75),
     `category` VARCHAR(75),
     `location` VARCHAR(75),
     `priceRating` INTEGER NOT NULL,
-    PRIMARY KEY (`alumID`, `establishment`),
+    PRIMARY KEY (establishmentID, `alumID`),
     FOREIGN KEY (`alumID`)
         REFERENCES `Alumni` (`alumID`)
         ON UPDATE CASCADE
