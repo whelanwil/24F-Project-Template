@@ -1,13 +1,11 @@
-from flask import Flask, request, jsonify, make_response
-from datetime import datetime
-from flask import Blueprint
-from flask import current_app
+from flask import Blueprint, request, jsonify, make_response, current_app
 from backend.db_connection import db
 
+# Initialize Blueprint
 admin = Flask('admin', __name__)
 
-# 2.1
-# GET: Retrieve all system updates
+# ------------------------------------------------------------
+# 2.1 Get all system updates
 @admin.route('/systemAdministrator/update', methods=['GET'])
 def get_all_updates():
 
@@ -35,7 +33,8 @@ def get_all_updates():
     except Exception as e:
         return make_response(jsonify({"error": str(e)}), 500)
     
-# POST: Create a new system update 
+# ------------------------------------------------------------
+# 2.1 Create a new system update record with details
 @admin.route('/systemAdministrator/update', methods=['POST'])
 def create_update():
     data = request.json
@@ -59,7 +58,8 @@ def create_update():
     except Exception as e:
         return make_response(jsonify({"error": str(e)}), 500)
 
-# PUT: Modify an existing system update
+# ------------------------------------------------------------
+# 2.1 Modify an existing system update with new information
 @admin.route('/systemAdministrator/update/<int:update_id>', methods=['PUT'])
 def update_system_update(update_id):
     data = request.json
@@ -87,8 +87,8 @@ def update_system_update(update_id):
     except Exception as e:
         return make_response(jsonify({"error": str(e)}), 500)
     
-#2.4 
-# Post: Add alumni to database
+# ------------------------------------------------------------ 
+# 2.4 Add a new alumni to the database
 @admin.route('/systemAdministrator/alumni', methods=['POST'])
 def add_alumni():
     """
@@ -131,7 +131,8 @@ def add_alumni():
             500
         )
 
-# PUT: Update an alumni's information
+# ------------------------------------------------------------ 
+# 2.4 Update an alumni's information
 @admin.route('/systemAdministrator/alumni/<int:alum_id>', methods=['PUT'])
 def update_alumni(alum_id):
     """
@@ -162,8 +163,9 @@ def update_alumni(alum_id):
     except Exception as e:
         return make_response(jsonify({"error": str(e)}), 500)
     
-#2.6
-# add co op advior instead maybe
+
+# ------------------------------------------------------------ 
+# 2.3 Add a new student to the database
 @admin.route('/systemAdministrator/student', methods=['POST'])
 def add_student_with_city():
     """
@@ -207,6 +209,8 @@ def add_student_with_city():
         print(f"Error occurred: {e}")
         return make_response(jsonify({"error": "An internal server error occurred"}), 500)
     
+# ------------------------------------------------------------ 
+# 2.6 Remove a given city from the database
 @admin.route('/systemAdministrator/student/<string:city>', methods=['DELETE'])
 def delete_relevant_city(city):
     """
