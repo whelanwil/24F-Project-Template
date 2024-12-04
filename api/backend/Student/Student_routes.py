@@ -10,21 +10,27 @@ student = Blueprint('student', __name__)
 def add_new_city():
     
     the_data = request.json
+    city = the_data.get('city')
     current_app.logger.info(the_data)
 
-    city = the_data['city']
+    if not city:
+        current_app.logger.error("City is missing from the request body")
+        response = make_response("City is required")
+        response.status_code = 400
+        return response
     
     query = f'''
         INSERT INTO Student (city)
-        VALUES ('{city}')
+        VALUES (%s)
     '''
    
-    current_app.logger.info(query)
+    current_app.logger.info(f'POST /student query: {query}')
 
     cursor = db.get_db().cursor()
-    cursor.execute(query)
+    cursor.execute(query, (city,))
     db.get_db().commit()
     
+    current_app.logger.info("City successfully added")
     response = make_response("Successfully added city")
     response.status_code = 200
     return response
