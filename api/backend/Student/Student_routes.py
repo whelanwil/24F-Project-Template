@@ -5,6 +5,42 @@ from backend.db_connection import db
 student = Blueprint('student', __name__)
 
 # ------------------------------------------------------------
+# Retrieve a list of students in the city
+@student.route('/student', methods=['GET'])
+def find_city_students():
+    query = '''
+        SELECT s.firstName, s.lastName, s.email, s.company
+        FROM Student s
+        WHERE s.city = %s
+    '''
+
+    cursor = db.get_db().cursor()
+    cursor.execute(query)
+    theData = cursor.fetchall()
+    
+    response = make_response(jsonify(theData))
+    response.status_code = 200
+    return response
+
+# ------------------------------------------------------------
+# Retrieve a list of alumni in the city
+@student.route('/student', methods=['GET'])
+def find_city_alumni():
+    query = '''
+        SELECT a.firstName, a.lastName, a.email, a.company
+        FROM Alumni a
+        WHERE a.city = %s
+    '''
+
+    cursor = db.get_db().cursor()
+    cursor.execute(query)
+    theData = cursor.fetchall()
+    
+    response = make_response(jsonify(theData))
+    response.status_code = 200
+    return response
+
+# ------------------------------------------------------------
 # 3.3 Add a new city that the student is willing to live in
 @student.route('/student', methods=['POST'])
 def add_new_city():
