@@ -30,7 +30,7 @@ if st.button('Search', use_container_width=True):
             if housing_data:
                 st.write(f"**Found {len(housing_data)} alumni offering housing in {city}:**")
                 for alum in housing_data:
-                    st.write(f"**Alumni ID:** {alum['alumID']}")
+                    st.write(f"**Alumni ID:** {alum}")
             else:
                 st.write(f"No alumni found offering housing in {city}.")
         else:

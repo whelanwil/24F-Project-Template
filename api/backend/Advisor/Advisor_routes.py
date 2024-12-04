@@ -12,7 +12,7 @@ def get_alumni_housing(city):
         SELECT A.alumID
         FROM Alumni A
         JOIN Apartment Ap ON A.alumID = Ap.alumID
-        WHERE city = %s
+        WHERE A.city = %s
     '''
     
     current_app.logger.info(f'GET /alumni/<city> query: {query}')
@@ -20,11 +20,10 @@ def get_alumni_housing(city):
     try:
         cursor = db.get_db().cursor()
         cursor.execute(query, (city,))
-        theData = cursor.fetchall()
-        current_app.logger.info(f'Query Result: {theData}')
+        results = cursor.fetchall()
 
-        response = make_response(jsonify({"message": "Data retrieved successfully", "data": theData}), 200)
-        return response
+        current_app.logger.info(f"Query results: {results}")
+        return make_response(jsonify({"message": "Data retrieved successfully", "data": results}), 200)
     except Exception as e:
-        current_app.logger.error(f"Error: {str(e)}")
+        current_app.logger.error(f"Database error: {str(e)}")
         return make_response(jsonify({"error": str(e)}), 500)
