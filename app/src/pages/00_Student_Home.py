@@ -22,7 +22,7 @@ if st.button('Search Alumni Housing',
 if st.button('Update Housing Settings (Preferences and Status)', 
              type='primary',
              use_container_width=True):
-  st.switch_page('pages/01_Student_housing Preferences.py')
+  st.switch_page('pages/01_Student_housing_preferences.py')
 
 if st.button('Connect with Alumni or Students', 
             type='primary', 

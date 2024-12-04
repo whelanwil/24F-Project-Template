@@ -10,31 +10,51 @@ SideBarLinks()
 # Set up logging
 logger = logging.getLogger(__name__)
 
-# Title and Input for city
-st.title("Search Alumni Housing")
-city = st.text_input("Enter the city to search for alumni housing:")
+# Check the role of the user
+if "role" not in st.session_state:
+    st.error("You do not have permission to access this page.")
+else:
+    role = st.session_state["role"]
 
-# Button to search
-if st.button('Search', use_container_width=True):
-    if city:
-        # Making a GET request to the API to fetch alumni housing data for the specified city
-        api_url = f"http://web-api:4000/alumni/{city}"  # Correct URL as per your Docker config
-        response = requests.get(api_url)
-        
-        if response.status_code == 200:
-            # Parse JSON response
-            housing_data = response.json()
-            
-            if "data" in housing_data and housing_data["data"]:
-                st.write(f"**Found {len(housing_data['data'])} alumni offering housing in {city}:**")
-                
-                # Create a DataFrame from the response data
-                df = pd.DataFrame(housing_data["data"])
-                st.table(df)  # Display the table
+    # If the user is an advisor or student
+    if role in ["advisor", "student"]:
+        st.title("Search Alumni Housing")
+        city = st.text_input("Enter the city to search for alumni housing:")
+
+        if st.button('Search', use_container_width=True):
+            if city:
+                # Making a GET request to the API to fetch alumni housing data for the specified city
+                api_url = f"http://web-api:4000/alumni/{city}"  # Correct URL as per your Docker config
+                response = requests.get(api_url)
+
+                if response.status_code == 200:
+                    # Parse JSON response
+                    housing_data = response.json()
+
+                    if "data" in housing_data and housing_data["data"]:
+                        st.write(f"**Found {len(housing_data['data'])} alumni offering housing in {city}:**")
+                        
+                        # Create a DataFrame from the response data
+                        df = pd.DataFrame(housing_data["data"])
+
+                        # Remove index by resetting and dropping it
+                        df.reset_index(drop=True, inplace=True)
+                        
+                        # Display the table
+                        st.table(df)
+                    else:
+                        st.write(f"No alumni found offering housing in {city}.")
+                else:
+                    st.error(f"Error: Received status code {response.status_code}")
+                    st.write(response.text)  # Optionally show raw response for debugging
             else:
-                st.write(f"No alumni found offering housing in {city}.")
-        else:
-            st.error(f"Error: Received status code {response.status_code}")
-            st.write(response.text)  # Optionally show raw response for debugging
+                st.warning("Please enter a city to search for alumni housing.")
+
+    # If the user is an alumni
+    elif role == "alumni":
+        st.title("Welcome!")
+        st.write(f"Hello {st.session_state['first_name']}")
+
+    # If the user has an unrecognized role
     else:
-        st.warning("Please enter a city to search for alumni housing.")
+        st.error("Unrecognized role. Please contact the system administrator.")
