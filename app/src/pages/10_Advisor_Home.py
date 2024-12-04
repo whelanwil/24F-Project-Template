@@ -17,7 +17,7 @@ st.write('### What would you like to do today?')
 if st.button('Search Alumni Housing', 
              type='primary', 
              use_container_width=True):
-    st.switch_page('pages/31_Alumn_Housing.py')  # Shared page
+    st.switch_page('pages/11_Alumn_Housing.py')  # Shared page
 
 # Button to connect with alumni or students (shared with students)
 if st.button('Connect with Alumni or Students', 
