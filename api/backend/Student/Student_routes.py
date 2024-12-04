@@ -57,7 +57,7 @@ def update_student_info():
     return 'Student information updated'
 
 # ------------------------------------------------------------
-# CHANGE THIS TO SOME OTHER ROUTE !!!! MOVED THIS SAME ROUTE TO ADVISOR
+# Revoke parent access
 @student.route('/student', methods=['DELETE'])
 def remove_parent():
     current_app.logger.info('DELETE /student route')
@@ -75,5 +75,24 @@ def remove_parent():
     db.get_db().commit()
 
     response = make_response(f'Parent removed.')
+    response.status_code = 200
+    return response
+
+# ------------------------------------------------------------
+# Remove a city from the list of cities the student may want to live in
+@student.route('/student', methods=['DELETE'])
+def remove_city():
+    current_app.logger.info('DELETE /student route')
+
+    query = '''
+        DELETE FROM Student 
+        WHERE city = %s
+        '''
+    
+    cursor = db.get_db().cursor()
+    cursor.execute(query)
+    db.get_db().commit()
+
+    response = make_response('City removed.')
     response.status_code = 200
     return response
