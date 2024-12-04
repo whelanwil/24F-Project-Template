@@ -9,7 +9,7 @@ advisor = Blueprint('advisor', __name__)
 @advisor.route('/alumni/<city>', methods=['GET'])
 def get_alumni_housing(city):
     query = '''
-        SELECT A.alumID
+        SELECT A.alumID, A.firstName, A.lastName
         FROM Alumni A
         JOIN Apartment Ap ON A.alumID = Ap.alumID
         WHERE A.city = %s
