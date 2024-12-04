@@ -5,7 +5,7 @@ from backend.db_connection import db
 alumni = Blueprint('alumni', __name__)
 
 # ------------------------------------------------------------
-# Add new apartment listing to the site for this alumni
+# 1.1 Add new apartment listing to the site for this alumni
 @alumni.route('/alumni', methods=['POST'])
 def add_new_housing():
     
@@ -47,7 +47,7 @@ def add_new_housing():
     return response
 
 # ------------------------------------------------------------
-# Update mutable attributes of apartmentID
+# 1.1 Update mutable attributes of apartmentID
 @alumni.route('/alumni', methods=['PUT'])
 def update_housing():
     current_app.logger.info('PUT /alumni route')
@@ -76,7 +76,7 @@ def update_housing():
     return 'Housing updated'
 
 # ------------------------------------------------------------
-# Mark the alumni's apartment as no longer available
+# 1.1 Mark the alumni's apartment as no longer available
 @alumni.route('/alumni', methods=['DELETE'])
 def delete_housing():
     current_app.logger.info('DELETE /alumni route')
