@@ -1,12 +1,18 @@
+from flask import Blueprint, request, jsonify, make_response, current_app
+from backend.db_connection import db
+
+# Initialize Blueprint
 alumni = Blueprint('alumni', __name__)
 
+# ------------------------------------------------------------
+# Add new apartment listing to the site for this alumni
 @alumni.route('/alumni', methods=['POST'])
 def add_new_housing():
     
     the_data = request.json
     current_app.logger.info(the_data)
 
-    #extracting the variable
+    # extracting the variable
     alumID = the_data['alumID']
     beds = the_data['bed']
     baths = the_data['baths']
@@ -40,10 +46,11 @@ def add_new_housing():
     response.status_code = 200
     return response
 
+# ------------------------------------------------------------
+# Update mutable attributes of apartmentID
 @alumni.route('/alumni', methods=['PUT'])
 def update_housing():
     current_app.logger.info('PUT /alumni route')
-
     the_data = request.json
     beds = the_data['bed']
     baths = the_data['baths']
@@ -68,6 +75,8 @@ def update_housing():
     db.get_db().commit()
     return 'Housing updated'
 
+# ------------------------------------------------------------
+# Mark the alumni's apartment as no longer available
 @alumni.route('/alumni', methods=['DELETE'])
 def delete_housing():
     current_app.logger.info('DELETE /alumni route')
@@ -75,8 +84,8 @@ def delete_housing():
     query = '''
         DELETE FROM Apartment 
         WHERE housingID = %s
-        '''
-    
+    '''
+
     cursor = db.get_db().cursor()
     cursor.execute(query)
     db.get_db().commit()
