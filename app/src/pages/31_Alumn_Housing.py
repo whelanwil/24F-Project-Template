@@ -36,12 +36,10 @@ else:
                         
                         # Create a DataFrame from the response data
                         df = pd.DataFrame(housing_data["data"])
+                        df_reset = df.reset_index(drop=True)
 
-                        # Remove index by resetting and dropping it
-                        df.reset_index(drop=True, inplace=True)
-                        
-                        # Display the table
-                        st.table(df)
+                        # Remove index entirely before displaying
+                        st.table(df_reset)
                     else:
                         st.write(f"No alumni found offering housing in {city}.")
                 else:
