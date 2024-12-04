@@ -1,5 +1,8 @@
 from flask import Flask, request, jsonify, make_response
 from datetime import datetime
+from flask import Blueprint
+from flask import current_app
+from backend.db_connection import db
 
 app = Flask(__name__)
 
@@ -160,6 +163,7 @@ def update_alumni(alum_id):
         return make_response(jsonify({"error": str(e)}), 500)
     
 #2.6
+# add co op advior instead maybe
 @app.route('/systemAdministrator/student', methods=['POST'])
 def add_student_with_city():
     """
