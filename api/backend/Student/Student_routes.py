@@ -5,6 +5,42 @@ from backend.db_connection import db
 student = Blueprint('student', __name__)
 
 # ------------------------------------------------------------
+# Retrieve a list of available apartments in the city
+@student.route('/student', methods=['GET'])
+def find_city_housing():
+    query = '''
+        SELECT *
+        FROM Apartment ap
+        WHERE ap.city = %s
+    '''
+
+    cursor = db.get_db().cursor()
+    cursor.execute(query)
+    theData = cursor.fetchall()
+    
+    response = make_response(jsonify(theData))
+    response.status_code = 200
+    return response
+
+# ------------------------------------------------------------
+# Retrieve a list of recommednations in specific location
+@student.route('/student', methods=['GET'])
+def find_loc_recs():
+    query = '''
+        SELECT r.establishment, r.category, r.location, r.priceRating
+        FROM Recommendation r
+        WHERE r.location = %s
+    '''
+
+    cursor = db.get_db().cursor()
+    cursor.execute(query)
+    theData = cursor.fetchall()
+    
+    response = make_response(jsonify(theData))
+    response.status_code = 200
+    return response
+
+# ------------------------------------------------------------
 # Retrieve a list of students in the city
 @student.route('/student', methods=['GET'])
 def find_city_students():
