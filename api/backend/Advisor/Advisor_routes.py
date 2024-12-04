@@ -7,7 +7,7 @@ advisor = Blueprint('advisor', __name__)
 # ------------------------------------------------------------
 # Get all alumni offering housing in a specific city
 @advisor.route('/alumni/<city>', methods=['GET'])
-def get_alumni_housing():
+def get_alumni_housing(city):
     query = '''
         SELECT A.alumID
         FROM Alumni A
