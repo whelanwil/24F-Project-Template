@@ -4,11 +4,11 @@ from flask import Blueprint
 from flask import current_app
 from backend.db_connection import db
 
-app = Flask(__name__)
+admin = Flask('admin', __name__)
 
 # 2.1
 # GET: Retrieve all system updates
-@app.route('/systemAdministrator/update', methods=['GET'])
+@admin.route('/systemAdministrator/update', methods=['GET'])
 def get_all_updates():
 
     query = '''
@@ -36,7 +36,7 @@ def get_all_updates():
         return make_response(jsonify({"error": str(e)}), 500)
     
 # POST: Create a new system update 
-@app.route('/systemAdministrator/update', methods=['POST'])
+@admin.route('/systemAdministrator/update', methods=['POST'])
 def create_update():
     data = request.json
     title = data.get('updateName')
@@ -60,7 +60,7 @@ def create_update():
         return make_response(jsonify({"error": str(e)}), 500)
 
 # PUT: Modify an existing system update
-@app.route('/systemAdministrator/update/<int:update_id>', methods=['PUT'])
+@admin.route('/systemAdministrator/update/<int:update_id>', methods=['PUT'])
 def update_system_update(update_id):
     data = request.json
     title = data.get('updateName')
@@ -89,7 +89,7 @@ def update_system_update(update_id):
     
 #2.4 
 # Post: Add alumni to database
-@app.route('/systemAdministrator/alumni', methods=['POST'])
+@admin.route('/systemAdministrator/alumni', methods=['POST'])
 def add_alumni():
     """
     Add a new alumni to the database.
@@ -132,7 +132,7 @@ def add_alumni():
         )
 
 # PUT: Update an alumni's information
-@app.route('/systemAdministrator/alumni/<int:alum_id>', methods=['PUT'])
+@admin.route('/systemAdministrator/alumni/<int:alum_id>', methods=['PUT'])
 def update_alumni(alum_id):
     """
     Update an alumni's information in the database.
@@ -164,7 +164,7 @@ def update_alumni(alum_id):
     
 #2.6
 # add co op advior instead maybe
-@app.route('/systemAdministrator/student', methods=['POST'])
+@admin.route('/systemAdministrator/student', methods=['POST'])
 def add_student_with_city():
     """
     Add a new student to the database.
@@ -207,7 +207,7 @@ def add_student_with_city():
         print(f"Error occurred: {e}")
         return make_response(jsonify({"error": "An internal server error occurred"}), 500)
     
-@app.route('/systemAdministrator/student/<string:city>', methods=['DELETE'])
+@admin.route('/systemAdministrator/student/<string:city>', methods=['DELETE'])
 def delete_relevant_city(city):
     """
     Remove a city from the database.
@@ -229,4 +229,4 @@ def delete_relevant_city(city):
         return make_response(jsonify({"error": str(e)}), 500)
     
 if __name__ == '__main__':
-app.run(debug=True)
+    admin.run(debug=True)
