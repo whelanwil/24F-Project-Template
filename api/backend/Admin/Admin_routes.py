@@ -1,8 +1,9 @@
+import datetime
 from flask import Blueprint, request, jsonify, make_response, current_app
 from backend.db_connection import db
 
 # Initialize Blueprint
-admin = Flask('admin', __name__)
+admin = Blueprint('admin', __name__)
 
 # ------------------------------------------------------------
 # 2.1 Get all system updates
