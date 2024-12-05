@@ -57,7 +57,7 @@ else:
             st.subheader("Update Existing Alumni Information")
 
             api_url = f"http://web-api:4000/systemAdministrator/alumni/1"
-            response = requests.post(api_url)
+            response = requests.put(api_url)
 
             if response.status_code == 200:
                 alumni_info = response.json()
