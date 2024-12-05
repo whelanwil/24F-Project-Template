@@ -91,7 +91,7 @@ def SideBarLinks(show_home=False):
     if st.session_state["authenticated"]:
         role = st.session_state["role"]
 
-        if role == "Student":
+        if role == "student":
             StudentNav()
         elif role == "advisor":
             AdvisorNav()
