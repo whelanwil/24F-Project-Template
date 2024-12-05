@@ -46,7 +46,7 @@ else:
                         "major": major
                     }
                     
-                    response = requests.post("http://web-api:4000/administrator", json=data)
+                    response = requests.post("http://web-api:4000/systemAdministrator/update", json=data)
                     if response.status_code == 200:
                         st.success("New alumni added successfully!")
                         st.rerun()
