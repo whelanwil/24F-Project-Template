@@ -100,35 +100,33 @@ def add_student_with_city():
     
 # ------------------------------------------------------------
 # Edit student information in the database
-@advisor.route('/coOpAdvisor/student/<int:student_id>', methods=['PUT'])
-def edit_student(student_id):
+@advisor.route('/coOpAdvisor/student/<int:student_id>/alumni', methods=['PUT'])
+def assign_alumni_to_student(student_id):
     """
-    Edit a student's information by a Co-op Advisor.
+    Assign an alumni to a student by updating the alumniID field.
     """
     data = request.json
 
-    # Validate that at least one field is provided for update
-    allowed_fields = ['firstName', 'lastName', 'email', 'company', 'city', 'adminID', 'advisorID']
-    fields_to_update = {key: value for key, value in data.items() if key in allowed_fields and value is not None}
+    # Validate input
+    if 'alumniID' not in data or not data['alumniID']:
+        return make_response(jsonify({"error": "Missing or invalid 'alumniID'"}), 400)
 
-    if not fields_to_update:
-        return make_response(jsonify({"error": "No valid fields provided for update"}), 400)
+    alumni_id = data['alumniID']
 
-    # Prepare dynamic SQL query for updating the fields
-    set_clause = ", ".join(f"{key} = %s" for key in fields_to_update.keys())
-    query = f"UPDATE Student SET {set_clause} WHERE nuID = %s"
+    # Prepare the SQL query
+    query = "UPDATE Student SET alumniID = %s WHERE nuID = %s"
 
     try:
         # Execute the query
         cursor = db.get_db().cursor()
-        cursor.execute(query, (*fields_to_update.values(), student_id))
+        cursor.execute(query, (alumni_id, student_id))
         db.get_db().commit()
 
         # Check if a student was updated
         if cursor.rowcount == 0:
             return make_response(jsonify({"error": "Student not found or no changes made"}), 404)
 
-        return make_response(jsonify({"message": f"Student ID {student_id} updated successfully"}), 200)
+        return make_response(jsonify({"message": f"Alumni ID {alumni_id} assigned to Student ID {student_id} successfully"}), 200)
 
     except Exception as e:
         # Log and handle errors

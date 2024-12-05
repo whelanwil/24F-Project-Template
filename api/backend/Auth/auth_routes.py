@@ -25,7 +25,7 @@ def get_student(id):
         current_app.logger.error(f"Database error: {str(e)}")
         return make_response(jsonify({"error": str(e)}), 500)
 
-@auth.route('/advisor/<int:id>', methods=['GET'])
+@auth.route('/advisor/<id>', methods=['GET'])
 def get_advisor(id):
     query = '''
         SELECT firstName, lastName
