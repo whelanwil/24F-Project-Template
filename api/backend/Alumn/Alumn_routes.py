@@ -130,3 +130,59 @@ def delete_housing():
     response = make_response(f'Housing deleted.')
     response.status_code = 200
     return response
+
+# ------------------------------------------------------------
+# Get housing details for specific alumni
+@alumni.route('/alumni/housing/<alum_id>', methods=['GET'])
+def get_alumni_housing(alum_id):
+    query = '''
+        SELECT 
+            a.housingID,
+            a.beds,
+            a.baths,
+            a.rent,
+            a.description,
+            DATE_FORMAT(a.dateAvailableFrom, '%%Y-%%m-%%d') as dateAvailableFrom,
+            DATE_FORMAT(a.dateAvailableTo, '%%Y-%%m-%%d') as dateAvailableTo,
+            a.street,
+            a.city,
+            a.state,
+            a.country,
+            al.firstName,
+            al.lastName,
+            al.email
+        FROM Apartment a
+        JOIN Alumni al ON a.alumID = al.alumID
+        WHERE a.alumID = %s
+    '''
+    
+    try:
+        cursor = db.get_db().cursor()
+        current_app.logger.info(f"Executing query for alum_id: {alum_id}")
+        cursor.execute(query, (alum_id,))
+        
+        # Log raw results
+        raw_results = cursor.fetchall()
+        current_app.logger.info(f"Raw results: {raw_results}")
+        
+        # Log column descriptions
+        columns = [desc[0] for desc in cursor.description]
+        current_app.logger.info(f"Columns: {columns}")
+        
+        # Create results list
+        results = []
+        for row in raw_results:
+            row_dict = {}
+            for i, column in enumerate(columns):
+                row_dict[column] = row[i]
+            results.append(row_dict)
+        
+        current_app.logger.info(f"Final results: {results}")
+        
+        if not results:
+            return make_response(jsonify([]), 200)
+            
+        return make_response(jsonify(results), 200)
+    except Exception as e:
+        current_app.logger.error(f"Database error: {str(e)}")
+        return make_response(jsonify({"error": str(e)}), 500)

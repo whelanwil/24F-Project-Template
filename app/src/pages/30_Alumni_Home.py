@@ -17,7 +17,7 @@ st.write('### What would you like to do today?')
 if st.button('Edit Apartment Details', 
              type='primary', 
              use_container_width=True):
-    st.switch_page('pages/31_Alumn_Housing.py')  # Alumni-specific page
+    st.switch_page('pages/11_Alumn_Housing.py')  # Alumni-specific page
 
 # Button to connect with students (shared with advisors)
 if st.button('Connect with Students', 
