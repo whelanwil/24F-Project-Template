@@ -213,3 +213,90 @@ def remove_city():
     response = make_response('City removed.')
     response.status_code = 200
     return response
+
+# ------------------------------------------------------------
+# Add a new parent for a student
+@student.route('/student/parent', methods=['POST'])
+def add_parent():
+    try:
+        the_data = request.json
+        current_app.logger.info(the_data)
+
+        # Extract required data
+        student_id = the_data.get('nuID')
+        parent_first_name = the_data.get('firstName')
+        parent_last_name = the_data.get('lastName')
+        parent_email = the_data.get('email')
+        parent_phone = the_data.get('phone')
+
+        # Validate required fields
+        if not all([student_id, parent_first_name, parent_last_name, parent_email]):
+            return make_response(jsonify({
+                "error": "Missing required fields. Please provide nuID, firstName, lastName, and email"
+            }), 400)
+
+        # First insert into Parent table
+        parent_query = '''
+            INSERT INTO Parent (firstName, lastName, email, phone)
+            VALUES (%s, %s, %s, %s)
+        '''
+        
+        cursor = db.get_db().cursor()
+        cursor.execute(parent_query, (parent_first_name, parent_last_name, parent_email, parent_phone))
+        parent_id = cursor.lastrowid
+
+        # Then create association in StudentParent table
+        association_query = '''
+            INSERT INTO StudentParent (nuID, parentID)
+            VALUES (%s, %s)
+        '''
+        cursor.execute(association_query, (student_id, parent_id))
+        db.get_db().commit()
+
+        return make_response(jsonify({
+            "message": "Parent added successfully",
+            "parentID": parent_id
+        }), 201)
+
+    except Exception as e:
+        current_app.logger.error(f"Error adding parent: {str(e)}")
+        return make_response(jsonify({"error": str(e)}), 500)
+
+# ------------------------------------------------------------
+# Get all parents for a student
+@student.route('/student/<nuID>/parents', methods=['GET'])
+def get_student_parents(nuID):
+    try:
+        query = '''
+            SELECT p.parentID, p.firstName, p.lastName, p.email, p.phone
+            FROM Parent p
+            JOIN StudentParent sp ON p.parentID = sp.parentID
+            WHERE sp.nuID = %s
+        '''
+
+        cursor = db.get_db().cursor()
+        cursor.execute(query, (nuID,))
+        parents = cursor.fetchall()
+
+        if parents:
+            parents_list = [{
+                "parentID": parent[0],
+                "firstName": parent[1],
+                "lastName": parent[2],
+                "email": parent[3],
+                "phone": parent[4]
+            } for parent in parents]
+            
+            return make_response(jsonify({
+                "message": "Parents retrieved successfully",
+                "parents": parents_list
+            }), 200)
+        else:
+            return make_response(jsonify({
+                "message": "No parents found for this student",
+                "parents": []
+            }), 200)
+
+    except Exception as e:
+        current_app.logger.error(f"Error retrieving parents: {str(e)}")
+        return make_response(jsonify({"error": str(e)}), 500)
