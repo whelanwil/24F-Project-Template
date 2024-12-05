@@ -27,7 +27,7 @@ if st.button('Update Housing Settings (Preferences and Status)',
 if st.button('Connect with Alumni or Students', 
             type='primary', 
             use_container_width=True):
-  st.switch_page('pages/33_Connect_with_Alumni.py')
+  st.switch_page('pages/31_connect_to_student.py')
 
 if st.button('Edit Parent Housing Relationship',
             type='primary', 

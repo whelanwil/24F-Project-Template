@@ -23,7 +23,7 @@ def StudentNav():
         icon="⚙️",
     )
     st.sidebar.page_link(
-        "pages/33_Connect_with_Alumni.py", label="Connect with Alumni", icon="🤝"
+        "pages/31_connect_to_student.py", label="Connect with Alumni", icon="🤝"
     )
     st.sidebar.page_link(
         "pages/40_parent.py", label="Edit Parent Housing Relationship", icon="👪"
@@ -39,7 +39,7 @@ def AdvisorNav():
         "pages/11_Alumn_Housing.py", label="Search Alumni Housing", icon="🏘️"
     )
     st.sidebar.page_link(
-        "pages/33_Connect_with_Alumni.py", label="Connect with Alumni/Students", icon="🤝"
+        "pages/31_connect_to_student.py", label="Connect with Alumni/Students", icon="🤝"
     )
     st.sidebar.page_link(
         "pages/01_Student_housing_preferences.py",
@@ -57,7 +57,7 @@ def AlumniNav():
         "pages/31_Alumn_Housing.py", label="Edit Apartment Details", icon="🛏️"
     )
     st.sidebar.page_link(
-        "pages/33_Connect_with_Alumni.py", label="Connect with Students", icon="🤝"
+        "pages/31_connect_to_student.py", label="Connect with Students", icon="🤝"
     )
 
 

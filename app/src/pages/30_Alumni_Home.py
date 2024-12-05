@@ -23,6 +23,6 @@ if st.button('Edit Apartment Details',
 if st.button('Connect with Students', 
              type='primary', 
              use_container_width=True):
-    st.switch_page('pages/33_Connect_with_Alumni.py')  # Shared page
+    st.switch_page('pages/31_connect_to_student.py')  # Shared page
 
 

@@ -68,16 +68,16 @@ if st.button('Act as Sarah James, an Coop Advisor',
 
 if st.button('Act as System Administrator', 
             type = 'primary', 
-            use_container_width=True):
+            use_container_width=True): 
     st.session_state['authenticated'] = True
     st.session_state['role'] = 'administrator'
     st.session_state['first_name'] = 'SysAdmin'
     st.switch_page('pages/20_Admin_Home.py')
 
-if st.button('Act as Bridget McCarthy, an Alumni', 
+if st.button('Act as Aaron Taylor, an Alumni', 
             type = 'primary', 
             use_container_width=True):
     st.session_state['authenticated'] = True
     st.session_state['role'] = 'alumni'
-    st.session_state['first_name'] = 'Bridget'
+    st.session_state['first_name'] = 'Aaron'
     st.switch_page('pages/30_Alumni_Home.py')
