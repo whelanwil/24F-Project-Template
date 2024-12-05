@@ -134,7 +134,7 @@ def add_alumni():
 
 # ------------------------------------------------------------ 
 # 2.4 Update an alumni's information
-@admin.route('/systemAdministrator/alumni/<int:alum_id>', methods=['PUT'])
+@admin.route('/systemAdministrator/alumni/{alumID}', methods=['PUT'])
 def update_alumni(alum_id):
     """
     Update an alumni's information in the database.
