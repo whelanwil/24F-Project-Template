@@ -24,8 +24,8 @@ def find_city_housing():
 
 # ------------------------------------------------------------
 # Retrieve a list of recommednations in specific location
-@student.route('/student', methods=['GET'])
-def find_loc_recs():
+# @student.route('/student', methods=['GET'])
+# def find_loc_recs():
     query = '''
         SELECT r.establishment, r.category, r.location, r.priceRating
         FROM Recommendation r
