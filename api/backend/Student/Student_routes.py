@@ -108,25 +108,37 @@ def add_new_city():
     return response
 
 # ------------------------------------------------------------
-# 3.5 Update student info including company, city, rent, and advisorID
-@student.route('/student', methods=['PUT'])
-def update_student_info():
-    current_app.logger.info('PUT /student route')
+# 3.5 Update student info including major, company, & city
+@student.route('/student/<nuID>', methods=['PUT'])
+def update_student_info(nuID):
+    current_app.logger.info('PUT /student/{nuID} route')
 
     the_data = request.json
+    current_app.logger.info(f"Data received: {the_data}")
+
+    major = the_data['major']
     company = the_data['company']
     city = the_data['city']
-    advisorID = the_data['advisorID']
+
+    current_app.logger.info(f"Updating studentID: {nuID} 
+                            with Major: {major}, Company: {company}, City: {city}")
 
     query = '''
-        UPDATE Student SET company = %s, city = %s, rent = %s, advisorID = %s, 
+        UPDATE Student SET major = %s, company = %s, city = %s 
         WHERE nuID = %s
     '''
-    data = (company, city, advisorID)
-    cursor = db.get_db().cursor()
-    r = cursor.execute(query, data)
-    db.get_db().commit()
-    return 'Student information updated'
+    data = (major, company, city, nuID)
+
+    try: 
+        cursor = db.get_db().cursor()
+        cursor.execute(query, data)
+        db.get_db().commit()
+        current_app.logger.info("Update successful.")
+        return 'Student information updated'
+    except Exception as e:
+        current_app.logger.error(f"Error updating student info: {e}")
+        return f"Failed to update student information: {str(e)}", 500
+
 
 # ------------------------------------------------------------
 # Revoke parent access
