@@ -56,7 +56,7 @@ else:
         with tab2:
             st.subheader("Update Existing Alumni Information")
 
-            api_url = f"http://web-api:4000/systemAdministrator/update/1"
+            api_url = f"http://web-api:4000/systemAdministrator/alumni/1"
             response = requests.post(api_url)
 
             if response.status_code == 200:
