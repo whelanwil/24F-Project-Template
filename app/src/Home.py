@@ -118,15 +118,6 @@ if st.button(f'Act as {advisor_firstname} {advisor_lastname}, an Coop Advisor',
     st.session_state['user_id'] = advisor_id  # Store the user ID
     st.switch_page('pages/10_Advisor_Home.py')
 
-if st.button(f'Act as {admin_firstname} {admin_lastname}, a System Administrator', 
-            type = 'primary', 
-            use_container_width=True): 
-    st.session_state['authenticated'] = True
-    st.session_state['role'] = 'administrator'
-    st.session_state['first_name'] = admin_firstname
-    st.session_state['user_id'] = admin_id  # Store the user ID
-    st.switch_page('pages/20_Admin_Home.py')
-
 if st.button(f'Act as {alumni_firstname} {alumni_lastname}, an Alumni', 
             type = 'primary', 
             use_container_width=True):
@@ -135,4 +126,13 @@ if st.button(f'Act as {alumni_firstname} {alumni_lastname}, an Alumni',
     st.session_state['first_name'] = alumni_firstname
     st.session_state['user_id'] = alumni_id  # Store the user ID
     st.switch_page('pages/30_Alumni_Home.py')
+
+if st.button(f'Act as {admin_firstname} {admin_lastname}, a System Administrator', 
+            type = 'primary', 
+            use_container_width=True): 
+    st.session_state['authenticated'] = True
+    st.session_state['role'] = 'administrator'
+    st.session_state['first_name'] = admin_firstname
+    st.session_state['user_id'] = admin_id  # Store the user ID
+    st.switch_page('pages/20_Admin_Home.py')
 
