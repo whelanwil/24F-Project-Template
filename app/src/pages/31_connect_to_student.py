@@ -14,9 +14,10 @@ tab1, tab2, tab3 = st.tabs(["View Connections", "Add Connection", "Remove Connec
 # Tab 1: View Connections
 with tab1:
     st.subheader("View All Alum-Student Connections")
+    st.write("here 1")
     response = requests.get(BASE_API_URL)
-
-    # Debug the API response
+    st.write("here 2")
+    # Display the status code and response for debugging
     st.write("Status Code:", response.status_code)
     st.write("Response Content:", response.text)
 
@@ -27,7 +28,7 @@ with tab1:
         else:
             st.info("No alum-student connections found.")
     else:
-        # Extract and display the actual error message from the API response
+        # Extract the actual error message from the API response
         error_message = response.json().get("error", "Unknown error")
         st.error(f"Failed to retrieve connections: {error_message}")
 
