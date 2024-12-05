@@ -36,7 +36,7 @@ def AdvisorNav():
         "pages/10_Advisor_Home.py", label="Advisor Dashboard", icon="📋"
     )
     st.sidebar.page_link(
-        "pages/31_Alumn_Housing.py", label="Search Alumni Housing", icon="🏘️"
+        "pages/11_Alumn_Housing.py", label="Search Alumni Housing", icon="🏘️"
     )
     st.sidebar.page_link(
         "pages/33_Connect_with_Alumni.py", label="Connect with Alumni/Students", icon="🤝"
