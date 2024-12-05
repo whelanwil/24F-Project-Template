@@ -9,41 +9,30 @@ SideBarLinks()
 # Set up logging
 logger = logging.getLogger(__name__)
 
-# Check the role of the user
-if "role" not in st.session_state:
-    st.error("You do not have permission to access this page.")
-else:
-    role = st.session_state["role"]
+st.title("Search Alumni Housing")
+city = st.text_input("Enter the city to search for alumni housing:")
 
-    # Only advisors can access this page
-    if role == "advisor":
-        st.title("Assign Alumni to Student")
+if st.button('Search', use_container_width=True):
+    if city:
+        # Making a GET request to the API to fetch alumni housing data for the specified city
+        api_url = f"http://web-api:4000/advisor/alumni/{city}"
+        response = requests.get(api_url)
+        
+        if response.status_code == 200:
+            housing_data = response.json()
 
-        # Input fields
-        student_id = st.text_input("Enter the Student ID:")
-        alumni_id = st.text_input("Enter the Alumni ID:")
-
-        if st.button("Assign Alumni"):
-            if student_id and alumni_id:
-                # API endpoint
-                api_url = f"http://web-api:4000/coOpAdvisor/student/{student_id}/alumni"
-
-                # Payload
-                payload = {"alumniID": alumni_id}
-
-                # Make the PUT request
-                response = requests.put(api_url, json=payload)
-
-                # Handle response
-                if response.status_code == 200:
-                    st.success(response.json().get("message", "Alumni assigned successfully"))
-                elif response.status_code == 400:
-                    st.warning(response.json().get("error", "Invalid request"))
-                elif response.status_code == 404:
-                    st.error(response.json().get("error", "Student not found"))
-                else:
-                    st.error(f"Failed to assign alumni. Error: {response.status_code}")
+            if "data" in housing_data and housing_data["data"]:
+                st.write(f"**Found {len(housing_data['data'])} alumni offering housing in {city}:**")
+                
+                # Create a DataFrame from the response data
+                df = pd.DataFrame(housing_data["data"])
+                st.table(df.reset_index(drop=True))
             else:
-                st.warning("Both Student ID and Alumni ID are required.")
+                st.write(f"No alumni found offering housing in {city}.")
+        else:
+            st.error(f"Error: Received status code {response.status_code}")
+            st.write(response.text)
     else:
-        st.error("You do not have permission to access this page.")
+        st.warning("Please enter a city to search for alumni housing.")
+
+
