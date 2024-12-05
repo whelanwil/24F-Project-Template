@@ -120,8 +120,7 @@ def update_student_info(nuID):
     company = the_data['company']
     city = the_data['city']
 
-    current_app.logger.info(f"Updating studentID: {nuID} 
-                            with Major: {major}, Company: {company}, City: {city}")
+    current_app.logger.info(f"Updating studentID: {nuID} with Major: {major}, Company: {company}, City: {city}")
 
     query = '''
         UPDATE Student SET major = %s, company = %s, city = %s 
@@ -139,6 +138,40 @@ def update_student_info(nuID):
         current_app.logger.error(f"Error updating student info: {e}")
         return f"Failed to update student information: {str(e)}", 500
 
+# ------------------------------------------------------------
+# 3.5 Gets all student information based on nuID
+@student.route('/student/<nuID>', methods=['GET'])
+def get_student_info(nuID):
+    current_app.logger.info('GET /student/{nuID} route')
+
+    query = '''
+        SELECT firstName, 
+               lastName, 
+               major, 
+               company,
+               city
+        FROM Student
+        WHERE nuID = %s
+    '''
+    cursor = db.get_db().cursor()
+    cursor.execute(query, (nuID,))
+    theData = cursor.fetchone()
+
+    if theData:
+        student_info = {
+            "firstName": theData[0],
+            "lastName": theData[1],
+            "major": theData[2],
+            "company": theData[3],
+            "city": theData[4],
+        }
+        response = make_response(jsonify(student_info))
+        response.status_code = 200
+    else: 
+        response = make_response(jsonify({"error": "Student not found"}))
+        response.status_code = 404
+
+    return response
 
 # ------------------------------------------------------------
 # Revoke parent access
