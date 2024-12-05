@@ -18,16 +18,16 @@ st.write('### What would you like to do today?')
 if st.button('Check or Modify System Updates', 
              type='primary', 
              use_container_width=True):
-    st.switch_page('pages/')  
+    st.switch_page('pages/42_status_updates.py')  
 
 # Button to add and update alumni and student users
 if st.button('Add or Modify Users', 
              type='primary', 
              use_container_width=True):
-    st.switch_page('pages/')  
+    st.switch_page('pages/43_modify_users.py')  
 
 # Button to remove cities from system database
 if st.button('Remove City from Database', 
              type='primary', 
              use_container_width=True):
-    st.switch_page('pages/')  
+    st.switch_page('pages/44_city_db.py')  
