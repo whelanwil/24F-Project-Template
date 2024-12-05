@@ -56,7 +56,7 @@ else:
                     st.success('Your information has been updated successfully!')
                     
                     # Refresh the page to display updated information
-                    st.write("***Updated Information:***")
+                    st.write("**Updated Information:**")
                     st.write(f"**Major**: {new_major}")
                     st.write(f"**Company**: {new_company}")
                     st.write(f"**City**: {new_city}")
