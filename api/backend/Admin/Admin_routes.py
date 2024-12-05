@@ -134,8 +134,8 @@ def add_alumni():
 
 # ------------------------------------------------------------ 
 # 2.4 Update an alumni's information
-@admin.route('/systemAdministrator/alumni/<int:alum_id>', methods=['PUT'])
-def update_alumni(alum_id):
+@admin.route('/systemAdministrator/alumni/<alumID>', methods=['PUT'])
+def update_alumni(alumID):
     """
     Update an alumni's information in the database.
     """
@@ -145,7 +145,7 @@ def update_alumni(alum_id):
     email = data.get('email')
 
     if not first_name or not last_name or not email:
-        return make_response(jsonify({"error": "First name, last name, email, and graduation year are required"}), 400)
+        return make_response(jsonify({"error": "First name, last name, and email are required"}), 400)
 
     query = '''
         UPDATE Alumni
@@ -154,11 +154,11 @@ def update_alumni(alum_id):
     '''
     try:
         cursor = db.get_db().cursor()
-        cursor.execute(query, (first_name, last_name, email, alum_id))
+        cursor.execute(query, (first_name, last_name, email, alumID))
         db.get_db().commit()
 
         if cursor.rowcount == 0:
-            return make_response(jsonify({"error": "Alumni not found or is inactive"}), 404)
+            return make_response(jsonify({"error": "Alumni not found"}), 404)
 
         return make_response(jsonify({"message": "Alumni information updated successfully"}), 200)
     except Exception as e:
