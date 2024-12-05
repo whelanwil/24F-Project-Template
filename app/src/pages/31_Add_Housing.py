@@ -64,6 +64,9 @@ else:
             
             # Fetch current listings with alumni details
             response = requests.get(f"http://web-api:4000/alumni/housing/{st.session_state['user_id']}")
+
+            st.write("API Response:", response.text)
+
             st.write(response.text)
             if response.status_code == 200:
                 st.write("PASSED")

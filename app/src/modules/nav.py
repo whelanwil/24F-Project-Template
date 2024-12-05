@@ -15,7 +15,7 @@ def StudentNav():
         "pages/00_Student_Home.py", label="Student Dashboard", icon="🎓"
     )
     st.sidebar.page_link(
-        "pages/11_Alumn_Housing.py", label="Search Alumni Housing", icon="🏘️"
+        "pages/31_Add_Housing.py", label="Search Alumni Housing", icon="🏘️"
     )
     st.sidebar.page_link(
         "pages/01_Student_housing_preferences.py",
@@ -36,7 +36,7 @@ def AdvisorNav():
         "pages/10_Advisor_Home.py", label="Advisor Dashboard", icon="📋"
     )
     st.sidebar.page_link(
-        "pages/11_Alumn_Housing.py", label="Search Alumni Housing", icon="🏘️"
+        "pages/31_Add_Housing", label="Search Alumni Housing", icon="🏘️"
     )
     st.sidebar.page_link(
         "pages/31_connect_to_student.py", label="Connect with Alumni/Students", icon="🤝"
@@ -55,7 +55,7 @@ def AlumniNav():
     )
   
     st.sidebar.page_link(
-        "pages/11_Alumn_Housing.py", label="Connect with Students", icon="🛏️"
+        "pages/31_Add_Housing.py", label="Connect with Students", icon="🛏️"
     )
 
 
