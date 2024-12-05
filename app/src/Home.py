@@ -8,8 +8,8 @@ import logging
 logging.basicConfig(format='%(filename)s:%(lineno)s:%(levelname)s -- %(message)s', level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# import the main streamlit library as well
-# as SideBarLinks function from src/modules folder
+import requests
+import pandas as pd
 import streamlit as st
 from modules.nav import SideBarLinks
 
@@ -42,7 +42,63 @@ st.write('### HI! As which user would you like to log in?')
 # functionality, we put a button on the screen that the user 
 # can click to MIMIC logging in as that mock user. 
 
-if st.button("Act as Tommy Nelson, a Student on Coop", 
+# Make a single API call for student data
+try:
+    student_response = requests.get(f"http://web-api:4000/student/1")
+    if student_response.status_code == 200:
+        student_data = student_response.json()
+        student_firstname = student_data["data"][0]["firstName"]
+        student_lastname = student_data["data"][0]["lastName"]
+
+    else:
+        st.error(f"Error: {student_response.status_code}")
+        st.code(student_response.text)  # Show the error response
+except Exception as e:
+    st.error(f"Failed to fetch student data: {str(e)}")
+
+#make an api call for advisor data
+# Make API call for advisor data
+try:
+    advisor_response = requests.get(f"http://web-api:4000/advisor/1")
+    if advisor_response.status_code == 200:
+        advisor_data = advisor_response.json()
+        advisor_firstname = advisor_data["data"][0]["firstName"] 
+        advisor_lastname = advisor_data["data"][0]["lastName"]
+      
+    else:
+        st.error(f"Error: {advisor_response.status_code}")
+        st.code(advisor_response.text)
+except Exception as e:
+    st.error(f"Failed to fetch advisor data: {str(e)}")
+
+# Make API call for admin data
+try:
+    admin_response = requests.get(f"http://web-api:4000/admin/1")
+    if admin_response.status_code == 200:
+        admin_data = admin_response.json()
+        admin_firstname = admin_data["data"][0]["firstName"]
+        admin_lastname = admin_data["data"][0]["lastName"]
+    else:
+        st.error(f"Error: {admin_response.status_code}")
+        st.code(admin_response.text)
+except Exception as e:
+    st.error(f"Failed to fetch admin data: {str(e)}")
+
+# Make API call for alumni data
+try:
+    alumni_response = requests.get(f"http://web-api:4000/alumni/1")
+    if alumni_response.status_code == 200:
+        alumni_data = alumni_response.json()
+        alumni_firstname = alumni_data["data"][0]["firstName"]
+        alumni_lastname = alumni_data["data"][0]["lastName"]
+    else:
+        st.error(f"Error: {alumni_response.status_code}")
+        st.code(alumni_response.text)
+except Exception as e:
+    st.error(f"Failed to fetch alumni data: {str(e)}")
+
+
+if st.button(f"Act as {student_firstname} {student_lastname}, a Student on Coop", 
             type = 'primary', 
             use_container_width=True):
     # when user clicks the button, they are now considered authenticated
@@ -52,32 +108,33 @@ if st.button("Act as Tommy Nelson, a Student on Coop",
     st.session_state['role'] = 'student'
     # we add the first name of the user (so it can be displayed on 
     # subsequent pages). 
-    st.session_state['first_name'] = 'Tommy'
+    st.session_state['first_name'] = student_firstname
     # finally, we ask streamlit to switch to another page, in this case, the 
     # landing page for this particular user type
     logger.info("Logging in as a Student on Coop")
     st.switch_page('pages/00_Student_Home.py')
 
-if st.button('Act as Sarah James, an Coop Advisor', 
+if st.button(f'Act as {advisor_firstname} {advisor_lastname}, an Coop Advisor', 
             type = 'primary', 
             use_container_width=True):
     st.session_state['authenticated'] = True
     st.session_state['role'] = 'advisor'
-    st.session_state['first_name'] = 'Sarah'
+    st.session_state['first_name'] = advisor_firstname
     st.switch_page('pages/10_Advisor_Home.py')
 
-if st.button('Act as System Administrator', 
+if st.button(f'Act as {admin_firstname} {admin_lastname}, a System Administrator', 
             type = 'primary', 
             use_container_width=True): 
     st.session_state['authenticated'] = True
     st.session_state['role'] = 'administrator'
-    st.session_state['first_name'] = 'SysAdmin'
+    st.session_state['first_name'] = admin_firstname
     st.switch_page('pages/20_Admin_Home.py')
 
-if st.button('Act as Aaron Taylor, an Alumni', 
+if st.button(f'Act as {alumni_firstname} {alumni_lastname}, an Alumni', 
             type = 'primary', 
             use_container_width=True):
     st.session_state['authenticated'] = True
     st.session_state['role'] = 'alumni'
-    st.session_state['first_name'] = 'Aaron'
+    st.session_state['first_name'] = alumni_firstname
     st.switch_page('pages/30_Alumni_Home.py')
+

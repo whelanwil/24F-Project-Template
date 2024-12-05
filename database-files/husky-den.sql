@@ -221,7 +221,7 @@ INSERT INTO `SystemAdministrator` (`firstName`, `lastName`, `email`) VALUES
 ('Olivia', 'Green', 'olivia.green@huskyden.com');
 
 INSERT INTO `Alumni` (`firstName`, `lastName`, `email`, `company`, `city`, `adminID`) VALUES
-('Aaron', 'Taylor', 'aaron.taylor@alumni.com', 'SmartGreen', 'San Francisco', 1),
+('Ted', 'Ohsry', 'ted.ohsry@alumni.com', 'SmartGreen', 'San Francisco', 1),
 ('Lily', 'Cruz', 'lily.cruz@alumni.com', 'CloudSphere', 'Los Angeles', 2),
 ('Ethan', 'Ward', 'ethan.ward@alumni.com', 'BrightWorks', 'San Diego', 3),
 ('Zoe', 'Adkins', 'zoe.adkins@alumni.com', 'NextGen Solutions', 'Austin', 4),
@@ -357,7 +357,7 @@ INSERT INTO `CoopAdvisor` (`firstName`, `lastName`, `email`, `adminID`) VALUES
 
 
 INSERT INTO `Student` (`firstName`, `lastName`, `email`, `company`, `city`, `adminID`, `advisorID`) VALUES
-('Aaron', 'Taylor', 'aaron.taylor@student.com', 'SmartGreen', 'New York', 1, 1),
+('Leo', 'Thomas', 'leo.thomas@student.com', 'SmartGreen', 'New York', 1, 1),
 ('Lily', 'Cruz', 'lily.cruz@student.com', 'CloudSphere', 'Los Angeles', 2, 2),
 ('Ethan', 'Ward', 'ethan.ward@student.com', 'BrightWorks', 'Chicago', 3, 3),
 ('Zoe', 'Adkins', 'zoe.adkins@student.com', 'NextGen Solutions', 'Austin', 4, 4),
