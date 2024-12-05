@@ -56,7 +56,7 @@ else:
         with tab2:
             st.subheader("Update Existing Alumni Information")
 
-            api_url = f"http://web-api:4000/alumni"
+            api_url = f"http://web-api:4000/systemAdministrator/update/1"
             response = requests.get(api_url)
 
             if response.status_code == 200:
@@ -129,7 +129,7 @@ else:
                         "city": city
                     }
                     
-                    response = requests.post("http://web-api:4000/administrator", json=data)
+                    response = requests.post("http://web-api:4000/systemAdministrator/alumni", json=data)
                     if response.status_code == 200:
                         st.success("New student added successfully!")
                         st.rerun()
