@@ -63,20 +63,17 @@ def add_new_housing():
     country = the_data['country']
 
     
-    query = f'''
-        INSERT INTO Apartment (alumID, beds, bath, rent, description,
+    query = '''
+        INSERT INTO Apartment (alumID, beds, baths, rent, description,
             dateAvailableFrom, dateAvailableTo,
             street, city, state, country)
-        VALUES ('{alumID}', '{beds}', '{baths}', str({rent}), '{description}',
-        '{dateAvailableFrom}', '{dateAvailableTo}', 
-        '{street}', '{city}', '{state}', '{country}')
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
     '''
-   
-    current_app.logger.info(query)
-
-    # executing and committing the insert statement 
+    values = (alumID, beds, baths, rent, description, 
+              dateAvailableFrom, dateAvailableTo,
+              street, city, state, country)
     cursor = db.get_db().cursor()
-    cursor.execute(query)
+    cursor.execute(query, values)
     db.get_db().commit()
     
     response = make_response("Successfully added housing")
