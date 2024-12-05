@@ -54,29 +54,6 @@ def revoke_parental_access(parentID):
     return response
 
 # ------------------------------------------------------------
-# Track which students have found housing
-@advisor.route('/alumni/<city>', methods=['GET'])
-def get_alumni_housing(city):
-    query = '''
-        SELECT A.alumID, A.firstName, A.lastName, Ap.city
-        FROM Alumni A
-        JOIN Apartment Ap ON A.alumID = Ap.alumID
-        WHERE A.city = %s
-    '''
-    current_app.logger.info(f'GET /alumni/<city> query: {query}')
-    
-    try:
-        cursor = db.get_db().cursor()
-        cursor.execute(query, (city,))
-        results = cursor.fetchall()
-
-        current_app.logger.info(f"Query results: {results}")
-        return make_response(jsonify({"message": "Data retrieved successfully", "data": results}), 200)
-    except Exception as e:
-        current_app.logger.error(f"Database error: {str(e)}")
-        return make_response(jsonify({"error": str(e)}), 500)
-
-# ------------------------------------------------------------
 # Add a new student to the database
 @advisor.route('/coopAdvisor/student', methods=['POST'])
 def add_student_with_city():
