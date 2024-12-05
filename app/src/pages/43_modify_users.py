@@ -46,7 +46,7 @@ else:
                         "major": major
                     }
                     
-                    response = requests.post("http://web-api:4000/administrator", json=data)
+                    response = requests.post("http://web-api:4000/systemAdministrator/update", json=data)
                     if response.status_code == 200:
                         st.success("New alumni added successfully!")
                         st.rerun()
@@ -56,8 +56,8 @@ else:
         with tab2:
             st.subheader("Update Existing Alumni Information")
 
-            api_url = f"http://web-api:4000/alumni/{al}"
-            response = requests.get(api_url)
+            api_url = f"http://web-api:4000/systemAdministrator/alumni/1"
+            response = requests.put(api_url)
 
             if response.status_code == 200:
                 alumni_info = response.json()
@@ -129,7 +129,7 @@ else:
                         "city": city
                     }
                     
-                    response = requests.post("http://web-api:4000/administrator", json=data)
+                    response = requests.post("http://web-api:4000/systemAdministrator/alumni", json=data)
                     if response.status_code == 200:
                         st.success("New student added successfully!")
                         st.rerun()
