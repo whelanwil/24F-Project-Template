@@ -44,7 +44,7 @@ st.write('### HI! As which user would you like to log in?')
 
 # Make a single API call for student data
 try:
-    student_response = requests.get(f"http://web-api:4000/student/1")
+    student_response = requests.get(f"http://web-api:4000/auth/student/1")
     if student_response.status_code == 200:
         student_data = student_response.json()
         student_firstname = student_data["data"][0]["firstName"]
@@ -58,7 +58,7 @@ except Exception as e:
 
 # Make API call for advisor data
 try:
-    advisor_response = requests.get(f"http://web-api:4000/advisor/1")
+    advisor_response = requests.get(f"http://web-api:4000/auth/advisor/1")
     if advisor_response.status_code == 200:
         advisor_data = advisor_response.json()
         advisor_firstname = advisor_data["data"][0]["firstName"]
@@ -72,7 +72,7 @@ except Exception as e:
 
 # Make API call for admin data
 try:
-    admin_response = requests.get(f"http://web-api:4000/admin/1")
+    admin_response = requests.get(f"http://web-api:4000/auth/admin/1")
     if admin_response.status_code == 200:
         admin_data = admin_response.json()
         admin_firstname = admin_data["data"][0]["firstName"]
@@ -86,7 +86,7 @@ except Exception as e:
 
 # Make API call for alumni data
 try:
-    alumni_response = requests.get(f"http://web-api:4000/alumni/1")
+    alumni_response = requests.get(f"http://web-api:4000/auth/alumni/1")
     if alumni_response.status_code == 200:
         alumni_data = alumni_response.json()
         alumni_firstname = alumni_data["data"][0]["firstName"]

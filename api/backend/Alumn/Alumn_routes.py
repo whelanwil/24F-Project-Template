@@ -114,9 +114,9 @@ def update_housing():
 
 # ------------------------------------------------------------
 # 1.1 Mark the alumni's apartment as no longer available
-@alumni.route('/alumni', methods=['DELETE'])
-def delete_housing():
-    current_app.logger.info('DELETE /alumni route')
+@alumni.route('/alumni/<housing_id>', methods=['DELETE'])
+def delete_housing(housing_id):
+    current_app.logger.info(f'DELETE /alumni/{housing_id} route')
 
     query = '''
         DELETE FROM Apartment 
@@ -124,10 +124,10 @@ def delete_housing():
     '''
 
     cursor = db.get_db().cursor()
-    cursor.execute(query)
+    cursor.execute(query, (housing_id,))
     db.get_db().commit()
 
-    response = make_response(f'Housing deleted.')
+    response = make_response(f'Housing {housing_id} deleted.')
     response.status_code = 200
     return response
 
@@ -142,8 +142,8 @@ def get_alumni_housing(alum_id):
             a.baths,
             a.rent,
             a.description,
-            DATE_FORMAT(a.dateAvailableFrom, '%%Y-%%m-%%d') as dateAvailableFrom,
-            DATE_FORMAT(a.dateAvailableTo, '%%Y-%%m-%%d') as dateAvailableTo,
+            a.dateAvailableFrom as dateAvailableFrom,
+            a.dateAvailableTo as dateAvailableTo,
             a.street,
             a.city,
             a.state,
@@ -156,33 +156,14 @@ def get_alumni_housing(alum_id):
         WHERE a.alumID = %s
     '''
     
+    
     try:
         cursor = db.get_db().cursor()
-        current_app.logger.info(f"Executing query for alum_id: {alum_id}")
         cursor.execute(query, (alum_id,))
-        
-        # Log raw results
-        raw_results = cursor.fetchall()
-        current_app.logger.info(f"Raw results: {raw_results}")
-        
-        # Log column descriptions
-        columns = [desc[0] for desc in cursor.description]
-        current_app.logger.info(f"Columns: {columns}")
-        
-        # Create results list
-        results = []
-        for row in raw_results:
-            row_dict = {}
-            for i, column in enumerate(columns):
-                row_dict[column] = row[i]
-            results.append(row_dict)
-        
-        current_app.logger.info(f"Final results: {results}")
-        
-        if not results:
-            return make_response(jsonify([]), 200)
-            
-        return make_response(jsonify(results), 200)
+        results = cursor.fetchall()
+
+        current_app.logger.info(f"Query results: {results}")
+        return make_response(jsonify({"message": "Data retrieved successfully", "data": results}), 200)
     except Exception as e:
         current_app.logger.error(f"Database error: {str(e)}")
         return make_response(jsonify({"error": str(e)}), 500)
