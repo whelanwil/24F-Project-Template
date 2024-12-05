@@ -8,9 +8,6 @@ SideBarLinks()
 # Set up logging
 logger = logging.getLogger(__name__)
 
-# Show appropriate sidebar links for the role of the currently logged-in user
-SideBarLinks()
-
 st.title(f"Welcome Co-op Advisor, {st.session_state['first_name']}!")
 st.write('')
 st.write('### What would you like to do today?')
