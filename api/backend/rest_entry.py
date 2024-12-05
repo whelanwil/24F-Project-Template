@@ -6,6 +6,7 @@ from backend.customers.customer_routes import customers
 from backend.Advisor.Advisor_routes import advisor
 from backend.Auth.auth_routes import auth
 from backend.Alumn.Alumn_routes import alumni
+from backend.Student.Student_routes import student
 # from backend.simple.simple_routes import simple_routes
 import os
 from dotenv import load_dotenv
@@ -50,6 +51,7 @@ def create_app():
     app.register_blueprint(auth)
     app.register_blueprint(advisor)
     app.register_blueprint(alumni)
+    app.register_blueprint(student)
    
 
     # Don't forget to return the app object
