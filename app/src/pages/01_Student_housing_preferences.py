@@ -56,7 +56,10 @@ else:
                     st.success('Your information has been updated successfully!')
                     
                     # Refresh the page to display updated information
-                    st.experimental_rerun()
+                    st.write("**Updated Information:**")
+                    st.write(f"**Major**: {new_major}")
+                    st.write(f"**Company**: {new_company}")
+                    st.write(f"**City**: {new_city}")
                 else:
                     st.error(f'Failed to update information: {update_response.text}')
     else:
