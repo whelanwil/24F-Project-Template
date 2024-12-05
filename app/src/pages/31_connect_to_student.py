@@ -1,32 +1,43 @@
 import logging
+import streamlit as st
+import requests
 
+# Set up logging
 logger = logging.getLogger(__name__)
 
-import streamlit as st
-from modules.nav import SideBarLinks
+# Check the role of the user
+if "role" not in st.session_state:
+    st.error("You do not have permission to access this page.")
+else:
+    role = st.session_state["role"]
 
-st.set_page_config(layout = 'wide')
+    if role == "advisor":
+        st.title("Assign Alumni to a Student")
 
-SideBarLinks()
-st.title(f"Warehouse Manager Portal")
-st.write('')
-st.write('### Reports')
-if st.button('Show All Reorders',
-             type='primary',
-             use_container_width = True):
-    st.switch_page('pages/41_Reorders.py')
-if st.button('Show Low Stock',
-             type ='primary',
-             use_container_width = True):
-    st.switch_page('pages/42_Low_Stock.py')
-st.write('')
-st.write('### Products and Categories')
-if st.button('Add New Product Category',
-             type='primary',
-             use_container_width = True):
-    st.switch_page('pages/43_New_Cat.py')
-if st.button('Add New Product',
-             type='primary',
-             use_container_width = True):
-    st.switch_page('pages/44_New_Product.py')
+        # Inputs for assigning alumni to a student
+        student_id = st.number_input("Enter the Student ID", min_value=1, step=1)
+        alumni_id = st.number_input("Enter the Alumni ID", min_value=1, step=1)
 
+        if st.button("Assign Alumni", use_container_width=True):
+            if student_id and alumni_id:
+                # Prepare the payload
+                payload = {"alumniID": alumni_id}
+
+                # API URL
+                api_url = f"http://web-api:4000/coOpAdvisor/student/{student_id}/alumni"
+
+                # Make the PUT request
+                response = requests.put(api_url, json=payload)
+
+                if response.status_code == 200:
+                    st.success(response.json().get("message", "Alumni assigned successfully"))
+                elif response.status_code == 400:
+                    st.warning(response.json().get("error", "Invalid request"))
+                elif response.status_code == 404:
+                    st.error(response.json().get("error", "Student not found"))
+                else:
+                    st.error("Failed to assign alumni. Please try again later.")
+            else:
+                st.warning("Please enter both Student ID and Alumni ID.")
+    else:
+        st.error("Only advisors can access this page.")
