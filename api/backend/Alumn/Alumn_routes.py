@@ -1,12 +1,55 @@
+from flask import Blueprint, request, jsonify, make_response, current_app
+from backend.db_connection import db
+
+# Initialize Blueprint
 alumni = Blueprint('alumni', __name__)
 
+# ------------------------------------------------------------
+# Retrieve all students in {city} with their email contact
+@alumni.route('/alumni/<city>', methods=['GET'])
+def find_city_students():
+    query = '''
+        SELECT s.firstName, s.lastName, s.email
+        FROM Student s
+        WHERE s.city = %s
+    '''
+
+    cursor = db.get_db().cursor()
+    cursor.execute(query)
+    theData = cursor.fetchall()
+    
+    response = make_response(jsonify(theData))
+    response.status_code = 200
+    return response
+
+# ------------------------------------------------------------
+# Retrieves co-op advisors contact information whose students are {city}
+@alumni.route('/alumni/<city>', methods=['GET'])
+def find_city_advisors():
+    query = '''
+        SELECT ca.firstName, ca.lastName, ca.email
+        FROM CoopAdvisor ca
+        JOIN Student s ON ca.advisorID = s.advisorID
+        WHERE s.city = %s
+    '''
+
+    cursor = db.get_db().cursor()
+    cursor.execute(query)
+    theData = cursor.fetchall()
+    
+    response = make_response(jsonify(theData))
+    response.status_code = 200
+    return response
+
+# ------------------------------------------------------------
+# 1.1 Add new apartment listing to the site for this alumni
 @alumni.route('/alumni', methods=['POST'])
 def add_new_housing():
     
     the_data = request.json
     current_app.logger.info(the_data)
 
-    #extracting the variable
+    # extracting the variable
     alumID = the_data['alumID']
     beds = the_data['bed']
     baths = the_data['baths']
@@ -40,10 +83,11 @@ def add_new_housing():
     response.status_code = 200
     return response
 
+# ------------------------------------------------------------
+# 1.1 Update mutable attributes of apartmentID
 @alumni.route('/alumni', methods=['PUT'])
 def update_housing():
     current_app.logger.info('PUT /alumni route')
-
     the_data = request.json
     beds = the_data['bed']
     baths = the_data['baths']
@@ -68,6 +112,8 @@ def update_housing():
     db.get_db().commit()
     return 'Housing updated'
 
+# ------------------------------------------------------------
+# 1.1 Mark the alumni's apartment as no longer available
 @alumni.route('/alumni', methods=['DELETE'])
 def delete_housing():
     current_app.logger.info('DELETE /alumni route')
@@ -75,8 +121,8 @@ def delete_housing():
     query = '''
         DELETE FROM Apartment 
         WHERE housingID = %s
-        '''
-    
+    '''
+
     cursor = db.get_db().cursor()
     cursor.execute(query)
     db.get_db().commit()
@@ -84,3 +130,59 @@ def delete_housing():
     response = make_response(f'Housing deleted.')
     response.status_code = 200
     return response
+
+# ------------------------------------------------------------
+# Get housing details for specific alumni
+@alumni.route('/alumni/housing/<alum_id>', methods=['GET'])
+def get_alumni_housing(alum_id):
+    query = '''
+        SELECT 
+            a.housingID,
+            a.beds,
+            a.baths,
+            a.rent,
+            a.description,
+            DATE_FORMAT(a.dateAvailableFrom, '%%Y-%%m-%%d') as dateAvailableFrom,
+            DATE_FORMAT(a.dateAvailableTo, '%%Y-%%m-%%d') as dateAvailableTo,
+            a.street,
+            a.city,
+            a.state,
+            a.country,
+            al.firstName,
+            al.lastName,
+            al.email
+        FROM Apartment a
+        JOIN Alumni al ON a.alumID = al.alumID
+        WHERE a.alumID = %s
+    '''
+    
+    try:
+        cursor = db.get_db().cursor()
+        current_app.logger.info(f"Executing query for alum_id: {alum_id}")
+        cursor.execute(query, (alum_id,))
+        
+        # Log raw results
+        raw_results = cursor.fetchall()
+        current_app.logger.info(f"Raw results: {raw_results}")
+        
+        # Log column descriptions
+        columns = [desc[0] for desc in cursor.description]
+        current_app.logger.info(f"Columns: {columns}")
+        
+        # Create results list
+        results = []
+        for row in raw_results:
+            row_dict = {}
+            for i, column in enumerate(columns):
+                row_dict[column] = row[i]
+            results.append(row_dict)
+        
+        current_app.logger.info(f"Final results: {results}")
+        
+        if not results:
+            return make_response(jsonify([]), 200)
+            
+        return make_response(jsonify(results), 200)
+    except Exception as e:
+        current_app.logger.error(f"Database error: {str(e)}")
+        return make_response(jsonify({"error": str(e)}), 500)

@@ -1,41 +1,54 @@
 import logging
-logger = logging.getLogger(__name__)
-import pandas as pd
 import streamlit as st
-from streamlit_extras.app_logo import add_logo
-import world_bank_data as wb
-import matplotlib.pyplot as plt
-import numpy as np
-import plotly.express as px
+import requests
 from modules.nav import SideBarLinks
 
-# Call the SideBarLinks from the nav module in the modules directory
 SideBarLinks()
 
-# set the header of the page
-st.header('World Bank Data')
+# Set up logging
+logger = logging.getLogger(__name__)
 
-# You can access the session state to make a more customized/personalized app experience
-st.write(f"### Hi, {st.session_state['first_name']}.")
+if 'user_id' not in st.session_state:
+    st.error('You must be logged in as a student to update your information.')
+else:
+    student_id = st.session_state['user_id']
+    st.title("Update Profile Information")
 
-# get the countries from the world bank data
-with st.echo(code_location='above'):
-    countries:pd.DataFrame = wb.get_countries()
-   
-    st.dataframe(countries)
+    api_url = f"http://web-api:4000/student/{student_id}"
+    response = requests.get(api_url)
 
-# the with statment shows the code for this block above it 
-with st.echo(code_location='above'):
-    arr = np.random.normal(1, 1, size=100)
-    test_plot, ax = plt.subplots()
-    ax.hist(arr, bins=20)
+    if response.status_code == 200:
+        student_info = response.json()
 
-    st.pyplot(test_plot)
+        major = student_info.get('major', '')
+        company = student_info.get('company', '')
+        city = student_info.get('city', '')
 
+        st.subheader('Your Current Information:')
+        st.write(f'**Major**: {major}')
+        st.write(f'**Company**: {company}')
+        st.write(f'**City**: {city}')
 
-with st.echo(code_location='above'):
-    slim_countries = countries[countries['incomeLevel'] != 'Aggregates']
-    data_crosstab = pd.crosstab(slim_countries['region'], 
-                                slim_countries['incomeLevel'],  
-                                margins = False) 
-    st.table(data_crosstab)
+        st.subheader('Fill out the following to update your information:')
+        with st.form('update_student_info_form'):
+            new_major = st.text_input('Major', value=major)
+            new_company = st.text_input('Company', value=company)
+            new_city = st.text_input('City', value=city)
+
+            submitted = st.form_submit_button('Update Information')
+
+            if submitted:
+                data = {
+                    'major': new_major,
+                    'company': new_company,
+                    'city': new_city,
+                }
+                
+                update_response = requests.put(f'http://web-api:4000/student/{student_id}', json=data)
+                if update_response.status_code == 200:
+                    st.success('Your information has been updated successfully!')
+                else:
+                    st.error(f'Failed to update information: {update_response.text}')
+
+    else: 
+        st.error(f'Failed to fetch student information (Status Code: {response.status_code})')
