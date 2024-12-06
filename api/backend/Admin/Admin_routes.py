@@ -93,29 +93,41 @@ def update_system_update(update_id):
 @admin.route('/systemAdministrator/alumni', methods=['POST'])
 def add_alumni():
     """
-    Add a new alumni to the database.
+    Add a new alumni to the database with all available fields.
     """
     data = request.json
     first_name = data.get('firstName')
     last_name = data.get('lastName')
+    major = data.get('major')
     email = data.get('email')
+    company = data.get('company')
+    city = data.get('city')
+    admin_id = data.get('adminID')
 
     # Validate required fields
-    if not all([first_name, last_name, email]):
+    if not all([first_name, last_name, major, email, admin_id]):
         return make_response(
-            jsonify({"error": "First name, last name, and email"}), 
+            jsonify({"error": "First name, last name, major, email, and adminID are required"}), 
             400
         )
 
-    # SQL query to insert a new alumni record
+    # SQL query to insert a new alumni record with all fields
     query = '''
-        INSERT INTO Alumni (firstName, lastName, email)
-        VALUES (%s, %s, %s)
+        INSERT INTO Alumni (firstName, lastName, major, email, company, city, adminID)
+        VALUES (%s, %s, %s, %s, %s, %s, %s)
     '''
     try:
         # Execute the query
         cursor = db.get_db().cursor()
-        cursor.execute(query, (first_name, last_name, email))
+        cursor.execute(query, (
+            first_name, 
+            last_name, 
+            major,
+            email, 
+            company, 
+            city, 
+            admin_id
+        ))
         db.get_db().commit()
 
         # Success response
@@ -149,7 +161,7 @@ def update_alumni(alumID):
 
     query = '''
         UPDATE Alumni
-        SET firstName = %s, lastName = %s, email = %s
+        SET firstName = %s, lastName = %s, email = %s, city = %s, state = %s, 
         WHERE alumID = %s
     '''
     try:
@@ -164,6 +176,44 @@ def update_alumni(alumID):
     except Exception as e:
         return make_response(jsonify({"error": str(e)}), 500)
     
+#get all alumni
+@admin.route('/systemAdministrator/alumni', methods=['GET'])
+def get_all_alumni():
+    query = '''
+        SELECT * FROM Alumni
+    '''
+    cursor = db.get_db().cursor()
+    cursor.execute(query)
+    theData = cursor.fetchall()
+    response = make_response(jsonify(theData))
+    response.status_code = 200
+    return response
+
+#get all students
+@admin.route('/systemAdministrator/student', methods=['GET'])
+def get_all_students():
+    query = '''
+        SELECT * FROM Student
+    '''
+    cursor = db.get_db().cursor()
+    cursor.execute(query)
+    theData = cursor.fetchall()
+    response = make_response(jsonify(theData))
+    response.status_code = 200
+    return response
+
+#get all advisors
+@admin.route('/systemAdministrator/advisor', methods=['GET'])
+def get_all_advisors():
+    query = '''
+        SELECT * FROM CoopAdvisor
+    '''
+    cursor = db.get_db().cursor()
+    cursor.execute(query)
+    theData = cursor.fetchall()
+    response = make_response(jsonify(theData))
+    response.status_code = 200
+    return response
 
 # ------------------------------------------------------------ 
 # 2.3 Add a new student to the database

@@ -27,7 +27,7 @@ if st.button('Check or Modify System Updates',
 if st.button('Add or Modify Users', 
              type='primary', 
              use_container_width=True):
-    st.switch_page('pages/43_modify_users.py')  
+    st.switch_page('pages/21_modify_users.py')  
 
 # Button to remove cities from system database
 if st.button('Remove City from Database', 
