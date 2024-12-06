@@ -6,44 +6,28 @@ student = Blueprint('student', __name__)
 
 # ------------------------------------------------------------
 # Retrieve a list of available apartments in the city
-@student.route('/student', methods=['GET'])
-def find_city_housing():
+@student.route('/apartment/city/<city>', methods=['GET'])
+def find_city_housing(city):
     query = '''
-        SELECT *
+        SELECT al.firstName, al.lastName, al.email, ap.*
         FROM Apartment ap
+        JOIN Alumni al ON ap.alumID = al.alumID
         WHERE ap.city = %s
     '''
 
     cursor = db.get_db().cursor()
-    cursor.execute(query)
+    cursor.execute(query, (city,))
     theData = cursor.fetchall()
     
     response = make_response(jsonify(theData))
     response.status_code = 200
     return response
 
-# ------------------------------------------------------------
-# Retrieve a list of recommednations in specific location
-# @student.route('/student', methods=['GET'])
-# def find_loc_recs():
-    query = '''
-        SELECT r.establishment, r.category, r.location, r.priceRating
-        FROM Recommendation r
-        WHERE r.location = %s
-    '''
 
-    cursor = db.get_db().cursor()
-    cursor.execute(query)
-    theData = cursor.fetchall()
-    
-    response = make_response(jsonify(theData))
-    response.status_code = 200
-    return response
 
-# ------------------------------------------------------------
 # Retrieve a list of students in the city
-@student.route('/student', methods=['GET'])
-def find_city_students():
+@student.route('/student/city/<city>', methods=['GET'])
+def find_city_students(city):
     query = '''
         SELECT s.firstName, s.lastName, s.email, s.company
         FROM Student s
@@ -51,17 +35,16 @@ def find_city_students():
     '''
 
     cursor = db.get_db().cursor()
-    cursor.execute(query)
+    cursor.execute(query, (city,))
     theData = cursor.fetchall()
     
     response = make_response(jsonify(theData))
     response.status_code = 200
     return response
 
-# ------------------------------------------------------------
 # Retrieve a list of alumni in the city
-@student.route('/student', methods=['GET'])
-def find_city_alumni():
+@student.route('/alumni/city/<city>', methods=['GET'])
+def find_city_alumni(city):
     query = '''
         SELECT a.firstName, a.lastName, a.email, a.company
         FROM Alumni a
@@ -69,14 +52,13 @@ def find_city_alumni():
     '''
 
     cursor = db.get_db().cursor()
-    cursor.execute(query)
+    cursor.execute(query, (city,))
     theData = cursor.fetchall()
     
     response = make_response(jsonify(theData))
     response.status_code = 200
     return response
 
-# ------------------------------------------------------------
 # 3.3 Add a new city that the student is willing to live in
 @student.route('/student', methods=['POST'])
 def add_new_city():

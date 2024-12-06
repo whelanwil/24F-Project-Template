@@ -15,7 +15,7 @@ def StudentNav():
         "pages/00_Student_Home.py", label="Student Dashboard", icon="🎓"
     )
     st.sidebar.page_link(
-        "pages/11_Alumn_Housing.py", label="Search Alumni Housing", icon="🏘️"
+        "pages/04_Search_Alum_Housing.py", label="Search Alumni Housing", icon="🏘️"
     )
     st.sidebar.page_link(
         "pages/01_Student_housing_preferences.py",

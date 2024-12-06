@@ -17,7 +17,7 @@ st.write('### What would you like to do today?')
 if st.button('Search Alumni Housing', 
              type='primary',
              use_container_width=True):
-  st.switch_page('pages/11_Alumn_Housing.py')
+  st.switch_page('pages/04_Search_Alum_Housing.py')
 
 if st.button('Update Housing Settings (Preferences and Status)', 
              type='primary',
