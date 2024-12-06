@@ -9,8 +9,6 @@ st.set_page_config(layout = 'wide')
 
 SideBarLinks()
 
-st.title('System Admin Home Page')
-
 st.title(f"Welcome System Administrator, {st.session_state['first_name']}!")
 st.write('')
 st.write('### What would you like to do today?')
