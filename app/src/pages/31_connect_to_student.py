@@ -15,29 +15,34 @@ st.title("Manage Alum-Student Connections")
 tab1, tab2, tab3 = st.tabs(["View Connections", "Add Connection", "Remove Connection"])
 
 # Tab 1: View Connections
+# Tab 1: View Connections
 with tab1:
     st.subheader("View All Alum-Student Connections")
+    
+    try:
+        # Request data from the API
+        response = requests.get(BASE_API_URL, timeout=10)
 
     try:
         response = requests.get(BASE_API_URL)
         st.write("Status Code:", response.status_code)
         
         if response.status_code == 200:
-            # Parse JSON response
-            try:
-                connections = response.json().get("data", [])
-                if connections:
-                    st.table(pd.DataFrame(connections))
-                else:
-                    st.info("No alum-student connections found.")
-            except ValueError:
-                st.error("Failed to parse JSON response from the server.")
-        elif response.status_code == 404:
-            st.warning("No connections found. The API endpoint might not exist.")
+            # Parse the response and retrieve the data
+            connections = response.json().get("data", [])
+            if connections:
+                # Display the data as a table
+                st.table(pd.DataFrame(connections))
+            else:
+                # Inform the user if no connections are found
+                st.info("No alum-student connections found.")
         else:
-            st.error(f"Unexpected error: {response.text}")
+            # Handle API errors and display the error message
+            error_message = response.json().get("error", "An unknown error occurred.")
+            st.error(f"Failed to retrieve connections: {error_message}")
     except requests.RequestException as e:
-        st.error(f"An error occurred while connecting to the API: {str(e)}")
+        # Handle request exceptions and display the error
+        st.error(f"Error retrieving connections: {str(e)}")
 
 # Tab 2: Add Connection
 with tab2:
