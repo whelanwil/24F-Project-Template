@@ -91,73 +91,65 @@ def find_city_alumni(city):
 
 # ------------------------------------------------------------
 # 3.5 Update student info including major, company, & city
-@student.route('/student/<nuID>', methods=['PUT'])
+@student.route('/student', methods=['PUT'])
 def update_student_info(nuID):
-    current_app.logger.info('PUT /student/{nuID} route')
+    current_app.logger.info('PUT /student route')
+    student_info = request.json
 
-    the_data = request.json
-    current_app.logger.info(f"Data received: {the_data}")
+    first_name = student_info.get('firstName')
+    last_name = student_info.get('lastName')
+    major = student_info.get('major')
+    email = student_info.get('email')
+    company = student_info.get('company')
+    city = student_info.get('city')
 
-    major = the_data['major']
-    company = the_data['company']
-    city = the_data['city']
+    cursor = db.get_db().cursor()
+    check_query = "SELECT nuID FROM Student WHERE email = %s"
+    cursor.execute(check_query, (email,))
+    existing_student = cursor.fetchone()
 
-    current_app.logger.info(f"Updating studentID: {nuID} with Major: {major}, Company: {company}, City: {city}")
+    if not existing_student:
+        return make_response(jsonify({'message': 'Student not found'}), 404)
 
     query = '''
-        UPDATE Student SET major = %s, company = %s, city = %s 
+        UPDATE Student
+        SET firstName = %s, lastName = %s, major = %s, email = %s, company = %s, city = %s
         WHERE nuID = %s
     '''
-    data = (major, company, city, nuID)
+    data = (first_name, last_name, major, email, company, email)
+    cursor.execute(query, data)
+    db.get_db().commit()
 
-    try: 
-        cursor = db.get_db().cursor()
-        cursor.execute(query, data)
-        db.get_db().commit()
-        current_app.logger.info("Update successful.")
-        return 'Student information updated'
-    except Exception as e:
-        current_app.logger.error(f"Error updating student info: {e}")
-        return f"Failed to update student information: {str(e)}", 500
+    return make_response(jsonify({'message': 'Student updated successfully'}), 200)
 
 # ------------------------------------------------------------
 # 3.5 Gets all student information based on nuID
 @student.route('/student/<nuID>', methods=['GET'])
 def get_student_info(nuID):
     current_app.logger.info(f'GET /student/{nuID} query: {query}')
+    cursor = db.get_db().cursor()
 
     query = '''
-        SELECT major, 
-               company, 
-               city
+        SELECT firstName,
+            lastName,
+            major, 
+            email,
+            company, 
+            city
         FROM Student
         WHERE nuID = %s
     '''
-    try:
-        cursor = db.get_db().cursor()
-        cursor.execute(query, (nuID,))
-        theData = cursor.fetchone()
-        current_app.logger.info(f'GET /student/{nuID} Result of query: {theData}')
 
-        if theData:
-            student_info = {
-                "firstName": theData[0],
-                "lastName": theData[1],
-                "major": theData[2],
-                "company": theData[3],
-                "city": theData[4]
-            }
-            current_app.logger.info(f'Successfully retrieved student info: {student_info}')
-            response = make_response(jsonify({"data": [student_info], "message": "Data retrieved successfully"}))
-            response.status_code = 200
-        else:
-            response = make_response(jsonify({"error": "Student not found"}))
-            response.status_code = 404
-    except Exception as e:
-        current_app.logger.error(f'Error in GET /student/{nuID}: {e}')
-        response = make_response(jsonify({"error": str(e)}))
-        response.status_code = 500
-    return response
+    cursor.execute(query, (nuID,))
+    theData = cursor.fetchall()
+
+    if theData:
+        the_response = make_response(jsonify(theData[0]))
+        the_response.status_code = 200
+    else:
+        the_response = make_response(jsonify({'message': 'Student not found'}))
+        the_response.status_code = 404
+    return the_response
 
 # ------------------------------------------------------------
 # Revoke parent access
