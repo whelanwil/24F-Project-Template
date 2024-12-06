@@ -11,9 +11,13 @@ SideBarLinks()
 # Set up logging
 logger = logging.getLogger(__name__)
 
+# Initialize response
+response = None
+
 # Check the role of the user
 if "role" not in st.session_state:
     st.error("You do not have permission to access this page.")
+
 else:
     role = st.session_state["role"]
 
@@ -54,7 +58,6 @@ else:
                         st.error("Failed to add alumni. Please try again.")
         
         with tab2:
-        
             st.subheader("Update Existing Alumni Information")
 
             alumID = st.text_input("Enter Alumni ID:")
