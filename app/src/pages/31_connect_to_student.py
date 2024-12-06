@@ -20,10 +20,6 @@ with tab1:
     st.subheader("View All Alum-Student Connections")
     
     try:
-        # Request data from the API
-        response = requests.get(BASE_API_URL, timeout=10)
-
-    try:
         response = requests.get(BASE_API_URL)
         st.write("Status Code:", response.status_code)
         
