@@ -17,7 +17,7 @@ st.write('### What would you like to do today?')
 if st.button('Search Alumni Housing', 
              type='primary',
              use_container_width=True):
-  st.switch_page('pages/11_Alumn_Housing.py')
+  st.switch_page('pages/04_Search_Alum_Housing.py')
 
 if st.button('Update Housing Settings (Preferences and Status)', 
              type='primary',
@@ -27,7 +27,7 @@ if st.button('Update Housing Settings (Preferences and Status)',
 if st.button('Connect with Alumni or Students', 
             type='primary', 
             use_container_width=True):
-  st.switch_page('pages/31_connect_to_student.py')
+  st.switch_page('pages/02_Student_Alumni_Connection.py')
 
 if st.button('Edit Parent Housing Relationship',
             type='primary', 

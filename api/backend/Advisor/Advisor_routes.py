@@ -12,7 +12,7 @@ def get_alumni_housing(city):
         SELECT A.alumID, A.firstName, A.lastName, Ap.city
         FROM Alumni A
         JOIN Apartment Ap ON A.alumID = Ap.alumID
-        WHERE A.city = %s
+        WHERE Ap.city = %s
     '''
     
     current_app.logger.info(f'GET /alumni/<city> query: {query}')
@@ -100,37 +100,83 @@ def add_student_with_city():
     
 # ------------------------------------------------------------
 # Edit student information in the database
-@advisor.route('/coOpAdvisor/student/<int:student_id>', methods=['PUT'])
-def edit_student(student_id):
+@advisor.route('/coopAdvisor/student/<int:student_id>/alumni', methods=['PUT'])
+def assign_alumni_to_student(student_id):
     """
-    Edit a student's information by a Co-op Advisor.
+    Assign an alumni to a student by updating the alumniID field.
     """
     data = request.json
 
-    # Validate that at least one field is provided for update
-    allowed_fields = ['firstName', 'lastName', 'email', 'company', 'city', 'adminID', 'advisorID']
-    fields_to_update = {key: value for key, value in data.items() if key in allowed_fields and value is not None}
+    # Validate input
+    if 'alumniID' not in data or not data['alumniID']:
+        return make_response(jsonify({"error": "Missing or invalid 'alumniID'"}), 400)
 
-    if not fields_to_update:
-        return make_response(jsonify({"error": "No valid fields provided for update"}), 400)
+    alumni_id = data['alumniID']
 
-    # Prepare dynamic SQL query for updating the fields
-    set_clause = ", ".join(f"{key} = %s" for key in fields_to_update.keys())
-    query = f"UPDATE Student SET {set_clause} WHERE nuID = %s"
+    # Prepare the SQL query
+    query = "UPDATE Student SET alumniID = %s WHERE nuID = %s"
 
     try:
         # Execute the query
         cursor = db.get_db().cursor()
-        cursor.execute(query, (*fields_to_update.values(), student_id))
+        cursor.execute(query, (alumni_id, student_id))
         db.get_db().commit()
 
         # Check if a student was updated
         if cursor.rowcount == 0:
             return make_response(jsonify({"error": "Student not found or no changes made"}), 404)
 
-        return make_response(jsonify({"message": f"Student ID {student_id} updated successfully"}), 200)
+        return make_response(jsonify({"message": f"Alumni ID {alumni_id} assigned to Student ID {student_id} successfully"}), 200)
 
     except Exception as e:
         # Log and handle errors
         print(f"Error occurred: {e}")
         return make_response(jsonify({"error": "An internal server error occurred"}), 500)
+
+@advisor.route('student/<nuID>', methods=['GET'])
+def get_student_info(nuID):
+    """
+    Co-op Advisor route to get a student's information by their nuID.
+    """
+    current_app.logger.info(f"GET /advisor/student/{nuID} route called")
+
+    # SQL query to fetch the student's details
+    query = '''
+        SELECT 
+            s.nuID, 
+            s.firstName, 
+            s.lastName, 
+            s.major, 
+            s.company, 
+            s.city
+        FROM Student s
+        WHERE s.nuID = %s
+    '''
+
+    try:
+        # Execute the query
+        cursor = db.get_db().cursor()
+        cursor.execute(query, (nuID,))
+        result = cursor.fetchone()
+
+        # If no student is found, return a 404 response
+        if not result:
+            current_app.logger.warning(f"Student with nuID {nuID} not found")
+            return make_response(jsonify({"error": "Student not found"}), 404)
+
+        # Map the result to a dictionary
+        student_info = {
+            "nuID": result[0],
+            "firstName": result[1],
+            "lastName": result[2],
+            "major": result[3],
+            "company": result[4],
+            "city": result[5],
+        }
+
+        current_app.logger.info(f"Student info retrieved: {student_info}")
+        return make_response(jsonify({"student": student_info}), 200)
+
+    except Exception as e:
+        current_app.logger.error(f"Error retrieving student info: {str(e)}")
+        return make_response(jsonify({"error": "Internal server error"}), 500)

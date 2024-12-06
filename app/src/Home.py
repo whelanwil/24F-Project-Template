@@ -44,12 +44,13 @@ st.write('### HI! As which user would you like to log in?')
 
 # Make a single API call for student data
 try:
-    student_response = requests.get(f"http://web-api:4000/student/1")
+    student_response = requests.get(f"http://web-api:4000/auth/student/1")
     if student_response.status_code == 200:
         student_data = student_response.json()
         logger.info("Student API Response: %s", student_data)
         student_firstname = student_data["data"][0]["firstName"]
         student_lastname = student_data["data"][0]["lastName"]
+        student_city = student_data["data"][0]["city"]
         student_id = 1  # Store the ID we used in the API call
     else:
         st.error(f"Error: {student_response.status_code}")
@@ -59,7 +60,7 @@ except Exception as e:
 
 # Make API call for advisor data
 try:
-    advisor_response = requests.get(f"http://web-api:4000/advisor/1")
+    advisor_response = requests.get(f"http://web-api:4000/auth/advisor/1")
     if advisor_response.status_code == 200:
         advisor_data = advisor_response.json()
         advisor_firstname = advisor_data["data"][0]["firstName"]
@@ -73,7 +74,7 @@ except Exception as e:
 
 # Make API call for admin data
 try:
-    admin_response = requests.get(f"http://web-api:4000/admin/1")
+    admin_response = requests.get(f"http://web-api:4000/auth/admin/1")
     if admin_response.status_code == 200:
         admin_data = admin_response.json()
         admin_firstname = admin_data["data"][0]["firstName"]
@@ -87,7 +88,7 @@ except Exception as e:
 
 # Make API call for alumni data
 try:
-    alumni_response = requests.get(f"http://web-api:4000/alumni/1")
+    alumni_response = requests.get(f"http://web-api:4000/auth/alumni/1")
     if alumni_response.status_code == 200:
         alumni_data = alumni_response.json()
         alumni_firstname = alumni_data["data"][0]["firstName"]
@@ -106,6 +107,7 @@ if st.button(f"Act as {student_firstname} {student_lastname}, a Student on Coop"
     st.session_state['authenticated'] = True
     st.session_state['role'] = 'student'
     st.session_state['first_name'] = student_firstname
+    st.session_state['city'] = student_city
     st.session_state['user_id'] = student_id  # Store the user ID
     logger.info("Logging in as a Student on Coop")
     st.switch_page('pages/00_Student_Home.py')
@@ -119,15 +121,6 @@ if st.button(f'Act as {advisor_firstname} {advisor_lastname}, an Coop Advisor',
     st.session_state['user_id'] = advisor_id  # Store the user ID
     st.switch_page('pages/10_Advisor_Home.py')
 
-if st.button(f'Act as {admin_firstname} {admin_lastname}, a System Administrator', 
-            type = 'primary', 
-            use_container_width=True): 
-    st.session_state['authenticated'] = True
-    st.session_state['role'] = 'administrator'
-    st.session_state['first_name'] = admin_firstname
-    st.session_state['user_id'] = admin_id  # Store the user ID
-    st.switch_page('pages/20_Admin_Home.py')
-
 if st.button(f'Act as {alumni_firstname} {alumni_lastname}, an Alumni', 
             type = 'primary', 
             use_container_width=True):
@@ -136,4 +129,13 @@ if st.button(f'Act as {alumni_firstname} {alumni_lastname}, an Alumni',
     st.session_state['first_name'] = alumni_firstname
     st.session_state['user_id'] = alumni_id  # Store the user ID
     st.switch_page('pages/30_Alumni_Home.py')
+
+if st.button(f'Act as {admin_firstname} {admin_lastname}, a System Administrator', 
+            type = 'primary', 
+            use_container_width=True): 
+    st.session_state['authenticated'] = True
+    st.session_state['role'] = 'administrator'
+    st.session_state['first_name'] = admin_firstname
+    st.session_state['user_id'] = admin_id  # Store the user ID
+    st.switch_page('pages/20_Admin_Home.py')
 

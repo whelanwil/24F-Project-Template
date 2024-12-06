@@ -7,7 +7,7 @@ auth = Blueprint('auth', __name__)
 @auth.route('/student/<id>', methods=['GET'])
 def get_student(id):
     query = '''
-        SELECT firstName, lastName
+        SELECT firstName, lastName, city
         FROM Student
         WHERE nuID = %s
     '''
@@ -25,7 +25,7 @@ def get_student(id):
         current_app.logger.error(f"Database error: {str(e)}")
         return make_response(jsonify({"error": str(e)}), 500)
 
-@auth.route('/advisor/<int:id>', methods=['GET'])
+@auth.route('/advisor/<id>', methods=['GET'])
 def get_advisor(id):
     query = '''
         SELECT firstName, lastName
