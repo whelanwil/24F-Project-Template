@@ -22,7 +22,7 @@ if st.button('Search Alumni Housing',
 if st.button('Connect with Alumni or Students', 
              type='primary', 
              use_container_width=True):
-    st.switch_page('pages/31_connect_to_student.py')  # Shared page
+    st.switch_page('pages/12_connect_to_student.py')  # Shared page
 
 # Button to track student housing status (advisor-specific)
 if st.button('Track Student Housing Status', 

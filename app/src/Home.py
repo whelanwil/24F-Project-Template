@@ -49,6 +49,7 @@ try:
         student_data = student_response.json()
         student_firstname = student_data["data"][0]["firstName"]
         student_lastname = student_data["data"][0]["lastName"]
+        student_city = student_data["data"][0]["city"]
         student_id = 1  # Store the ID we used in the API call
     else:
         st.error(f"Error: {student_response.status_code}")
@@ -105,6 +106,7 @@ if st.button(f"Act as {student_firstname} {student_lastname}, a Student on Coop"
     st.session_state['authenticated'] = True
     st.session_state['role'] = 'student'
     st.session_state['first_name'] = student_firstname
+    st.session_state['city'] = student_city
     st.session_state['user_id'] = student_id  # Store the user ID
     logger.info("Logging in as a Student on Coop")
     st.switch_page('pages/00_Student_Home.py')

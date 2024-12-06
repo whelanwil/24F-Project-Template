@@ -7,7 +7,7 @@ auth = Blueprint('auth', __name__)
 @auth.route('/student/<id>', methods=['GET'])
 def get_student(id):
     query = '''
-        SELECT firstName, lastName
+        SELECT firstName, lastName, city
         FROM Student
         WHERE nuID = %s
     '''

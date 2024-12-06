@@ -22,6 +22,7 @@ else:
     if response.status_code == 200:
         try:
             data = response.json()
+            st.write(data)
             # Convert the list response to a DataFrame
             df = pd.DataFrame(data)
             
