@@ -7,7 +7,7 @@ from modules.nav import SideBarLinks
 SideBarLinks()
 
 # Base API URL
-BASE_API_URL = "http://web-api:4000/studentAlum/alumstudent"
+BASE_API_URL = "http://web-api:4000/advisor/alumstudent"
 
 # Page Title
 st.title("Manage Alum-Student Connections")
