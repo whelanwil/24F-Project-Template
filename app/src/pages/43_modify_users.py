@@ -11,9 +11,6 @@ SideBarLinks()
 # Set up logging
 logger = logging.getLogger(__name__)
 
-# Initialize response
-response = None
-
 # Check the role of the user
 if "role" not in st.session_state:
     st.error("You do not have permission to access this page.")
