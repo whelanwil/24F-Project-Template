@@ -91,7 +91,7 @@ def find_city_alumni(city):
 
 # ------------------------------------------------------------
 # 3.5 Update student info including major, company, & city
-@student.route('/student/<nuID>', methods=['PUT'])
+@student.route('/student', methods=['PUT'])
 def update_student_info(nuID):
     current_app.logger.info('PUT /student/{nuID} route')
 
@@ -125,7 +125,8 @@ def update_student_info(nuID):
 # 3.5 Gets all student information based on nuID
 @student.route('/student/<nuID>', methods=['GET'])
 def get_student_info(nuID):
-    current_app.logger.info('GET /student/{nuID} route')
+    current_app.logger.info(f'GET /student/{nuID} query: {query}')
+    cursor = db.get_db().cursor()
 
     query = '''
         SELECT firstName, 
@@ -137,12 +138,17 @@ def get_student_info(nuID):
         FROM Student
         WHERE nuID = %s
     '''
-    cursor = db.get_db().cursor()
+
     cursor.execute(query, (nuID,))
     theData = cursor.fetchall()
-    response = make_response(jsonify(theData))
-    response.status_code = 200
-    return response
+
+    if theData:
+        the_response = make_response(jsonify(theData[0]))
+        the_response.status_code = 200
+    else:
+        the_response = make_response(jsonify({'message': 'Student not found'}))
+        the_response.status_code = 404
+    return the_response
 
 # ------------------------------------------------------------
 # Revoke parent access

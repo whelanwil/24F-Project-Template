@@ -47,6 +47,7 @@ try:
     student_response = requests.get(f"http://web-api:4000/auth/student/1")
     if student_response.status_code == 200:
         student_data = student_response.json()
+        logger.info("Student API Response: %s", student_data)
         student_firstname = student_data["data"][0]["firstName"]
         student_lastname = student_data["data"][0]["lastName"]
         student_city = student_data["data"][0]["city"]
