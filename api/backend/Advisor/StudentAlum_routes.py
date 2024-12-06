@@ -66,3 +66,28 @@ def add_alum_student_connection():
         # Log the error and return a failure response
         current_app.logger.error(f"Error adding connection: {e}")
         return jsonify({"error": f"Failed to add connection: {str(e)}"}), 500
+
+
+@studentAlum.route('/alumstudent/<nuID>', methods=['GET'])
+def get_student_connections(nuID):
+    """
+    Retrieve all alumni connections for a specific student.
+    """
+    current_app.logger.info(f'GET /alumstudent/{nuID} route')
+
+    query = '''
+        SELECT a.firstName, 
+               a.lastName,
+               a.email,
+               a.company,
+               a.city
+        FROM Alumni a
+        JOIN AlumStudent ast ON a.alumID = ast.alumID
+        WHERE ast.nuID = %s
+    '''
+    cursor = db.get_db().cursor()
+    cursor.execute(query, (nuID,))
+    theData = cursor.fetchall()
+    response = make_response(jsonify(theData))
+    response.status_code = 200
+    return response
