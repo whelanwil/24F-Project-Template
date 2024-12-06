@@ -21,10 +21,9 @@ else:
     if response.status_code == 200:
         # Parse the response JSON
         student_info = response.json()
-
-        major = student_info.get('major', 'N/A')
-        company = student_info.get('company', 'N/A')
-        city = student_info.get('city', 'N/A')
+        major = student_info.get('major')
+        company = student_info.get('company')
+        city = student_info.get('city')
 
         # Display the current student information
         st.subheader('Your Current Information:')
@@ -51,12 +50,10 @@ else:
 
                 # Send a PUT request to update student information
                 update_response = requests.put(f'http://web-api:4000/student/{student_id}', json=data)
-
                 if update_response.status_code == 200:
                     st.success('Your information has been updated successfully!')
-                    
-                    # Refresh the page to display updated information
-                    st.experimental_rerun()
+                    # Use session state to re-render the page
+                    st.session_state['refresh'] = not st.session_state.get('refresh', False)
                 else:
                     st.error(f'Failed to update information: {update_response.text}')
     else:

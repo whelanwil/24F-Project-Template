@@ -142,34 +142,40 @@ def update_student_info(nuID):
 # 3.5 Gets all student information based on nuID
 @student.route('/student/<nuID>', methods=['GET'])
 def get_student_info(nuID):
-    current_app.logger.info('GET /student/{nuID} route')
+    current_app.logger.info(f'GET /student/{nuID} query: {query}')
 
     query = '''
-        SELECT firstName, 
-               lastName, 
-               major, 
-               company,
+        SELECT major, 
+               company, 
                city
         FROM Student
         WHERE nuID = %s
     '''
-    cursor = db.get_db().cursor()
-    cursor.execute(query, (nuID,))
-    theData = cursor.fetchone()
+    
+    try:
+        cursor = db.get_db().cursor()
+        cursor.execute(query, (nuID,))
+        theData = cursor.fetchone()
+        current_app.logger.info(f'GET /student/{nuID} Result of query: {theData}')
 
-    if theData:
-        student_info = {
-            "firstName": theData[0],
-            "lastName": theData[1],
-            "major": theData[2],
-            "company": theData[3],
-            "city": theData[4],
-        }
-        response = make_response(jsonify(student_info))
-        response.status_code = 200
-    else: 
-        response = make_response(jsonify({"error": "Student not found"}))
-        response.status_code = 404
+        if theData:
+            student_info = {
+                "firstName": theData[0],
+                "lastName": theData[1],
+                "major": theData[2],
+                "company": theData[3],
+                "city": theData[4]
+            }
+            current_app.logger.info(f'Successfully retrieved student info: {student_info}')
+            response = make_response(jsonify({"data": [student_info], "message": "Data retrieved successfully"}))
+            response.status_code = 200
+        else:
+            response = make_response(jsonify({"error": "Student not found"}))
+            response.status_code = 404
+    except Exception as e:
+        current_app.logger.error(f'Error in GET /student/{nuID}: {e}')
+        response = make_response(jsonify({"error": str(e)}))
+        response.status_code = 500
 
     return response
 
