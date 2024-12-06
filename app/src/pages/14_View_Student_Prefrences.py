@@ -62,7 +62,7 @@ with tab2:
             
             if not filtered_df.empty:
                 st.dataframe(
-                    filtered_df,
+                    style_housing_status(filtered_df),
                     use_container_width=True,
                     hide_index=True
                 )
