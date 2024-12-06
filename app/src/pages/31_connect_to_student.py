@@ -16,25 +16,30 @@ st.title("Manage Alum-Student Connections")
 tab1, tab2, tab3 = st.tabs(["View Connections", "Add Connection", "Remove Connection"])
 
 # Tab 1: View Connections
+# Tab 1: View Connections
 with tab1:
     st.subheader("View All Alum-Student Connections")
+    
     try:
+        # Request data from the API
         response = requests.get(BASE_API_URL, timeout=10)
-        st.write("Status Code:", response.status_code)
-        st.write("Response Content:", response.text)
 
         if response.status_code == 200:
+            # Parse the response and retrieve the data
             connections = response.json().get("data", [])
             if connections:
+                # Display the data as a table
                 st.table(pd.DataFrame(connections))
             else:
+                # Inform the user if no connections are found
                 st.info("No alum-student connections found.")
         else:
-            # Extract the actual error message from the API response
-            error_message = response.json().get("error", "Unknown error")
+            # Handle API errors and display the error message
+            error_message = response.json().get("error", "An unknown error occurred.")
             st.error(f"Failed to retrieve connections: {error_message}")
     except requests.RequestException as e:
-        st.error(f"An error occurred while retrieving connections: {str(e)}")
+        # Handle request exceptions and display the error
+        st.error(f"Error retrieving connections: {str(e)}")
 
 # Tab 2: Add Connection
 with tab2:
