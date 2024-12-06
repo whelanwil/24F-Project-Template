@@ -56,12 +56,13 @@ else:
                         'housingStatus': new_housing_status
                     }
 
-                update_response = requests.put(f'http://web-api:4000/student/student/{student_id}', json=data)
+                    update_response = requests.put(f'http://web-api:4000/student/student/{student_id}', json=data)
+                    st.session_state['city'] = new_city
 
-                if update_response.status_code == 200:
+                    if update_response.status_code == 200:
                         st.success('Your information has been updated successfully!')
                         st.rerun()
-                else:
+                    else:
                         st.error(f'Failed to update information: {update_response.text}')
         except requests.exceptions.JSONDecodeError:
             st.error(f"Error parsing response from server. Response text: {response.text}")

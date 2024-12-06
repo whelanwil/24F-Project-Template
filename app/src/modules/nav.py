@@ -42,9 +42,7 @@ def AdvisorNav():
         "pages/12_connect_to_student.py", label="Connect with Alumni/Students", icon="🤝"
     )
     st.sidebar.page_link(
-        "pages/01_Student_housing_preferences.py",
-        label="Track Student Housing Status",
-        icon="📊",
+        "pages/14_View_Student_Prefrences.py",label="Track Student Housing Status", icon="📊",
     )
 
 
@@ -62,9 +60,7 @@ def AlumniNav():
 # ------------------------ System Admin Role ------------------------
 def AdminNav():
     st.sidebar.page_link("pages/20_Admin_Home.py", label="Admin Dashboard", icon="🖥️")
-    st.sidebar.page_link(
-        "pages/21_modify_users.py", label="Modify Users", icon="🤖"
-    )   
+    
 
 
 # ------------------------ SideBarLinks Function ------------------------
