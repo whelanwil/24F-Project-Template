@@ -80,7 +80,6 @@ with tab3:
         if student_id and alumni_id:
             # Construct the delete URL using the same base URL
             delete_url = f"{BASE_API_URL}/{student_id}/{alumni_id}"
-            st.write("Attempting to delete at URL:", delete_url)  # Debug line
             try:
                 response = requests.delete(delete_url)
                 try:
