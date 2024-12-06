@@ -6,7 +6,7 @@ from backend.Auth.auth_routes import auth
 from backend.Alumn.Alumn_routes import alumni
 from backend.Student.Student_routes import student
 from backend.Admin.Admin_routes import admin
-from backend.Advisor.StudentAlum_routes import studentAlum
+#from backend.Advisor.StudentAlum_routes import studentAlum
 # from backend.simple.simple_routes import simple_routes
 import os
 from dotenv import load_dotenv
