@@ -4,6 +4,7 @@ from backend.db_connection import db
 # Initialize Blueprint
 studentAlum = Blueprint('studentAlum', __name__)
 
+#Advisor
 @studentAlum.route('/alumstudent', methods=['GET'])
 def get_all_connections():
     """
@@ -81,6 +82,7 @@ def add_alum_student_connection():
         }), 500
 
 
+#Student
 @studentAlum.route('/alumstudent/<nuID>', methods=['GET'])
 def get_student_connections(nuID):
     """

@@ -63,7 +63,11 @@ CREATE TABLE `Student` (
 DROP TABLE IF EXISTS `Parent`;
 CREATE TABLE `Parent` (
     `parentID` INTEGER AUTO_INCREMENT PRIMARY KEY,
-    `relationshipToStudent` VARCHAR(50)
+    `relationshipToStudent` VARCHAR(50),
+    `firstName` VARCHAR(50),
+    `lastName` VARCHAR(50),
+    `email` VARCHAR(75),
+    `phone` VARCHAR(15)
 );
 
 DROP TABLE IF EXISTS `StudentParent`;
@@ -443,65 +447,6 @@ INSERT INTO `Student` (`firstName`, `lastName`, `major`, `email`, `company`, `ci
 ('William', 'Collins', 'Computer Science', 'william.collins@student.com', 'SolarEdge', 'Little Rock', 10, 40);
 
 
-INSERT INTO `Parent` (`relationshipToStudent`) VALUES
-('Father'),
-('Mother'),
-('Guardian'),
-('Stepmother'),
-('Stepfather'),
-('Grandparent'),
-('Foster Parent'),
-('Legal Guardian'),
-('Adoptive Parent'),
-('Father'),
-('Mother'),
-('Stepmother'),
-('Stepfather'),
-('Grandparent'),
-('Foster Parent'),
-('Legal Guardian'),
-('Adoptive Parent'),
-('Mother'),
-('Father'),
-('Grandparent'),
-('Stepmother'),
-('Guardian'),
-('Stepfather'),
-('Foster Parent'),
-('Legal Guardian'),
-('Adoptive Parent'),
-('Mother'),
-('Father'),
-('Guardian'),
-('Grandparent'),
-('Stepfather'),
-('Foster Parent'),
-('Stepmother'),
-('Adoptive Parent'),
-('Legal Guardian'),
-('Father'),
-('Mother'),
-('Guardian'),
-('Stepfather'),
-('Stepmother'),
-('Grandparent'),
-('Foster Parent'),
-('Legal Guardian'),
-('Mother'),
-('Father'),
-('Adoptive Parent'),
-('Foster Parent'),
-('Grandparent'),
-('Stepmother'),
-('Stepfather');
-
-
-INSERT INTO `StudentParent` (`studentID`, `parentID`) VALUES
-(1, 1),
-(2, 2),
-(3, 3),
-(4, 4),
-(5, 5);
 
 INSERT INTO `Recommendation` (`alumID`, `establishment`, `category`, `location`, `priceRating`) VALUES
 (1, 'Moore and Sons', 'Park', 'North Jose', 2),

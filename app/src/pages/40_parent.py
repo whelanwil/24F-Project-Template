@@ -1,11 +1,14 @@
 import streamlit as st
 import requests
 import pandas as pd
+from modules.nav import SideBarLinks
 
-BASE_API_URL = "http://web-api:4000/student/student"  # Base API URL
-
-# Page setup
+# Page setup must come first
 st.set_page_config(page_title="Edit Parent Housing Relationship", layout="wide")
+
+# Add sidebar navigation
+SideBarLinks()
+
 st.title("Edit Parent Housing Relationship")
 
 # Logged-in user's ID
@@ -22,11 +25,13 @@ with tab1:
     st.subheader("Your Current Parents")
     try:
         # Fetch parents from API
-        response = requests.get(f"{BASE_API_URL}/{student_id}/parents")
+        response = requests.get(f"http://web-api:4000/student/student/parents/{student_id}")
+        print(response.json())
         if response.status_code == 200:
-            parents = response.json().get("parents", [])
+            parents = response.json()
             if parents:
                 df = pd.DataFrame(parents)
+                df = df[['parentID', 'firstName', 'lastName', 'relationshipToStudent', 'email', 'phone']]
                 st.table(df)
             else:
                 st.info("No parents found for your account.")
@@ -43,23 +48,39 @@ with tab2:
         last_name = st.text_input("Last Name", max_chars=50)
         email = st.text_input("Email", max_chars=100)
         phone = st.text_input("Phone (optional)", max_chars=15)
+        relationship = st.selectbox(
+            "Relationship to Student",
+            options=[
+                "Mother",
+                "Father",
+                "Guardian",
+                "Stepmother",
+                "Stepfather",
+                "Grandparent",
+                "Foster Parent",
+                "Legal Guardian",
+                "Adoptive Parent"
+            ]
+        )
         submitted = st.form_submit_button("Add Parent")
 
         if submitted:
-            if not (first_name and last_name and email):
-                st.warning("First Name, Last Name, and Email are required.")
+            if not (first_name and last_name and email and relationship):
+                st.warning("First Name, Last Name, Email, and Relationship are required.")
             else:
                 payload = {
-                    "nuID": student_id,
+                    "studentID": student_id,  # Using the student_id from session state
                     "firstName": first_name,
                     "lastName": last_name,
                     "email": email,
                     "phone": phone or None,
+                    "relationshipToStudent": relationship
                 }
                 try:
-                    response = requests.post(f"{BASE_API_URL}/parent", json=payload)
+                    response = requests.post("http://web-api:4000/student/student/parent", json=payload)
                     if response.status_code == 201:
                         st.success("Parent added successfully!")
+                        st.rerun()
                     else:
                         st.error(f"Failed to add parent: {response.json().get('error', 'Unknown error')}")
                 except requests.RequestException as e:
@@ -75,7 +96,7 @@ with tab3:
         if submitted_remove:
             if remove_confirmation:
                 try:
-                    response = requests.delete(BASE_API_URL)
+                    response = requests.delete('http://web-api:4000/student/student/parent')
                     if response.status_code == 200:
                         st.success("All parents have been removed successfully.")
                     else:

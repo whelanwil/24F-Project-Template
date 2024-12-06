@@ -162,25 +162,42 @@ def get_student_info(nuID):
 
 # ------------------------------------------------------------
 # Revoke parent access
-@student.route('/student', methods=['DELETE'])
-def remove_parent():
-    current_app.logger.info('DELETE /student route')
-
-    query = '''
-        DELETE FROM Parent 
-        WHERE parentID IN (
-            SELECT parentID
-            FROM StudentParent
-            WHERE studentID = %s)
-        '''
+@student.route('/student/parent/<parentID>', methods=['DELETE'])
+def remove_parent(parentID):
+    current_app.logger.info(f'DELETE /student/parent/{parentID} route')
     
-    cursor = db.get_db().cursor()
-    cursor.execute(query)
-    db.get_db().commit()
+    the_data = request.json
+    student_id = the_data.get('studentID')
+    
+    if not student_id:
+        return make_response('StudentID is required', 400)
 
-    response = make_response(f'Parent removed.')
-    response.status_code = 200
-    return response
+    # First delete from the association table
+    association_query = '''
+        DELETE FROM StudentParent 
+        WHERE parentID = %s AND studentID = %s
+    '''
+    
+    # Then delete from the Parent table
+    parent_query = '''
+        DELETE FROM Parent 
+        WHERE parentID = %s
+    '''
+    
+    try:
+        cursor = db.get_db().cursor()
+        # Remove the association first
+        cursor.execute(association_query, (parentID, student_id))
+        # Then remove the parent
+        cursor.execute(parent_query, (parentID,))
+        db.get_db().commit()
+
+        response = make_response('Parent successfully removed')
+        response.status_code = 200
+        return response
+    except Exception as e:
+        current_app.logger.error(f"Error removing parent: {str(e)}")
+        return make_response(f"Failed to remove parent: {str(e)}", 500)
 
 # ------------------------------------------------------------
 # Remove a city from the list of cities the student may want to live in
@@ -209,32 +226,33 @@ def add_parent():
         the_data = request.json
         current_app.logger.info(the_data)
 
-        # Extract required data
-        student_id = the_data.get('nuID')
-        parent_first_name = the_data.get('firstName')
-        parent_last_name = the_data.get('lastName')
-        parent_email = the_data.get('email')
-        parent_phone = the_data.get('phone')
+        # Extract all required data
+        student_id = the_data.get('studentID')
+        first_name = the_data.get('firstName')
+        last_name = the_data.get('lastName')
+        email = the_data.get('email')
+        phone = the_data.get('phone')
+        relationship = the_data.get('relationshipToStudent')
 
         # Validate required fields
-        if not all([student_id, parent_first_name, parent_last_name, parent_email]):
+        if not all([student_id, relationship, first_name, last_name, email]):
             return make_response(jsonify({
-                "error": "Missing required fields. Please provide nuID, firstName, lastName, and email"
+                "error": "Missing required fields. Please provide all required information."
             }), 400)
 
-        # First insert into Parent table
+        # First insert into Parent table with all fields
         parent_query = '''
-            INSERT INTO Parent (firstName, lastName, email, phone)
-            VALUES (%s, %s, %s, %s)
+            INSERT INTO Parent (firstName, lastName, email, phone, relationshipToStudent)
+            VALUES (%s, %s, %s, %s, %s)
         '''
         
         cursor = db.get_db().cursor()
-        cursor.execute(parent_query, (parent_first_name, parent_last_name, parent_email, parent_phone))
+        cursor.execute(parent_query, (first_name, last_name, email, phone, relationship))
         parent_id = cursor.lastrowid
 
         # Then create association in StudentParent table
         association_query = '''
-            INSERT INTO StudentParent (nuID, parentID)
+            INSERT INTO StudentParent (studentID, parentID)
             VALUES (%s, %s)
         '''
         cursor.execute(association_query, (student_id, parent_id))
@@ -251,23 +269,19 @@ def add_parent():
 
 # ------------------------------------------------------------
 # Get all parents for a student
-@student.route('/student/parents/<nuID>', methods=['GET'])
-def get_student_parents(nuID):
-    try:
-        query = '''
-            SELECT p.parentID, p.firstName, p.lastName, p.email, p.phone
-            FROM Parent p
-            JOIN StudentParent sp ON p.parentID = sp.parentID
-            WHERE sp.nuID = %s
-        '''
+@student.route('/student/parents/<studentID>', methods=['GET'])
+def get_student_parents(studentID):
+    query = '''
+        SELECT p.parentID, p.firstName, p.lastName, p.email, p.phone, p.relationshipToStudent
+        FROM Parent p
+        JOIN StudentParent sp ON p.parentID = sp.parentID
+        WHERE sp.studentID = %s
+    '''
 
-        cursor = db.get_db().cursor()
-        cursor.execute(query, (nuID,))
-        parents = cursor.fetchall()
-        response = make_response(jsonify(parents))
-        response.status_code = 200
-        return response
+    cursor = db.get_db().cursor()
+    cursor.execute(query, (studentID,))
+    parents = cursor.fetchall()
+    response = make_response(jsonify(parents))
+    response.status_code = 200
+    return response
 
-    except Exception as e:
-        current_app.logger.error(f"Error retrieving parents: {str(e)}")
-        return make_response(jsonify({"error": str(e)}), 500)
