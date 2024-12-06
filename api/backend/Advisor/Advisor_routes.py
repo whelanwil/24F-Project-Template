@@ -12,7 +12,7 @@ def get_alumni_housing(city):
         SELECT A.alumID, A.firstName, A.lastName, Ap.city
         FROM Alumni A
         JOIN Apartment Ap ON A.alumID = Ap.alumID
-        WHERE A.city = %s
+        WHERE Ap.city = %s
     '''
     
     current_app.logger.info(f'GET /alumni/<city> query: {query}')
