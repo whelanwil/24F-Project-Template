@@ -23,7 +23,7 @@ def StudentNav():
         icon="⚙️",
     )
     st.sidebar.page_link(
-        "pages/02_Student_Alumni_Connection.py", label="Connect with Alumni", icon="🤝"
+        "pages/02_Student_Alumni_Connection.py", label="View Connected Alumni", icon="🤝"
     )
     st.sidebar.page_link(
         "pages/40_parent.py", label="Edit Parent Housing Relationship", icon="👪"
@@ -53,7 +53,7 @@ def AlumniNav():
     )
   
     st.sidebar.page_link(
-        "pages/31_Connect_To_Students.py", label="Connect with Students", icon="🛏️"
+        "pages/31_Connect_To_Students.py", label="View Connected Students", icon="🛏️"
     )
 
 
