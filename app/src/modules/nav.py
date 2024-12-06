@@ -19,7 +19,7 @@ def StudentNav():
     )
     st.sidebar.page_link(
         "pages/01_Student_housing_preferences.py",
-        label="Update Housing Settings",
+        label="Update Profile Information",
         icon="⚙️",
     )
     st.sidebar.page_link(
