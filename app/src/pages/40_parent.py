@@ -26,7 +26,6 @@ with tab1:
     try:
         # Fetch parents from API
         response = requests.get(f"http://web-api:4000/student/student/parents/{student_id}")
-        print(response.json())
         if response.status_code == 200:
             parents = response.json()
             if parents:
@@ -69,7 +68,7 @@ with tab2:
                 st.warning("First Name, Last Name, Email, and Relationship are required.")
             else:
                 payload = {
-                    "studentID": student_id,  # Using the student_id from session state
+                    "studentID": student_id,
                     "firstName": first_name,
                     "lastName": last_name,
                     "email": email,
@@ -88,20 +87,37 @@ with tab2:
 
 # Tab 3: Remove Parent
 with tab3:
-    st.subheader("Remove a Parent")
-    with st.form("remove_parent_form"):
-        remove_confirmation = st.checkbox("I confirm to remove all parents associated with my account.")
-        submitted_remove = st.form_submit_button("Remove Parents")
-
-        if submitted_remove:
-            if remove_confirmation:
-                try:
-                    response = requests.delete('http://web-api:4000/student/student/parent')
-                    if response.status_code == 200:
-                        st.success("All parents have been removed successfully.")
-                    else:
-                        st.error(f"Failed to remove parents: {response.text}")
-                except requests.RequestException as e:
-                    st.error(f"An error occurred: {str(e)}")
+    st.subheader("Remove Parent Access")
+    try:
+        # Fetch current parents for selection
+        response = requests.get(f"http://web-api:4000/student/student/parents/{student_id}")
+        if response.status_code == 200:
+            parents = response.json()
+            if parents:
+                # Create a selection box with parent information
+                parent_options = [f"{p['firstName']} {p['lastName']} (ID: {p['parentID']})" for p in parents]
+                selected_parent = st.selectbox("Select Parent to Remove", parent_options)
+                
+                if selected_parent:
+                    # Extract parentID from selection
+                    parent_id = int(selected_parent.split("ID: ")[1].rstrip(")"))
+                    
+                    if st.button("Remove Selected Parent", type="secondary"):
+                        try:
+                            # Send delete request with both parentID and studentID
+                            response = requests.delete(
+                                f"http://web-api:4000/student/student/parent/{parent_id}",
+                                json={"studentID": student_id}
+                            )
+                            
+                            if response.status_code == 200:
+                                st.success("Parent access removed successfully!")
+                                st.rerun()
+                            else:
+                                st.error("Failed to remove parent access. Please try again.")
+                        except requests.RequestException as e:
+                            st.error(f"An error occurred: {str(e)}")
             else:
-                st.warning("Please confirm to proceed with removing parents.")
+                st.info("No parents found to remove.")
+    except requests.RequestException as e:
+        st.error(f"An error occurred while fetching parents: {str(e)}")
