@@ -50,27 +50,41 @@ else:
             with alumni_tab2:
                 st.subheader("Add a New Alumni")
                 with st.form("new_alum_form"):
-                    firstName = st.text_input("First Name")
-                    lastName = st.text_input("Last Name")
-                    email = st.text_input("Email")
-                    company = st.text_input("Company")
-                    city = st.text_input("City")
+                    col1, col2 = st.columns(2)
+                    
+                    with col1:
+                        firstName = st.text_input("First Name*")
+                        lastName = st.text_input("Last Name*")
+                        major = st.text_input("Major*")
+                        email = st.text_input("Email*")
+                    
+                    with col2:
+                        company = st.text_input("Company")
+                        city = st.text_input("City")
+                        admin_id = st.session_state.get('user_id')  # Get from session state
+                        
+                    st.markdown("*Required fields")
                     
                     if st.form_submit_button("Add Alumni"):
-                        data = {
-                            "firstName": firstName,
-                            "lastName": lastName,
-                            "email": email,
-                            "company": company,
-                            "city": city
-                        }
-                        
-                        response = requests.post("http://web-api:4000/admin/systemAdministrator/alumni", json=data)
-                        if response.status_code == 200:
-                            st.success("New alumni added successfully!")
-                            st.rerun()
+                        if not all([firstName, lastName, major, email]):
+                            st.error("Please fill in all required fields.")
                         else:
-                            st.error(f"Failed to add alumni. Error: {response.text}")
+                            data = {
+                                "firstName": firstName,
+                                "lastName": lastName,
+                                "major": major,
+                                "email": email,
+                                "company": company,
+                                "city": city,
+                                "adminID": admin_id
+                            }
+                            
+                            response = requests.post("http://web-api:4000/admin/systemAdministrator/alumni", json=data)
+                            if response.status_code == 201:
+                                st.success("New alumni added successfully!")
+                                st.rerun()
+                            else:
+                                st.error(f"Failed to add alumni. Error: {response.text}")
             
             with alumni_tab3:
                 st.subheader("Update Existing Alumni Information")
@@ -78,7 +92,7 @@ else:
                 if alumID:
                     api_url = f"http://web-api:4000/admin/systemAdministrator/alumni/{alumID}"
                     response = requests.get(api_url)
-
+                    st.write(response.json())
                     if response.status_code == 200:
                         data = response.json()
                         alumni_info = data.get('data', [{}])[0]
@@ -133,33 +147,43 @@ else:
             with student_tab2:
                 st.subheader("Add a New Student")
                 with st.form("new_student_form"):
-                    firstName = st.text_input("First Name", key="student_first")
-                    lastName = st.text_input("Last Name", key="student_last")
-                    email = st.text_input("Email", key="student_email")
-                    company = st.text_input("Current Co-Op Company")
-                    city = st.text_input("City", key="student_city")
-                    major = st.text_input("Major")
-                    admin_id = st.text_input('Admin ID')
-                    advisor_id = st.text_input('Advisor ID')
+                    col1, col2 = st.columns(2)
+                    
+                    with col1:
+                        firstName = st.text_input("First Name*", key="student_first")
+                        lastName = st.text_input("Last Name*", key="student_last")
+                        email = st.text_input("Email*", key="student_email")
+                        major = st.text_input("Major*")
+                    
+                    with col2:
+                        company = st.text_input("Current Co-Op Company")
+                        city = st.text_input("City", key="student_city")
+                        advisor_id = st.text_input('Advisor ID*')
+                        admin_id = st.session_state.get('user_id')  # Get from session state
+                    
+                    st.markdown("*Required fields")
                     
                     if st.form_submit_button("Add Student"):
-                        data = {
-                            "firstName": firstName,
-                            "lastName": lastName,
-                            "email": email,
-                            "major": major,
-                            "company": company,
-                            "city": city,
-                            "admin_id": admin_id,
-                            "advisor_id": advisor_id
-                        }
-                        
-                        response = requests.post("http://web-api:4000/admin/systemAdministrator/student", json=data)
-                        if response.status_code == 200:
-                            st.success("New student added successfully!")
-                            st.rerun()
+                        if not all([firstName, lastName, email, major, advisor_id]):
+                            st.error("Please fill in all required fields.")
                         else:
-                            st.error(f"Failed to add student. Error: {response.text}")
+                            data = {
+                                "firstName": firstName,
+                                "lastName": lastName,
+                                "email": email,
+                                "major": major,
+                                "company": company,
+                                "city": city,
+                                "adminID": admin_id,
+                                "advisorID": advisor_id
+                            }
+                            
+                            response = requests.post("http://web-api:4000/admin/systemAdministrator/student", json=data)
+                            if response.status_code == 201:
+                                st.success("New student added successfully!")
+                                st.rerun()
+                            else:
+                                st.error(f"Failed to add student. Error: {response.text}")
             
             with student_tab3:
                 st.subheader("Update Existing Student Information")
@@ -215,7 +239,7 @@ else:
                         advisor_data = response.json()
                         if advisor_data:
                             df = pd.DataFrame(advisor_data)
-                            st.dataframe(df[['advisorID', 'firstName', 'lastName', 'email', 'department']])
+                            st.dataframe(df)
                         else:
                             st.info("No advisors found in the system.")
                     else:
@@ -226,25 +250,37 @@ else:
             with advisor_tab2:
                 st.subheader("Add a New Advisor")
                 with st.form("new_advisor_form"):
-                    firstName = st.text_input("First Name", key="advisor_first")
-                    lastName = st.text_input("Last Name", key="advisor_last")
-                    email = st.text_input("Email", key="advisor_email")
-                    department = st.text_input("Department")
+                    col1, col2 = st.columns(2)
+                    
+                    with col1:
+                        firstName = st.text_input("First Name*", key="advisor_first")
+                        lastName = st.text_input("Last Name*", key="advisor_last")
+                        email = st.text_input("Email*", key="advisor_email")
+                    
+                    with col2:
+                        department = st.text_input("Department*")
+                        admin_id = st.session_state.get('user_id')  # Get from session state
+                    
+                    st.markdown("*Required fields")
                     
                     if st.form_submit_button("Add Advisor"):
-                        data = {
-                            "firstName": firstName,
-                            "lastName": lastName,
-                            "email": email,
-                            "department": department
-                        }
-                        
-                        response = requests.post("http://web-api:4000/admin/systemAdministrator/advisor", json=data)
-                        if response.status_code == 200:
-                            st.success("New advisor added successfully!")
-                            st.rerun()
+                        if not all([firstName, lastName, email, department]):
+                            st.error("Please fill in all required fields.")
                         else:
-                            st.error(f"Failed to add advisor. Error: {response.text}")
+                            data = {
+                                "firstName": firstName,
+                                "lastName": lastName,
+                                "email": email,
+                                "department": department,
+                                "adminID": admin_id
+                            }
+                            
+                            response = requests.post("http://web-api:4000/admin/systemAdministrator/advisor", json=data)
+                            if response.status_code == 201:
+                                st.success("New advisor added successfully!")
+                                st.rerun()
+                            else:
+                                st.error(f"Failed to add advisor. Error: {response.text}")
             
             with advisor_tab3:
                 st.subheader("Update Existing Advisor Information")

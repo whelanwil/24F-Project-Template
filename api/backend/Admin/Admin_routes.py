@@ -155,25 +155,28 @@ def update_alumni(alumID):
     first_name = data.get('firstName')
     last_name = data.get('lastName')
     email = data.get('email')
+    company = data.get('company')
+    city = data.get('city')
 
-    if not first_name or not last_name or not email:
+    if not all([first_name, last_name, email]):
         return make_response(jsonify({"error": "First name, last name, and email are required"}), 400)
 
     query = '''
         UPDATE Alumni
-        SET firstName = %s, lastName = %s, email = %s, city = %s, state = %s, 
+        SET firstName = %s, lastName = %s, email = %s, company = %s, city = %s
         WHERE alumID = %s
     '''
     try:
         cursor = db.get_db().cursor()
-        cursor.execute(query, (first_name, last_name, email, alumID))
+        cursor.execute(query, (first_name, last_name, email, company, city, alumID))
         db.get_db().commit()
-
+    
         if cursor.rowcount == 0:
             return make_response(jsonify({"error": "Alumni not found"}), 404)
 
         return make_response(jsonify({"message": "Alumni information updated successfully"}), 200)
     except Exception as e:
+        print(f"Error occurred: {e}")
         return make_response(jsonify({"error": str(e)}), 500)
     
 #get all alumni
@@ -218,44 +221,95 @@ def get_all_advisors():
 # ------------------------------------------------------------ 
 # 2.3 Add a new student to the database
 @admin.route('/systemAdministrator/student', methods=['POST'])
-def add_student_with_city():
+def add_student():
     """
-    Add a new student to the database.
+    Add a new student to the database with all required fields.
     """
     data = request.json
     first_name = data.get('firstName')
     last_name = data.get('lastName')
+    major = data.get('major')
     email = data.get('email')
     company = data.get('company')
     city = data.get('city')
     admin_id = data.get('adminID')
     advisor_id = data.get('advisorID')
 
-    # Validate required fields
-    if not all([first_name, last_name, email, company, city, admin_id, advisor_id]):
+    # Validate required fields based on SQL schema
+    if not all([first_name, last_name, major, admin_id, advisor_id]):
         return make_response(
-            jsonify({"error": "All fields (firstName, lastName, email, company, city, adminID, advisorID) are required"}),
+            jsonify({"error": "First name, last name, major, adminID, and advisorID are required"}), 
             400
         )
 
     # SQL query to insert a new student record
     query = '''
-        INSERT INTO Student (firstName, lastName, email, company, city, adminID, advisorID)
-        VALUES (%s, %s, %s, %s, %s, %s, %s)
+        INSERT INTO Student (firstName, lastName, major, email, company, city, adminID, advisorID)
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
     '''
     try:
-        # Execute the query
         cursor = db.get_db().cursor()
-        cursor.execute(query, (first_name, last_name, email, company, city, admin_id, advisor_id))
+        cursor.execute(query, (
+            first_name,
+            last_name,
+            major,
+            email,
+            company,
+            city,
+            admin_id,
+            advisor_id
+        ))
         db.get_db().commit()
-
-        # Success response
         return make_response(
-            jsonify({"message": f"Student '{first_name} {last_name}' added successfully"}), 
+            jsonify({"message": "Student added successfully"}), 
             201
         )
-
     except Exception as e:
-        # Log and handle errors
         print(f"Error occurred: {e}")
-        return make_response(jsonify({"error": "An internal server error occurred"}), 500)
+        return make_response(
+            jsonify({"error": "An internal server error occurred"}), 
+            500
+        )
+
+@admin.route('/systemAdministrator/advisor', methods=['POST'])
+def add_advisor():
+    """
+    Add a new advisor to the database with all required fields.
+    """
+    data = request.json
+    first_name = data.get('firstName')
+    last_name = data.get('lastName')
+    email = data.get('email')
+    admin_id = data.get('adminID')
+
+    # Validate required fields based on SQL schema
+    if not all([first_name, last_name, admin_id]):
+        return make_response(
+            jsonify({"error": "First name, last name, and adminID are required"}), 
+            400
+        )
+
+    # SQL query to insert a new advisor record
+    query = '''
+        INSERT INTO CoopAdvisor (firstName, lastName, email, adminID)
+        VALUES (%s, %s, %s, %s)
+    '''
+    try:
+        cursor = db.get_db().cursor()
+        cursor.execute(query, (
+            first_name,
+            last_name,
+            email,
+            admin_id
+        ))
+        db.get_db().commit()
+        return make_response(
+            jsonify({"message": "Advisor added successfully"}), 
+            201
+        )
+    except Exception as e:
+        print(f"Error occurred: {e}")
+        return make_response(
+            jsonify({"error": "An internal server error occurred"}), 
+            500
+        )
