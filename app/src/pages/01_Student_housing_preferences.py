@@ -22,7 +22,6 @@ else:
     if response.status_code == 200:
         try:
             data = response.json()
-            st.write(data)
             # Convert the list response to a DataFrame
             df = pd.DataFrame(data)
             
@@ -32,20 +31,21 @@ else:
             major = student_info.get('major', 'N/A')
             company = student_info.get('company', 'N/A')
             city = student_info.get('city', 'N/A')
+            housing_status = student_info.get('housingStatus', 'N/A')
 
             # Display the current student information
             st.subheader('Your Current Information:')
             st.write(f'**Major**: {major}')
             st.write(f'**Company**: {company}')
             st.write(f'**City**: {city}')
-
+            st.write(f'**Housing Status**: {housing_status}')
             # Form for updating information
             st.subheader('Fill out the following to update your information:')
             with st.form('update_student_info_form'):
                 new_major = st.text_input('Major', value=major)
                 new_company = st.text_input('Company', value=company)
                 new_city = st.text_input('City', value=city)
-
+                new_housing_status = 'Housed' if st.checkbox('Housing Status', value=housing_status=='Housed') else 'Not Housed'
                 submitted = st.form_submit_button('Update Information')
 
                 if submitted:
@@ -53,6 +53,7 @@ else:
                         'major': new_major,
                         'company': new_company,
                         'city': new_city,
+                        'housingStatus': new_housing_status
                     }
 
                     update_response = requests.put(f'http://web-api:4000/student/student/{student_id}', json=data)

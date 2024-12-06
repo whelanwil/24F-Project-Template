@@ -133,50 +133,65 @@ def assign_alumni_to_student(student_id):
         print(f"Error occurred: {e}")
         return make_response(jsonify({"error": "An internal server error occurred"}), 500)
 
-@advisor.route('student/<nuID>', methods=['GET'])
-def get_student_info(nuID):
+
+
+@advisor.route('/student/<advisorID>', methods=['GET'])
+def get_student_info(advisorID):
     """
     Co-op Advisor route to get a student's information by their nuID.
     """
-    current_app.logger.info(f"GET /advisor/student/{nuID} route called")
+    current_app.logger.info(f"GET /advisor/student/{advisorID} route called")
 
     # SQL query to fetch the student's details
     query = '''
-        SELECT 
-            s.nuID, 
-            s.firstName, 
-            s.lastName, 
-            s.major, 
-            s.company, 
-            s.city
+        SELECT *
+        FROM Student s
+        WHERE s.advisorID = %s
+    '''
+    cursor = db.get_db().cursor()
+    cursor.execute(query, (advisorID,))
+    theData = cursor.fetchall()
+    response = make_response(jsonify(theData))
+    response.status_code = 200
+    return response
+
+@advisor.route('/allstudents', methods=['GET'])
+def get_all_students():
+    """
+    Co-op Advisor route to get all students.
+    """
+    current_app.logger.info(f"GET /advisor/allstudents route called")
+
+    # SQL query to fetch the student's details
+    query = '''
+        SELECT *
+        FROM Student s
+    '''
+    cursor = db.get_db().cursor()
+    cursor.execute(query)
+    theData = cursor.fetchall()
+    response = make_response(jsonify(theData))
+    response.status_code = 200
+    return response
+
+
+#select all studenys by ID
+@advisor.route('/allstudents/<nuID>', methods=['GET'])
+def get_all_students_by_ID(nuID):
+    """
+    Co-op Advisor route to get all students by nuID.
+    """
+    current_app.logger.info(f"GET /advisor/allstudents/{nuID} route called")
+
+    # SQL query to fetch the student's details
+    query = '''
+        SELECT *
         FROM Student s
         WHERE s.nuID = %s
     '''
-
-    try:
-        # Execute the query
-        cursor = db.get_db().cursor()
-        cursor.execute(query, (nuID,))
-        result = cursor.fetchone()
-
-        # If no student is found, return a 404 response
-        if not result:
-            current_app.logger.warning(f"Student with nuID {nuID} not found")
-            return make_response(jsonify({"error": "Student not found"}), 404)
-
-        # Map the result to a dictionary
-        student_info = {
-            "nuID": result[0],
-            "firstName": result[1],
-            "lastName": result[2],
-            "major": result[3],
-            "company": result[4],
-            "city": result[5],
-        }
-
-        current_app.logger.info(f"Student info retrieved: {student_info}")
-        return make_response(jsonify({"student": student_info}), 200)
-
-    except Exception as e:
-        current_app.logger.error(f"Error retrieving student info: {str(e)}")
-        return make_response(jsonify({"error": "Internal server error"}), 500)
+    cursor = db.get_db().cursor()
+    cursor.execute(query, (nuID,))
+    theData = cursor.fetchall()
+    response = make_response(jsonify(theData))
+    response.status_code = 200
+    return response

@@ -50,7 +50,7 @@ CREATE TABLE `Student` (
     `city` VARCHAR(75),
     `adminID` INTEGER NOT NULL,
     `advisorID` INTEGER NOT NULL,
-    'housingStatus' BOOLEAN NOT NULL,
+    `housingStatus` VARCHAR(50) NOT NULL,
     FOREIGN KEY (`adminID`)
         REFERENCES `SystemAdministrator` (`adminID`)
         ON UPDATE CASCADE
@@ -807,3 +807,10 @@ INSERT INTO `Apartment` (`alumID`, `beds`, `baths`, `rent`, `description`, `date
 (58, 2, 1, 1300, 'Comfortable apartment in a thriving neighborhood.', '2024-12-03 08:00:00', '2025-02-20 19:15:00', 5801, 'Fort Worth', 'TX', 'USA'),
 (59, 3, 2, 1850, 'Spacious unit near downtown attractions.', '2024-12-05 08:15:00', '2025-02-15 18:00:00', 5901, 'Columbus', 'OH', 'USA'),
 (60, 4, 3, 2450, 'Luxury apartment with premium finishes and appliances.', '2024-12-09 09:45:00', '2025-02-28 20:15:00', 6001, 'Indianapolis', 'IN', 'USA');
+
+-- Update housingStatus in Student table
+UPDATE `Student`
+SET `housingStatus` = CASE
+    WHEN `housingStatus` = 1 THEN 'Housed'
+    WHEN `housingStatus` = 0 THEN 'Not Housed'
+    END;

@@ -101,14 +101,15 @@ def update_student_info(nuID):
     major = the_data['major']
     company = the_data['company']
     city = the_data['city']
+    housingStatus = the_data['housingStatus']
 
-    current_app.logger.info(f"Updating studentID: {nuID} with Major: {major}, Company: {company}, City: {city}")
+    current_app.logger.info(f"Updating studentID: {nuID} with Major: {major}, Company: {company}, City: {city}, Housing Status: {housingStatus}")
 
     query = '''
-        UPDATE Student SET major = %s, company = %s, city = %s 
+        UPDATE Student SET major = %s, company = %s, city = %s, housingStatus = %s
         WHERE nuID = %s
     '''
-    data = (major, company, city, nuID)
+    data = (major, company, city, housingStatus, nuID)
 
     try: 
         cursor = db.get_db().cursor()
@@ -131,7 +132,8 @@ def get_student_info(nuID):
                lastName, 
                major, 
                company,
-               city
+               city,
+               housingStatus
         FROM Student
         WHERE nuID = %s
     '''
