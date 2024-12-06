@@ -87,7 +87,7 @@ def update_system_update(update_id):
         return make_response(jsonify({"message": "System update modified successfully"}), 200)
     except Exception as e:
         return make_response(jsonify({"error": str(e)}), 500)
-    
+
 # ------------------------------------------------------------ 
 # 2.4 Add a new alumni to the database
 @admin.route('/systemAdministrator/alumni', methods=['POST'])
@@ -144,6 +144,46 @@ def add_alumni():
             500
         )
 
+
+#get route for alumni by alumID
+@admin.route('/systemAdministrator/alumni/<alumID>', methods=['GET'])
+def get_alumni_by_id(alumID):
+    query = '''
+        SELECT * FROM Alumni WHERE alumID = %s
+    '''
+    cursor = db.get_db().cursor()
+    cursor.execute(query, (alumID,))
+    theData = cursor.fetchall()
+    response = make_response(jsonify(theData))
+    response.status_code = 200
+    return response
+
+#get route for student by studentID
+@admin.route('/systemAdministrator/student/<nuID>', methods=['GET'])
+def get_student_by_id(nuID):
+    query = '''
+        SELECT * FROM Student WHERE nuID = %s
+    '''
+    cursor = db.get_db().cursor()
+    cursor.execute(query, (nuID,))
+    theData = cursor.fetchall()
+    response = make_response(jsonify(theData))
+    response.status_code = 200
+    return response
+
+#get route for advisor by advisorID
+@admin.route('/systemAdministrator/advisor/<advisorID>', methods=['GET'])
+def get_advisor_by_id(advisorID):
+    query = '''
+        SELECT * FROM CoopAdvisor WHERE advisorID = %s
+    '''
+    cursor = db.get_db().cursor()
+    cursor.execute(query, (advisorID,))
+    theData = cursor.fetchall()
+    response = make_response(jsonify(theData))
+    response.status_code = 200
+    return response
+
 # ------------------------------------------------------------ 
 # 2.4 Update an alumni's information
 @admin.route('/systemAdministrator/alumni/<alumID>', methods=['PUT'])
@@ -170,7 +210,7 @@ def update_alumni(alumID):
         cursor = db.get_db().cursor()
         cursor.execute(query, (first_name, last_name, email, company, city, alumID))
         db.get_db().commit()
-    
+
         if cursor.rowcount == 0:
             return make_response(jsonify({"error": "Alumni not found"}), 404)
 
@@ -313,3 +353,83 @@ def add_advisor():
             jsonify({"error": "An internal server error occurred"}), 
             500
         )
+
+@admin.route('/systemAdministrator/student/<nuID>', methods=['PUT'])
+def update_student(nuID):
+    """
+    Update a student's information in the database.
+    """
+    data = request.json
+    first_name = data.get('firstName')
+    last_name = data.get('lastName')
+    email = data.get('email')
+    major = data.get('major')
+    company = data.get('company')
+    city = data.get('city')
+    advisor_id = data.get('advisorID')
+
+    if not all([first_name, last_name, major, advisor_id]):
+        return make_response(jsonify({"error": "First name, last name, major, and advisorID are required"}), 400)
+
+    query = '''
+        UPDATE Student
+        SET firstName = %s, lastName = %s, email = %s, major = %s, company = %s, city = %s, advisorID = %s
+        WHERE nuID = %s
+    '''
+    try:
+        cursor = db.get_db().cursor()
+        cursor.execute(query, (
+            first_name, 
+            last_name, 
+            email, 
+            major,
+            company,
+            city,
+            advisor_id,
+            nuID
+        ))
+        db.get_db().commit()
+
+        if cursor.rowcount == 0:
+            return make_response(jsonify({"error": "Student not found"}), 404)
+
+        return make_response(jsonify({"message": "Student information updated successfully"}), 200)
+    except Exception as e:
+        print(f"Error occurred: {e}")
+        return make_response(jsonify({"error": str(e)}), 500)
+
+@admin.route('/systemAdministrator/advisor/<advisorID>', methods=['PUT'])
+def update_advisor(advisorID):
+    """
+    Update an advisor's information in the database.
+    """
+    data = request.json
+    first_name = data.get('firstName')
+    last_name = data.get('lastName')
+    email = data.get('email')
+
+    if not all([first_name, last_name]):
+        return make_response(jsonify({"error": "First name and last name are required"}), 400)
+
+    query = '''
+        UPDATE CoopAdvisor
+        SET firstName = %s, lastName = %s, email = %s
+        WHERE advisorID = %s
+    '''
+    try:
+        cursor = db.get_db().cursor()
+        cursor.execute(query, (
+            first_name, 
+            last_name, 
+            email, 
+            advisorID
+        ))
+        db.get_db().commit()
+
+        if cursor.rowcount == 0:
+            return make_response(jsonify({"error": "Advisor not found"}), 404)
+
+        return make_response(jsonify({"message": "Advisor information updated successfully"}), 200)
+    except Exception as e:
+        print(f"Error occurred: {e}")
+        return make_response(jsonify({"error": str(e)}), 500)

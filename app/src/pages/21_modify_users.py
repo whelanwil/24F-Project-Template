@@ -92,33 +92,37 @@ else:
                 if alumID:
                     api_url = f"http://web-api:4000/admin/systemAdministrator/alumni/{alumID}"
                     response = requests.get(api_url)
-                    st.write(response.json())
                     if response.status_code == 200:
                         data = response.json()
-                        alumni_info = data.get('data', [{}])[0]
+                        # Convert the list response to a DataFrame
+                        df = pd.DataFrame(data)
+                        if not df.empty:
+                            alumni_info = df.iloc[0]  # Get first row as a Series
+                            
+                            with st.form('update_alum_info_form'):
+                                new_firstName = st.text_input('First Name:', value=alumni_info.get('firstName', ''))
+                                new_lastName = st.text_input('Last Name:', value=alumni_info.get('lastName', ''))
+                                new_email = st.text_input('Email:', value=alumni_info.get('email', ''))
+                                new_company = st.text_input('Company:', value=alumni_info.get('company', ''))
+                                new_city = st.text_input('City:', value=alumni_info.get('city', ''))
 
-                        with st.form('update_alum_info_form'):
-                            new_firstName = st.text_input('First Name:', value=alumni_info.get('firstName', ''))
-                            new_lastName = st.text_input('Last Name:', value=alumni_info.get('lastName', ''))
-                            new_email = st.text_input('Email:', value=alumni_info.get('email', ''))
-                            new_company = st.text_input('Company:', value=alumni_info.get('company', ''))
-                            new_city = st.text_input('City:', value=alumni_info.get('city', ''))
-
-                            if st.form_submit_button('Update Information'):
-                                update_data = {
-                                    'firstName': new_firstName,
-                                    'lastName': new_lastName,
-                                    'email': new_email,
-                                    'company': new_company,
-                                    'city': new_city
-                                }
-                                
-                                update_response = requests.put(api_url, json=update_data)
-                                if update_response.status_code == 200:
-                                    st.success('Alumni information updated successfully!')
-                                    st.rerun()
-                                else:
-                                    st.error(f'Failed to update information: {update_response.text}')
+                                if st.form_submit_button('Update Information'):
+                                    update_data = {
+                                        'firstName': new_firstName,
+                                        'lastName': new_lastName,
+                                        'email': new_email,
+                                        'company': new_company,
+                                        'city': new_city
+                                    }
+                                    
+                                    update_response = requests.put(api_url, json=update_data)
+                                    if update_response.status_code == 200:
+                                        st.success('Alumni information updated successfully!')
+                                        st.rerun()
+                                    else:
+                                        st.error(f'Failed to update information: {update_response.text}')
+                        else:
+                            st.error(f'No alumni found with ID: {alumID}')
                     else:
                         st.error(f'Failed to fetch alumni information (Status Code: {response.status_code})')
 
@@ -191,37 +195,41 @@ else:
                 if studentID:
                     api_url = f"http://web-api:4000/admin/systemAdministrator/student/{studentID}"
                     response = requests.get(api_url)
-
                     if response.status_code == 200:
                         data = response.json()
-                        student_info = data.get('data', [{}])[0]
+                        # Convert the list response to a DataFrame
+                        df = pd.DataFrame(data)
+                        if not df.empty:
+                            student_info = df.iloc[0]  # Get first row as a Series
+                            
+                            with st.form('update_student_info_form'):
+                                new_firstName = st.text_input('First Name:', value=student_info.get('firstName', ''))
+                                new_lastName = st.text_input('Last Name:', value=student_info.get('lastName', ''))
+                                new_email = st.text_input('Email:', value=student_info.get('email', ''))
+                                new_major = st.text_input('Major:', value=student_info.get('major', ''))
+                                new_company = st.text_input('Company:', value=student_info.get('company', ''))
+                                new_city = st.text_input('City:', value=student_info.get('city', ''))
+                                new_advisor_id = st.text_input('Advisor ID:', value=student_info.get('advisorID', ''))
 
-                        with st.form('update_student_info_form'):
-                            new_firstName = st.text_input('First Name:', value=student_info.get('firstName', ''))
-                            new_lastName = st.text_input('Last Name:', value=student_info.get('lastName', ''))
-                            new_email = st.text_input('Email:', value=student_info.get('email', ''))
-                            new_company = st.text_input('Company:', value=student_info.get('company', ''))
-                            new_city = st.text_input('City:', value=student_info.get('city', ''))
-                            new_major = st.text_input('Major:', value=student_info.get('major', ''))
-                            new_advisor_id = st.text_input('Advisor ID:', value=student_info.get('advisorID', ''))
-
-                            if st.form_submit_button('Update Information'):
-                                update_data = {
-                                    'firstName': new_firstName,
-                                    'lastName': new_lastName,
-                                    'email': new_email,
-                                    'company': new_company,
-                                    'city': new_city,
-                                    'major': new_major,
-                                    'advisor_id': new_advisor_id
-                                }
-                                
-                                update_response = requests.put(api_url, json=update_data)
-                                if update_response.status_code == 200:
-                                    st.success('Student information updated successfully!')
-                                    st.rerun()
-                                else:
-                                    st.error(f'Failed to update information: {update_response.text}')
+                                if st.form_submit_button('Update Information'):
+                                    update_data = {
+                                        'firstName': new_firstName,
+                                        'lastName': new_lastName,
+                                        'email': new_email,
+                                        'major': new_major,
+                                        'company': new_company,
+                                        'city': new_city,
+                                        'advisorID': new_advisor_id
+                                    }
+                                    
+                                    update_response = requests.put(api_url, json=update_data)
+                                    if update_response.status_code == 200:
+                                        st.success('Student information updated successfully!')
+                                        st.rerun()
+                                    else:
+                                        st.error(f'Failed to update information: {update_response.text}')
+                        else:
+                            st.error(f'No student found with ID: {studentID}')
                     else:
                         st.error(f'Failed to fetch student information (Status Code: {response.status_code})')
 
@@ -288,31 +296,33 @@ else:
                 if advisorID:
                     api_url = f"http://web-api:4000/admin/systemAdministrator/advisor/{advisorID}"
                     response = requests.get(api_url)
-
                     if response.status_code == 200:
                         data = response.json()
-                        advisor_info = data.get('data', [{}])[0]
+                        # Convert the list response to a DataFrame
+                        df = pd.DataFrame(data)
+                        if not df.empty:
+                            advisor_info = df.iloc[0]  # Get first row as a Series
+                            
+                            with st.form('update_advisor_info_form'):
+                                new_firstName = st.text_input('First Name:', value=advisor_info.get('firstName', ''))
+                                new_lastName = st.text_input('Last Name:', value=advisor_info.get('lastName', ''))
+                                new_email = st.text_input('Email:', value=advisor_info.get('email', ''))
 
-                        with st.form('update_advisor_info_form'):
-                            new_firstName = st.text_input('First Name:', value=advisor_info.get('firstName', ''))
-                            new_lastName = st.text_input('Last Name:', value=advisor_info.get('lastName', ''))
-                            new_email = st.text_input('Email:', value=advisor_info.get('email', ''))
-                            new_department = st.text_input('Department:', value=advisor_info.get('department', ''))
-
-                            if st.form_submit_button('Update Information'):
-                                update_data = {
-                                    'firstName': new_firstName,
-                                    'lastName': new_lastName,
-                                    'email': new_email,
-                                    'department': new_department
-                                }
-                                
-                                update_response = requests.put(api_url, json=update_data)
-                                if update_response.status_code == 200:
-                                    st.success('Advisor information updated successfully!')
-                                    st.rerun()
-                                else:
-                                    st.error(f'Failed to update information: {update_response.text}')
+                                if st.form_submit_button('Update Information'):
+                                    update_data = {
+                                        'firstName': new_firstName,
+                                        'lastName': new_lastName,
+                                        'email': new_email
+                                    }
+                                    
+                                    update_response = requests.put(api_url, json=update_data)
+                                    if update_response.status_code == 200:
+                                        st.success('Advisor information updated successfully!')
+                                        st.rerun()
+                                    else:
+                                        st.error(f'Failed to update information: {update_response.text}')
+                        else:
+                            st.error(f'No advisor found with ID: {advisorID}')
                     else:
                         st.error(f'Failed to fetch advisor information (Status Code: {response.status_code})')
 
