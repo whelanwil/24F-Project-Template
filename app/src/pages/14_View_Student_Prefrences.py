@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 BASE_API_URL = "http://web-api:4000"
 
 # Title
-st.title("Co-op Advisor Dashboard: View Student Housing Prefrences")
+st.title("Co-op Advisor Dashboard: View Student Housing Preferences")
 
 # Input for Student nuID
 student_id = st.text_input("Enter Student nuID:", "")
