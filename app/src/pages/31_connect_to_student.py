@@ -1,4 +1,5 @@
 import streamlit as st
+import time
 import requests
 import pandas as pd
 from modules.nav import SideBarLinks
@@ -18,14 +19,8 @@ tab1, tab2, tab3 = st.tabs(["View Connections", "Add Connection", "Remove Connec
 # Tab 1: View Connections
 with tab1:
     st.subheader("View All Alum-Student Connections")
-    
-    try:
-        # Request data from the API
-        response = requests.get(BASE_API_URL, timeout=10)
-
     try:
         response = requests.get(BASE_API_URL)
-        st.write("Status Code:", response.status_code)
         
         if response.status_code == 200:
             # Parse the response and retrieve the data
@@ -56,19 +51,24 @@ with tab2:
         if student_id and alumni_id:
             payload = {"nuID": student_id, "alumID": alumni_id}
             try:
+                # Remove debug prints
                 response = requests.post(BASE_API_URL, json=payload)
+                
                 if response.status_code == 201:
                     st.success(response.json().get("message", "Connection added successfully!"))
+                    time.sleep(1)
+                    st.rerun()
                 elif response.status_code == 400:
                     st.warning(response.json().get("error", "Invalid input. Please check the IDs and try again."))
                 else:
-                    st.error("Failed to add connection. Please try again.")
+                    st.error(f"Failed to add connection. Server response: {response.json()}")
             except requests.RequestException as e:
                 st.error(f"An error occurred while adding the connection: {str(e)}")
+            except ValueError as e:
+                st.error(f"Error parsing response: {str(e)}")
         else:
             st.warning("Both Student ID and Alumni ID are required.")
 
-# Tab 3: Remove Connection
 with tab3:
     st.subheader("Remove an Existing Connection")
 
@@ -77,16 +77,24 @@ with tab3:
 
     if st.button("Remove Connection"):
         if student_id and alumni_id:
+            # Construct the delete URL using the same base URL
             delete_url = f"{BASE_API_URL}/{student_id}/{alumni_id}"
+            st.write("Attempting to delete at URL:", delete_url)  # Debug line
             try:
                 response = requests.delete(delete_url)
-                if response.status_code == 200:
-                    st.success(response.json().get("message", "Connection removed successfully!"))
-                elif response.status_code == 404:
-                    st.warning(response.json().get("error", "Connection not found."))
-                else:
-                    st.error("Failed to remove connection. Please try again.")
+                try:
+                    response_data = response.json()
+                    if response.status_code == 200:
+                        st.success(response_data.get("message", "Connection removed successfully!"))
+                        time.sleep(1)
+                        st.rerun()
+                    elif response.status_code == 404:
+                        st.warning(response_data.get("error", "Connection not found."))
+                    else:
+                        st.error(f"Failed to remove connection: {response_data.get('error', 'Unknown error')}")
+                except ValueError:
+                    st.error(f"Invalid response from server. Status code: {response.status_code}")
             except requests.RequestException as e:
-                st.error(f"An error occurred while removing the connection: {str(e)}")
+                st.error(f"Network error while removing the connection: {str(e)}")
         else:
             st.warning("Both Student ID and Alumni ID are required.")
