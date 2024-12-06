@@ -433,3 +433,36 @@ def update_advisor(advisorID):
     except Exception as e:
         print(f"Error occurred: {e}")
         return make_response(jsonify({"error": str(e)}), 500)
+
+#delete route for alumni
+@admin.route('/systemAdministrator/alumni/<alumID>', methods=['DELETE'])
+def delete_alumni(alumID):
+    query = '''
+        DELETE FROM Alumni WHERE alumID = %s
+    '''
+    cursor = db.get_db().cursor()
+    cursor.execute(query, (alumID,))
+    db.get_db().commit()
+    return make_response(jsonify({"message": "Alumni deleted successfully"}), 200)
+
+#delete route for student
+@admin.route('/systemAdministrator/student/<nuID>', methods=['DELETE'])
+def delete_student(nuID):
+    query = '''
+        DELETE FROM Student WHERE nuID = %s
+    '''
+    cursor = db.get_db().cursor()
+    cursor.execute(query, (nuID,))
+    db.get_db().commit()
+    return make_response(jsonify({"message": "Student deleted successfully"}), 200)
+
+#delete route for advisor
+@admin.route('/systemAdministrator/advisor/<advisorID>', methods=['DELETE'])
+def delete_advisor(advisorID):
+    query = '''
+        DELETE FROM CoopAdvisor WHERE advisorID = %s
+    '''
+    cursor = db.get_db().cursor()
+    cursor.execute(query, (advisorID,))
+    db.get_db().commit()
+    return make_response(jsonify({"message": "Advisor deleted successfully"}), 200)

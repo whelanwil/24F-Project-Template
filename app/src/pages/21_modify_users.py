@@ -29,7 +29,7 @@ else:
             st.subheader("Alumni Management")
             
             # Create subtabs for alumni actions
-            alumni_tab1, alumni_tab2, alumni_tab3 = st.tabs(["View All Alumni", "Add Alumni", "Update Alumni"])
+            alumni_tab1, alumni_tab2, alumni_tab3, alumni_tab4 = st.tabs(["View All Alumni", "Add Alumni", "Update Alumni", "Delete Alumni"])
             
             with alumni_tab1:
                 st.subheader("All Alumni in System")
@@ -125,12 +125,32 @@ else:
                             st.error(f'No alumni found with ID: {alumID}')
                     else:
                         st.error(f'Failed to fetch alumni information (Status Code: {response.status_code})')
+            
+            with alumni_tab4:
+                st.subheader("Delete Alumni")
+                with st.form("delete_alumni_form"):
+                    alumni_id = st.text_input("Enter Alumni ID to delete:")
+                    confirm = st.checkbox("I understand this action cannot be undone")
+                    
+                    if st.form_submit_button("Delete Alumni"):
+                        if not alumni_id:
+                            st.error("Please enter an Alumni ID")
+                        elif not confirm:
+                            st.error("Please confirm the deletion")
+                        else:
+                            api_url = f"http://web-api:4000/admin/systemAdministrator/alumni/{alumni_id}"
+                            response = requests.delete(api_url)
+                            if response.status_code == 200:
+                                st.success("Alumni deleted successfully!")
+                                st.rerun()
+                            else:
+                                st.error(f"Failed to delete alumni: {response.text}")
 
         with tab2:
             st.subheader("Student Management")
             
             # Create subtabs for student actions
-            student_tab1, student_tab2, student_tab3 = st.tabs(["View All Students", "Add Student", "Update Student"])
+            student_tab1, student_tab2, student_tab3, student_tab4 = st.tabs(["View All Students", "Add Student", "Update Student", "Delete Student"])
             
             with student_tab1:
                 st.subheader("All Students in System")
@@ -232,12 +252,32 @@ else:
                             st.error(f'No student found with ID: {studentID}')
                     else:
                         st.error(f'Failed to fetch student information (Status Code: {response.status_code})')
+            
+            with student_tab4:
+                st.subheader("Delete Student")
+                with st.form("delete_student_form"):
+                    student_id = st.text_input("Enter Student ID to delete:")
+                    confirm = st.checkbox("I understand this action cannot be undone")
+                    
+                    if st.form_submit_button("Delete Student"):
+                        if not student_id:
+                            st.error("Please enter a Student ID")
+                        elif not confirm:
+                            st.error("Please confirm the deletion")
+                        else:
+                            api_url = f"http://web-api:4000/admin/systemAdministrator/student/{student_id}"
+                            response = requests.delete(api_url)
+                            if response.status_code == 200:
+                                st.success("Student deleted successfully!")
+                                st.rerun()
+                            else:
+                                st.error(f"Failed to delete student: {response.text}")
 
         with tab3:
             st.subheader("Advisor Management")
             
             # Create subtabs for advisor actions
-            advisor_tab1, advisor_tab2, advisor_tab3 = st.tabs(["View All Advisors", "Add Advisor", "Update Advisor"])
+            advisor_tab1, advisor_tab2, advisor_tab3, advisor_tab4 = st.tabs(["View All Advisors", "Add Advisor", "Update Advisor", "Delete Advisor"])
             
             with advisor_tab1:
                 st.subheader("All Advisors in System")
@@ -325,6 +365,26 @@ else:
                             st.error(f'No advisor found with ID: {advisorID}')
                     else:
                         st.error(f'Failed to fetch advisor information (Status Code: {response.status_code})')
+            
+            with advisor_tab4:
+                st.subheader("Delete Advisor")
+                with st.form("delete_advisor_form"):
+                    advisor_id = st.text_input("Enter Advisor ID to delete:")
+                    confirm = st.checkbox("I understand this action cannot be undone")
+                    
+                    if st.form_submit_button("Delete Advisor"):
+                        if not advisor_id:
+                            st.error("Please enter an Advisor ID")
+                        elif not confirm:
+                            st.error("Please confirm the deletion")
+                        else:
+                            api_url = f"http://web-api:4000/admin/systemAdministrator/advisor/{advisor_id}"
+                            response = requests.delete(api_url)
+                            if response.status_code == 200:
+                                st.success("Advisor deleted successfully!")
+                                st.rerun()
+                            else:
+                                st.error(f"Failed to delete advisor: {response.text}")
 
     # If the user has an unrecognized role
     else:
