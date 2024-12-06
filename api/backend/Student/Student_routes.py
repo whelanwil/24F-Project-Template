@@ -155,22 +155,9 @@ def get_student_info(nuID):
     '''
     cursor = db.get_db().cursor()
     cursor.execute(query, (nuID,))
-    theData = cursor.fetchone()
-
-    if theData:
-        student_info = {
-            "firstName": theData[0],
-            "lastName": theData[1],
-            "major": theData[2],
-            "company": theData[3],
-            "city": theData[4],
-        }
-        response = make_response(jsonify(student_info))
-        response.status_code = 200
-    else: 
-        response = make_response(jsonify({"error": "Student not found"}))
-        response.status_code = 404
-
+    theData = cursor.fetchall()
+    response = make_response(jsonify(theData))
+    response.status_code = 200
     return response
 
 # ------------------------------------------------------------
