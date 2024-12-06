@@ -2,7 +2,7 @@ import streamlit as st
 import requests
 import pandas as pd
 
-BASE_API_URL = "http://web-api:4000/student"  # Base API URL
+BASE_API_URL = "http://web-api:4000/student/student"  # Base API URL
 
 # Page setup
 st.set_page_config(page_title="Edit Parent Housing Relationship", layout="wide")
