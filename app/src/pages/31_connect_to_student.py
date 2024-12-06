@@ -19,6 +19,7 @@ tab1, tab2, tab3 = st.tabs(["View Connections", "Add Connection", "Remove Connec
 # Tab 1: View Connections
 with tab1:
     st.subheader("View All Alum-Student Connections")
+    
     try:
         response = requests.get(BASE_API_URL)
         

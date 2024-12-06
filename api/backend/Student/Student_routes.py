@@ -251,7 +251,7 @@ def add_parent():
 
 # ------------------------------------------------------------
 # Get all parents for a student
-@student.route('/student/<nuID>/parents', methods=['GET'])
+@student.route('/student/parents/<nuID>', methods=['GET'])
 def get_student_parents(nuID):
     try:
         query = '''
@@ -264,25 +264,9 @@ def get_student_parents(nuID):
         cursor = db.get_db().cursor()
         cursor.execute(query, (nuID,))
         parents = cursor.fetchall()
-
-        if parents:
-            parents_list = [{
-                "parentID": parent[0],
-                "firstName": parent[1],
-                "lastName": parent[2],
-                "email": parent[3],
-                "phone": parent[4]
-            } for parent in parents]
-            
-            return make_response(jsonify({
-                "message": "Parents retrieved successfully",
-                "parents": parents_list
-            }), 200)
-        else:
-            return make_response(jsonify({
-                "message": "No parents found for this student",
-                "parents": []
-            }), 200)
+        response = make_response(jsonify(parents))
+        response.status_code = 200
+        return response
 
     except Exception as e:
         current_app.logger.error(f"Error retrieving parents: {str(e)}")
