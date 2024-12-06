@@ -54,10 +54,13 @@ else:
                         st.error("Failed to add alumni. Please try again.")
         
         with tab2:
+        
             st.subheader("Update Existing Alumni Information")
 
-            api_url = "http://web-api:4000/systemAdministrator/alumni/{alumID}"
-            response = requests.put(api_url)
+            alumID = st.text_input("Enter Alumni ID:")
+            if alumID:
+                api_url = f"http://web-api:4000/systemAdministrator/alumni/{alumID}"
+                response = requests.put(api_url)
 
             if response.status_code == 200:
                 data = response.json()
@@ -108,7 +111,7 @@ else:
                         if update_response.status_code == 200:
                             st.success('Your information has been updated successfully!')
                             st.rerun()
-                            
+
                         else:
                             st.error(f'Failed to update information: {update_response.text}')
 
