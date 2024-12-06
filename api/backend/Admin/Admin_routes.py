@@ -209,7 +209,24 @@ def add_student_with_city():
         # Log and handle errors
         print(f"Error occurred: {e}")
         return make_response(jsonify({"error": "An internal server error occurred"}), 500)
+
+# ------------------------------------------------------------
+# Retrieve cities with listings
+@admin.route('/apartment', methods=['GET'])
+def get_cities():
+    query = '''
+        SELECT UNIQUE ap.city
+        FROM Apartment ap
+    '''
+
+    cursor = db.get_db().cursor()
+    cursor.execute(query)
+    theData = cursor.fetchall()
     
+    response = make_response(jsonify(theData))
+    response.status_code = 200
+    return response
+
 # ------------------------------------------------------------ 
 # 2.6 Remove a given city from the database
 @admin.route('/systemAdministrator/student/<string:city>', methods=['DELETE'])
