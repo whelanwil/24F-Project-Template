@@ -28,5 +28,5 @@ if st.button('Connect with Alumni or Students',
 if st.button('Track Student Housing Status', 
              type='primary', 
              use_container_width=True):
-    st.switch_page('pages/01_Student_housing_preferences.py')  # Advisor-specific page
+    st.switch_page('pages/14_View_Student_Prefrences.py')  # Advisor-specific page
 
