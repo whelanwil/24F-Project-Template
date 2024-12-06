@@ -56,11 +56,17 @@ else:
         with tab2:
             st.subheader("Update Existing Alumni Information")
 
-            api_url = "http://web-api:4000/systemAdministrator/alumni/1"
+            api_url = "http://web-api:4000/systemAdministrator/alumni/{alumID}"
             response = requests.put(api_url)
 
             if response.status_code == 200:
-                alumni_info = response.json()
+                data = response.json()
+                
+                # Convert the list response to a DataFrame
+                df = pd.DataFrame(data)
+                
+                # Get the first row as a dictionary
+                alumni_info = df.iloc[0].to_dict() if not df.empty else {}
 
                 firstName = alumni_info.get('firstName', '')
                 lastName = alumni_info.get('lastName', '')
@@ -101,6 +107,8 @@ else:
                         update_response = requests.put(api_url, json=data)
                         if update_response.status_code == 200:
                             st.success('Your information has been updated successfully!')
+                            st.rerun()
+                            
                         else:
                             st.error(f'Failed to update information: {update_response.text}')
 
