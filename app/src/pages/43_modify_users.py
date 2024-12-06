@@ -35,9 +35,6 @@ else:
                 firstName = st.text_area("First Name")
                 lastName = st.text_area("Last Name")
                 email = st.text_area("Email")
-                company = st.text_area("Current Company")
-                city = st.text_input("City")
-                major = st.text_input("Major")
                 
                 if st.form_submit_button("Add Alumni"):
                     
@@ -45,12 +42,9 @@ else:
                         "firstName": firstName,
                         "lastName": lastName,
                         "email": email,
-                        "company": company,
-                        "city": city,
-                        "major": major
                     }
                     
-                    response = requests.post("http://web-api:4000/systemAdministrator/update", json=data)
+                    response = requests.post("http://web-api:4000/systemAdministrator", json=data)
                     if response.status_code == 200:
                         st.success("New alumni added successfully!")
                         st.rerun()
@@ -77,26 +71,17 @@ else:
                 firstName = alumni_info.get('firstName', '')
                 lastName = alumni_info.get('lastName', '')
                 email = alumni_info.get('email', '')
-                company = alumni_info.get('company', '')
-                city = alumni_info.get('city', '')
-                major = alumni_info.get('major', '')
 
                 st.subheader('Current Information:')
                 st.write(f'**First Name**: {firstName}')
                 st.write(f'**Last Name**: {lastName}')
                 st.write(f'**Email**: {email}')
-                st.write(f'**Company**: {company}')
-                st.write(f'**City**: {city}')
-                st.write(f'**Major**: {major}')
 
                 st.subheader('Fill out the following to update alumni information:')
                 with st.form('update_alum_info_form'):
                     new_firstName = st.text_input('First Name:', value=firstName)
                     new_lastName = st.text_input('Last Name:', value=lastName)
                     new_email = st.text_input('Email:', value=email)
-                    new_company = st.text_input('Company:', value=company)
-                    new_city = st.text_input('City', value=city)
-                    new_major = st.text_input('Major', value=major)
 
                     submitted = st.form_submit_button('Update Information')
 
@@ -105,9 +90,6 @@ else:
                             'firstName': new_firstName,
                             'lastName': new_lastName,
                             'email': new_email,
-                            'company': new_company,
-                            'city': new_city,
-                            'major': new_major,
                         }
                         
                         update_response = requests.put(api_url, json=data)
@@ -128,9 +110,10 @@ else:
                 firstName = st.text_area("First Name")
                 lastName = st.text_area("Last Name")
                 email = st.text_area("Email")
-                major = st.text_area("Major")
                 company = st.text_area("Current Co-Op Company")
                 city = st.text_input("City")
+                admin_id = st.text_input('adminID')
+                advisor_id = st.text_input('advisorID')
                 
                 if st.form_submit_button("Add Student"):
                     
@@ -140,10 +123,12 @@ else:
                         "email": email,
                         "major": major,
                         "company": company,
-                        "city": city
+                        "city": city,
+                        "admin_id": admin_id,
+                        "advisor_id": advisor_id
                     }
                     
-                    response = requests.post("http://web-api:4000/systemAdministrator/alumni", json=data)
+                    response = requests.post("http://web-api:4000/systemAdministrator/student", json=data)
                     if response.status_code == 200:
                         st.success("New student added successfully!")
                         st.rerun()
