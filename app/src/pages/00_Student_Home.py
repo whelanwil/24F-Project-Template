@@ -19,7 +19,7 @@ if st.button('Search Alumni Housing',
              use_container_width=True):
   st.switch_page('pages/04_Search_Alum_Housing.py')
 
-if st.button('Update Housing Settings (Preferences and Status)', 
+if st.button('Update Profile Information', 
              type='primary',
              use_container_width=True):
   st.switch_page('pages/01_Student_housing_preferences.py')
