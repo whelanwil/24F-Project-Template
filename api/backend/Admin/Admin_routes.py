@@ -90,6 +90,7 @@ def update_system_update(update_id):
 
 # ------------------------------------------------------------ 
 # 2.4 Add a new alumni to the database
+# USED
 @admin.route('/systemAdministrator/alumni', methods=['POST'])
 def add_alumni():
     """
@@ -144,49 +145,10 @@ def add_alumni():
             500
         )
 
-
-#get route for alumni by alumID
-@admin.route('/systemAdministrator/alumni/<alumID>', methods=['GET'])
-def get_alumni_by_id(alumID):
-    query = '''
-        SELECT * FROM Alumni WHERE alumID = %s
-    '''
-    cursor = db.get_db().cursor()
-    cursor.execute(query, (alumID,))
-    theData = cursor.fetchall()
-    response = make_response(jsonify(theData))
-    response.status_code = 200
-    return response
-
-#get route for student by studentID
-@admin.route('/systemAdministrator/student/<nuID>', methods=['GET'])
-def get_student_by_id(nuID):
-    query = '''
-        SELECT * FROM Student WHERE nuID = %s
-    '''
-    cursor = db.get_db().cursor()
-    cursor.execute(query, (nuID,))
-    theData = cursor.fetchall()
-    response = make_response(jsonify(theData))
-    response.status_code = 200
-    return response
-
-#get route for advisor by advisorID
-@admin.route('/systemAdministrator/advisor/<advisorID>', methods=['GET'])
-def get_advisor_by_id(advisorID):
-    query = '''
-        SELECT * FROM CoopAdvisor WHERE advisorID = %s
-    '''
-    cursor = db.get_db().cursor()
-    cursor.execute(query, (advisorID,))
-    theData = cursor.fetchall()
-    response = make_response(jsonify(theData))
-    response.status_code = 200
-    return response
-
 # ------------------------------------------------------------ 
 # 2.4 Update an alumni's information
 @admin.route('/systemAdministrator/alumni/<alumID>', methods=['PUT'])
+# USED
 def update_alumni(alumID):
     """
     Update an alumni's information in the database.
@@ -221,6 +183,7 @@ def update_alumni(alumID):
     
 #get all alumni
 @admin.route('/systemAdministrator/alumni', methods=['GET'])
+# USED
 def get_all_alumni():
     query = '''
         SELECT * FROM Alumni
@@ -234,6 +197,7 @@ def get_all_alumni():
 
 #get all students
 @admin.route('/systemAdministrator/student', methods=['GET'])
+# USED
 def get_all_students():
     query = '''
         SELECT * FROM Student
@@ -247,6 +211,7 @@ def get_all_students():
 
 #get all advisors
 @admin.route('/systemAdministrator/advisor', methods=['GET'])
+# USED
 def get_all_advisors():
     query = '''
         SELECT * FROM CoopAdvisor
@@ -261,6 +226,7 @@ def get_all_advisors():
 # ------------------------------------------------------------ 
 # 2.3 Add a new student to the database
 @admin.route('/systemAdministrator/student', methods=['POST'])
+# USED
 def add_student():
     """
     Add a new student to the database with all required fields.
@@ -312,6 +278,7 @@ def add_student():
         )
 
 @admin.route('/systemAdministrator/advisor', methods=['POST'])
+# USED
 def add_advisor():
     """
     Add a new advisor to the database with all required fields.
@@ -355,6 +322,7 @@ def add_advisor():
         )
 
 @admin.route('/systemAdministrator/student/<nuID>', methods=['PUT'])
+# USED
 def update_student(nuID):
     """
     Update a student's information in the database.
@@ -399,6 +367,7 @@ def update_student(nuID):
         return make_response(jsonify({"error": str(e)}), 500)
 
 @admin.route('/systemAdministrator/advisor/<advisorID>', methods=['PUT'])
+# USED
 def update_advisor(advisorID):
     """
     Update an advisor's information in the database.
@@ -435,6 +404,7 @@ def update_advisor(advisorID):
         return make_response(jsonify({"error": str(e)}), 500)
 
 #delete route for alumni
+# USED
 @admin.route('/systemAdministrator/alumni/<alumID>', methods=['DELETE'])
 def delete_alumni(alumID):
     query = '''
@@ -446,6 +416,7 @@ def delete_alumni(alumID):
     return make_response(jsonify({"message": "Alumni deleted successfully"}), 200)
 
 #delete route for student
+# USED
 @admin.route('/systemAdministrator/student/<nuID>', methods=['DELETE'])
 def delete_student(nuID):
     query = '''
@@ -457,6 +428,7 @@ def delete_student(nuID):
     return make_response(jsonify({"message": "Student deleted successfully"}), 200)
 
 #delete route for advisor
+# USED
 @admin.route('/systemAdministrator/advisor/<advisorID>', methods=['DELETE'])
 def delete_advisor(advisorID):
     query = '''
