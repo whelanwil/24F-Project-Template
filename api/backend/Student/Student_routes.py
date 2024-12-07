@@ -59,36 +59,6 @@ def find_city_alumni(city):
     response.status_code = 200
     return response
 
-# 3.3 Add a new city that the student is willing to live in
-# @student.route('/student', methods=['POST'])
-# def add_new_city():
-    
-#     the_data = request.json
-#     city = the_data.get('city')
-#     current_app.logger.info(the_data)
-
-#     if not city:
-#         current_app.logger.error("City is missing from the request body")
-#         response = make_response("City is required")
-#         response.status_code = 400
-#         return response
-    
-#     query = f'''
-#         INSERT INTO Student (city)
-#         VALUES (%s)
-#     '''
-   
-#     current_app.logger.info(f'POST /student query: {query}')
-
-#     cursor = db.get_db().cursor()
-#     cursor.execute(query, (city,))
-#     db.get_db().commit()
-    
-#     current_app.logger.info("City successfully added")
-#     response = make_response("Successfully added city")
-#     response.status_code = 200
-#     return response
-
 # ------------------------------------------------------------
 # 3.5 Update student info including major, company, & city
 @student.route('/student/<nuID>', methods=['PUT'])
@@ -181,26 +151,6 @@ def remove_parent(parentID):
         current_app.logger.error(f"Error removing parent: {str(e)}")
         return make_response(f"Failed to remove parent: {str(e)}", 500)
 
-# ------------------------------------------------------------
-# # Remove a city from the list of cities the student may want to live in
-# @student.route('/student', methods=['DELETE'])
-# def remove_city():
-#     current_app.logger.info('DELETE /student route')
-
-#     query = '''
-#         DELETE FROM Student 
-#         WHERE city = %s
-#         '''
-    
-#     cursor = db.get_db().cursor()
-#     cursor.execute(query)
-#     db.get_db().commit()
-
-#     response = make_response('City removed.')
-#     response.status_code = 200
-#     return response
-
-# ------------------------------------------------------------
 # Add a new parent for a student
 @student.route('/student/parent', methods=['POST'])
 def add_parent():
@@ -267,8 +217,6 @@ def get_student_parents(studentID):
     response.status_code = 200
     return response
 
-
-#
 @student.route('/alumstudent/<nuID>', methods=['GET'])
 def get_alum_connections(nuID):
     """
