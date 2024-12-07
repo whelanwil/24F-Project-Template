@@ -5,43 +5,6 @@ from backend.db_connection import db
 alumni = Blueprint('alumni', __name__)
 
 # ------------------------------------------------------------
-# Retrieve all students in {city} with their email contact
-@alumni.route('/alumni/<city>', methods=['GET'])
-def find_city_students():
-    query = '''
-        SELECT s.firstName, s.lastName, s.email
-        FROM Student s
-        WHERE s.city = %s
-    '''
-
-    cursor = db.get_db().cursor()
-    cursor.execute(query)
-    theData = cursor.fetchall()
-    
-    response = make_response(jsonify(theData))
-    response.status_code = 200
-    return response
-
-# ------------------------------------------------------------
-# Retrieves co-op advisors contact information whose students are {city}
-@alumni.route('/alumni/<city>', methods=['GET'])
-def find_city_advisors():
-    query = '''
-        SELECT ca.firstName, ca.lastName, ca.email
-        FROM CoopAdvisor ca
-        JOIN Student s ON ca.advisorID = s.advisorID
-        WHERE s.city = %s
-    '''
-
-    cursor = db.get_db().cursor()
-    cursor.execute(query)
-    theData = cursor.fetchall()
-    
-    response = make_response(jsonify(theData))
-    response.status_code = 200
-    return response
-
-# ------------------------------------------------------------
 # 1.1 Add new apartment listing to the site for this alumni
 @alumni.route('/alumni', methods=['POST'])
 def add_new_housing():
