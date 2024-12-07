@@ -82,7 +82,7 @@ with tab2:
         description = st.text_area("Description")
         date_from = st.date_input("Available From")
         date_to = st.date_input("Available To")
-        street = st.text_input("Street Number")
+        street = st.text_input("Street")
         city = st.text_input("City")
         state = st.text_input("State")
         country = st.text_input("Country")
@@ -156,7 +156,7 @@ with tab3:
             date_to = st.date_input("Available To", 
                                   value=pd.to_datetime(selected_housing['Available To']).date())
             
-            street = st.text_input("Street Number", 
+            street = st.text_input("Street", 
                                  value=selected_housing['Street'])
             city = st.text_input("City", 
                                value=selected_housing['City'])
