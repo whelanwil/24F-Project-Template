@@ -30,3 +30,6 @@ Important:
 - Each file should contain only the password/secret (no newlines or extra spaces)
 - These files are git-ignored and should never be committed to version control
 - Keep these passwords secure and different from each other
+
+# Video demo
+https://drive.google.com/file/d/1LTnhDYwp758nLVbE1N0_nczr54yzUh8-/view?usp=sharing
