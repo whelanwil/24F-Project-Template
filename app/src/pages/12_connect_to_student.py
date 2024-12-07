@@ -13,7 +13,7 @@ BASE_API_URL = "http://web-api:4000/advisor/alumstudent"
 st.title("Manage Alum-Student Connections")
 
 # Tabs for different actions
-tab1, tab2, tab3 = st.tabs(["View Connections", "Add Connection", "Remove Connection"])
+tab1, tab2, tab3, tab4 = st.tabs(["View Connections", "Add Connection", "Remove Connection", "Update Connection"])
 
 # Tab 1: View Connections
 # Tab 1: View Connections
@@ -98,3 +98,27 @@ with tab3:
                 st.error(f"Network error while removing the connection: {str(e)}")
         else:
             st.warning("Both Student ID and Alumni ID are required.")
+
+# Add the new tab4 for updating student-alumni relationship
+with tab4:
+    st.subheader("Update Student's Alumni Connection")
+
+    # Input fields for identifying the connection to update
+    student_id = st.text_input("Enter Student ID:", key="update_student")
+    current_alumni_id = st.text_input("Enter Current Alumni ID:", key="current_alumni")
+    new_alumni_id = st.text_input("Enter New Alumni ID:", key="new_alumni")
+
+    if st.button("Update Connection"):
+        if student_id and current_alumni_id and new_alumni_id:
+            
+            # Make the PUT request to update the connection
+            response = requests.put(f"http://web-api:4000/advisor/studentAlumni/{student_id}/{new_alumni_id}/{current_alumni_id}")
+            if response.status_code == 200:
+                st.success(response.json().get("message", "Connection updated successfully!"))
+                time.sleep(1)
+                st.rerun()
+            elif response.status_code == 404:
+                st.warning(response.json().get("error", "Student not found or no changes made."))
+            else:
+                st.error(f"Failed to update connection: {response.json().get('error', 'Unknown error')}")
+        

@@ -197,6 +197,9 @@ def get_all_students_by_ID(nuID):
     return response
 
 # ------------------------------------------------------------
+
+
+
 #previouse student alumn blueprint routes
 @advisor.route('/alumstudent', methods=['GET'])
 def get_all_connections():
@@ -380,3 +383,31 @@ def get_student_connections(alumnID):
     response = make_response(jsonify(theData))
     response.status_code = 200
     return response
+
+@advisor.route('/studentAlumni/<student_id>/<alumni_id>/<old_alumni_id>', methods=['PUT'])
+def update_student_alumni(student_id, alumni_id, old_alumni_id):
+    """
+    Update the alumniID for a specific student
+    """
+    current_app.logger.info(f'PUT /student/{student_id}/alumni/{alumni_id}/{old_alumni_id} route')
+
+    
+    # SQL query to update the alumniID for the student
+    query = '''
+        UPDATE AlumStudent   
+        SET alumID = %s
+        WHERE nuID = %s AND alumID = %s
+    '''
+    
+    cursor = db.get_db().cursor()
+    cursor.execute(query, (alumni_id, student_id, old_alumni_id))
+    db.get_db().commit()
+
+    if cursor.rowcount == 0:
+        return make_response(jsonify({
+            "error": "Student not found or no changes made"
+        }), 404)
+
+    return make_response(jsonify({
+        "message": f"Successfully updated student {student_id} with alumni {alumni_id}"}), 200)
+
