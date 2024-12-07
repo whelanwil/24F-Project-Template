@@ -4,6 +4,7 @@ import requests
 import pandas as pd
 from datetime import datetime
 from modules.nav import SideBarLinks
+import time
 
 # Add sidebar links
 SideBarLinks()
@@ -18,7 +19,7 @@ if 'active_tab' not in st.session_state:
     st.session_state.active_tab = "View My Listings"
 
 # Create tabs for different actions
-tab1, tab2 = st.tabs(["View My Listings", "Add New Listing"])
+tab1, tab2, tab3 = st.tabs(["View My Listings", "Add New Listing", "Edit Listing"])
 
 # Show success message if it exists and clear it
 if st.session_state.get('show_success', False):
@@ -116,5 +117,88 @@ with tab2:
             else:
                 st.error(f"Failed to add listing. Status code: {response.status_code}")
                 st.write(f"Error details: {response.text}")
+
+with tab3:
+    st.subheader("Edit Housing Listing")
+    
+    # Show success message if it exists in session state
+    
+    
+    # Fetch current listings for selection
+    df = fetch_listings(alum_id)
+    if df is not None:
+        # Select housing to edit
+        housing_id = st.selectbox("Select Housing ID to Edit", 
+                                df['Housing ID'].tolist(),
+                                key='edit_housing_select')
+        
+        # Get the selected housing details
+        selected_housing = df[df['Housing ID'] == housing_id].iloc[0]
+        
+        with st.form("edit_listing_form"):
+            beds = st.number_input("Number of Bedrooms", 
+                                 min_value=1, 
+                                 max_value=10, 
+                                 value=int(selected_housing['Bedrooms']))
+            baths = st.number_input("Number of Bathrooms", 
+                                  min_value=1, 
+                                  max_value=10, 
+                                  value=int(selected_housing['Bathrooms']))
+            rent = st.number_input("Monthly Rent ($)", 
+                                 min_value=0, 
+                                 value=int(selected_housing['Monthly Rent ($)']))
+            description = st.text_area("Description", 
+                                     value=selected_housing['Description'])
+            
+            # Convert date strings to datetime objects for the date inputs
+            date_from = st.date_input("Available From", 
+                                    value=pd.to_datetime(selected_housing['Available From']).date())
+            date_to = st.date_input("Available To", 
+                                  value=pd.to_datetime(selected_housing['Available To']).date())
+            
+            street = st.text_input("Street Number", 
+                                 value=selected_housing['Street'])
+            city = st.text_input("City", 
+                               value=selected_housing['City'])
+            state = st.text_input("State", 
+                                value=selected_housing['State'])
+            country = st.text_input("Country", 
+                                  value=selected_housing['Country'])
+            
+            if st.form_submit_button("Update Listing"):
+                # Format dates for API
+                date_from_str = datetime.combine(date_from, datetime.min.time()).strftime('%Y-%m-%d %H:%M:%S')
+                date_to_str = datetime.combine(date_to, datetime.min.time()).strftime('%Y-%m-%d %H:%M:%S')
+                
+                data = {
+                    "bed": beds,
+                    "baths": baths,
+                    "rent": rent,
+                    "description": description,
+                    "dateAvailableFrom": date_from_str,
+                    "dateAvailableTo": date_to_str,
+                    "street": street,
+                    "city": city,
+                    "state": state,
+                    "country": country,
+                    "housingID": housing_id
+                }
+                
+                try:
+                    response = requests.put("http://web-api:4000/alumni/alumni", json=data)
+                    if response.status_code == 200:
+                        st.session_state.edit_success = True
+                        st.success("Listing updated successfully!")
+                        # Remove the success message after 1 second
+                        time.sleep(1)
+                        del st.session_state.edit_success
+                        st.rerun()
+                    else:
+                        st.error(f"Failed to update listing. Status code: {response.status_code}")
+                        st.write(f"Error details: {response.text}")
+                except Exception as e:
+                    st.error(f"An error occurred: {str(e)}")
+    else:
+        st.info("You don't have any listings to edit.")
 
 

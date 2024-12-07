@@ -96,6 +96,7 @@ def update_housing():
     city = the_data['city']
     state = the_data['state']
     country = the_data['country']
+    housing_id = the_data['housingID']
 
     query = '''
         UPDATE Apartment SET beds = %s, baths = %s, rent = %s, description = %s, 
@@ -103,7 +104,8 @@ def update_housing():
         street = %s, city = %s, state = %s, country = %s
         WHERE housingID = %s
     '''
-    data = (beds, baths, rent, description, dateAvailableFrom, dateAvailableTo, street, city, state, country)
+    data = (beds, baths, rent, description, dateAvailableFrom, dateAvailableTo, 
+            street, city, state, country, housing_id)
     cursor = db.get_db().cursor()
     r = cursor.execute(query, data)
     db.get_db().commit()
