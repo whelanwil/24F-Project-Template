@@ -278,30 +278,7 @@ def add_alum_student_connection():
         }), 500
 
 
-#Student
-@advisor.route('/alumstudent/<nuID>', methods=['GET'])
-def get_alum_connections(nuID):
-    """
-    Retrieve all alumni connections for a specific student.
-    """
-    current_app.logger.info(f'GET /alumstudent/{nuID} route')
 
-    query = '''
-        SELECT a.firstName, 
-               a.lastName,
-               a.email,
-               a.company,
-               a.city
-        FROM Alumni a
-        JOIN AlumStudent ast ON a.alumID = ast.alumID
-        WHERE ast.nuID = %s
-    '''
-    cursor = db.get_db().cursor()
-    cursor.execute(query, (nuID,))
-    theData = cursor.fetchall()
-    response = make_response(jsonify(theData))
-    response.status_code = 200
-    return response
 
 @advisor.route('/alumstudent/<nuID>/<alumID>', methods=['DELETE'])
 def delete_connection(nuID, alumID):
@@ -360,29 +337,7 @@ def delete_connection(nuID, alumID):
         }), 500)
     
 
-@advisor.route('/studentalumn/<alumnID>', methods=['GET'])
-def get_student_connections(alumnID):
-    """
-    Retrieve all alumni connections for a specific student.
-    """
-    current_app.logger.info(f'GET /studentalumn/{alumnID} route')
 
-    query = '''
-        SELECT s.firstName, 
-               s.lastName,
-               s.email,
-               s.company,
-               s.city
-        FROM Student s
-        JOIN AlumStudent ast ON s.nuID = ast.nuID
-        WHERE ast.alumID = %s
-    '''
-    cursor = db.get_db().cursor()
-    cursor.execute(query, (alumnID,))
-    theData = cursor.fetchall()
-    response = make_response(jsonify(theData))
-    response.status_code = 200
-    return response
 
 @advisor.route('/studentAlumni/<student_id>/<alumni_id>/<old_alumni_id>', methods=['PUT'])
 def update_student_alumni(student_id, alumni_id, old_alumni_id):

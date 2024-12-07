@@ -166,3 +166,28 @@ def get_alumni_housing(alum_id):
     except Exception as e:
         current_app.logger.error(f"Database error: {str(e)}")
         return make_response(jsonify({"error": str(e)}), 500)
+    
+
+@alumni.route('/studentalumn/<alumnID>', methods=['GET'])
+def get_student_connections(alumnID):
+    """
+    Retrieve all alumni connections for a specific student.
+    """
+    current_app.logger.info(f'GET /studentalumn/{alumnID} route')
+
+    query = '''
+        SELECT s.firstName, 
+               s.lastName,
+               s.email,
+               s.company,
+               s.city
+        FROM Student s
+        JOIN AlumStudent ast ON s.nuID = ast.nuID
+        WHERE ast.alumID = %s
+    '''
+    cursor = db.get_db().cursor()
+    cursor.execute(query, (alumnID,))
+    theData = cursor.fetchall()
+    response = make_response(jsonify(theData))
+    response.status_code = 200
+    return response

@@ -16,7 +16,7 @@ else:
     
     st.subheader("Your Current Student Connections")
 
-    response = requests.get(f"http://web-api:4000/advisor/studentalumn/{alumn_id}")
+    response = requests.get(f"http://web-api:4000/alumni/studentalumn/{alumn_id}")
     if response.status_code == 200:
         connections = response.json()
         if connections:
