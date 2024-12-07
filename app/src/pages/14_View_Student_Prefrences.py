@@ -20,7 +20,7 @@ advisor_id = st.session_state['user_id']
 logger = logging.getLogger(__name__)
 
 # Title
-st.title("Co-op Advisor Dashboard: View Student Housing Preferences")
+st.title("Co-op Advisor Dashboard: View Student Housing Status")
 
 # Create tabs
 tab1, tab2 = st.tabs(["My Students", "All Students"])
