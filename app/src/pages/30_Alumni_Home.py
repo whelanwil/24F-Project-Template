@@ -19,8 +19,7 @@ if st.button('Edit Apartment Details',
              use_container_width=True):
     st.switch_page('pages/30_Edit_Alumni_Housing.py')  # Alumni-specific page
 
-# Button to connect with students (shared with advisors)
-if st.button('Connect with Students', 
+if st.button('Connected Students', 
              type='primary', 
              use_container_width=True):
     st.switch_page('pages/31_Connect_To_Students.py')  # Shared page

@@ -24,7 +24,7 @@ if st.button('Update Profile Information',
              use_container_width=True):
   st.switch_page('pages/01_Student_housing_preferences.py')
 
-if st.button('Connect with Alumni or Students', 
+if st.button('Connected Alumni', 
             type='primary', 
             use_container_width=True):
   st.switch_page('pages/02_Student_Alumni_Connection.py')

@@ -19,7 +19,7 @@ if st.button('Search Alumni Housing',
     st.switch_page('pages/11_Alumn_Housing.py')  # Shared page
 
 # Button to connect with alumni or students (shared with students)
-if st.button('Connect with Alumni or Students', 
+if st.button('Connect Students with Alumni', 
              type='primary', 
              use_container_width=True):
     st.switch_page('pages/12_connect_to_student.py')  # Shared page
