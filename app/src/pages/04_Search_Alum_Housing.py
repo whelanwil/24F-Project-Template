@@ -9,8 +9,6 @@ SideBarLinks()
 
 # Set up logging
 logger = logging.getLogger(__name__)
-student_city = st.session_state['city']
-st.write(student_city)
 st.title("Search Alumni Housing")
 
 # Create tabs
@@ -50,7 +48,7 @@ with tab2:
             else:
                 st.info(f"No available apartments found in {city}.")
     else:
-        st.warning("Please update your city in preferences.")
+        st.warning("Please enter a city to search.")
 
 with tab3:
     if city:
@@ -68,7 +66,7 @@ with tab3:
             else:
                 st.info(f"No students found in {city}.")
     else:
-        st.warning("Please update your city in preferences.")
+        st.warning("Please enter a city to search.")
 
 with tab4:
     if city:
@@ -87,6 +85,6 @@ with tab4:
         else:
             st.error(f"Error: Received status code {response.status_code}")
     else:
-        st.warning("Please update your city in preferences.")
+        st.warning("Please enter a city to search.")
 
 
