@@ -37,53 +37,53 @@ with tab1:
             st.warning("Please enter a city to search.")
 
 with tab2:
-    if student_city:
-        api_url = f"http://web-api:4000/student/apartment/city/{student_city}"
+    if city:
+        api_url = f"http://web-api:4000/student/apartment/city/{city}"
         response = requests.get(api_url)
         if response.status_code == 200:
             apartments = response.json()
             if apartments:
-                st.write(f"**Found {len(apartments)} available apartments in {student_city}:**")
+                st.write(f"**Found {len(apartments)} available apartments in {city}:**")
                 df = pd.DataFrame(apartments)
                 df = df[['firstName', 'lastName', 'email', 'city', 'state', 'rent', 'beds', 'baths', 'dateAvailableFrom', 'dateAvailableTo']]
                 st.table(df)
             else:
-                st.info(f"No available apartments found in {student_city}.")
+                st.info(f"No available apartments found in {city}.")
     else:
         st.warning("Please update your city in preferences.")
 
 with tab3:
-    if student_city:
-        api_url = f"http://web-api:4000/student/student/city/{student_city}"
+    if city:
+        api_url = f"http://web-api:4000/student/student/city/{city}"
         response = requests.get(api_url)
             
         if response.status_code == 200:
             students = response.json()
             if students:
-                st.write(f"**Found {len(students)} students in {student_city}:**")
+                st.write(f"**Found {len(students)} students in {city}:**")
                 df = pd.DataFrame(students)
                 # Reorder columns for display
                 df = df[['firstName', 'lastName', 'email', 'company']]
                 st.table(df)
             else:
-                st.info(f"No students found in {student_city}.")
+                st.info(f"No students found in {city}.")
     else:
         st.warning("Please update your city in preferences.")
 
 with tab4:
-    if student_city:
-        api_url = f"http://web-api:4000/student/alumni/city/{student_city}"
+    if city:
+        api_url = f"http://web-api:4000/student/alumni/city/{city}"
         response = requests.get(api_url)
         if response.status_code == 200:
             alumni = response.json()
             if alumni:
-                st.write(f"**Found {len(alumni)} alumni in {student_city}:**")
+                st.write(f"**Found {len(alumni)} alumni in {city}:**")
                 df = pd.DataFrame(alumni)
                 # Reorder columns for display
                 df = df[['firstName', 'lastName', 'email', 'company']]
                 st.table(df)
             else:
-                st.info(f"No alumni found in {student_city}.")
+                st.info(f"No alumni found in {city}.")
         else:
             st.error(f"Error: Received status code {response.status_code}")
     else:
