@@ -5,6 +5,44 @@ from backend.db_connection import db
 # Initialize Blueprint
 admin = Blueprint('admin', __name__)
 
+
+#get route for alumni by alumID
+@admin.route('/systemAdministrator/alumni/<alumID>', methods=['GET'])
+def get_alumni_by_id(alumID):
+    query = '''
+        SELECT * FROM Alumni WHERE alumID = %s
+    '''
+    cursor = db.get_db().cursor()
+    cursor.execute(query, (alumID,))
+    theData = cursor.fetchall()
+    response = make_response(jsonify(theData))
+    response.status_code = 200
+    return response
+#get route for student by studentID
+@admin.route('/systemAdministrator/student/<nuID>', methods=['GET'])
+def get_student_by_id(nuID):
+    query = '''
+        SELECT * FROM Student WHERE nuID = %s
+    '''
+    cursor = db.get_db().cursor()
+    cursor.execute(query, (nuID,))
+    theData = cursor.fetchall()
+    response = make_response(jsonify(theData))
+    response.status_code = 200
+    return response
+#get route for advisor by advisorID
+@admin.route('/systemAdministrator/advisor/<advisorID>', methods=['GET'])
+def get_advisor_by_id(advisorID):
+    query = '''
+        SELECT * FROM CoopAdvisor WHERE advisorID = %s
+    '''
+    cursor = db.get_db().cursor()
+    cursor.execute(query, (advisorID,))
+    theData = cursor.fetchall()
+    response = make_response(jsonify(theData))
+    response.status_code = 200
+    return response
+
 # ------------------------------------------------------------
 # 2.1 Get all system updates
 @admin.route('/systemAdministrator/update', methods=['GET'])
