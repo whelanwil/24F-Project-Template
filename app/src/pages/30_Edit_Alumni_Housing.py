@@ -51,9 +51,6 @@ def fetch_listings(alum_id):
 
 with tab1:
     st.subheader("Your Current Housing Listings")
-    # Debug print
-    st.write("Debug - user_id:", st.session_state.get('user_id'))
-    
     # Fetch and display current listings
     df = fetch_listings(alum_id)
     if df is not None:
