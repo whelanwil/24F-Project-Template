@@ -55,6 +55,9 @@ def AlumniNav():
     st.sidebar.page_link(
         "pages/31_Connect_To_Students.py", label="View Connected Students", icon="🛏️"
     )
+    st.sidebar.page_link(
+        "pages/30_Edit_Alumni_Housing.py", label="Edit Apartment Details", icon="🖥️"
+    )
 
 
 # ------------------------ System Admin Role ------------------------
